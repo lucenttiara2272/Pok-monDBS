@@ -168,11 +168,16 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
   const locked = new Set(lockedNamesOf(opts.locked ?? []));
 
   // 1. start from something legal: complete evolution lines, then fill/trim
+  const original = { ...startCounts };
+  const originalSize = Object.values(original).reduce((a, b) => a + b, 0);
   let counts = completeEvolutionLines({ ...startCounts }, index);
   const pool = candidatePool(counts, index, locked);
   counts = makeLegal60(counts, index, pool, locked);
 
-  const before = { ...counts };
+  // The diff must be against what the user actually had, otherwise completing a
+  // half-finished deck shows as "no changes" and there is nothing to apply.
+  const before = original;
+  const wasIncomplete = originalSize !== 60;
 
   // 1b. Offer a structurally repaired alternative as a second starting point.
   // Hill climbing one card at a time cannot cross a valley — 8 Pokemon to 9
@@ -228,7 +233,9 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
 
   // 3. re-score start and finish on a fresh, larger sample
   const verifySeed = seed + 7919;
-  const finalBefore = score(before, index, meta, finalGames, verifySeed);
+  const finalBefore = wasIncomplete
+    ? null                                   // an incomplete deck cannot be scored
+    : score(before, index, meta, finalGames, verifySeed);
   const finalAfter = score(counts, index, meta, finalGames, verifySeed);
 
   return {
@@ -240,7 +247,9 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
     structuralNote,
     diff: diffCounts(before, counts),
     locked: [...locked],
-    note: finalAfter <= finalBefore
+    wasIncomplete,
+    originalSize,
+    note: (finalBefore !== null && finalAfter <= finalBefore)
       ? 'No improvement survived re-scoring on a fresh sample — the changes the '
         + 'search liked were within noise. Your list is left as it was.'
       : null,
@@ -294,41 +303,87 @@ function lockedNamesOf(v) {
   return Array.isArray(v) ? v : [...v];
 }
 
-/** Bring a deck to exactly 60 legal cards without touching pinned entries. */
+/**
+ * Bring a deck to exactly 60 legal cards without touching pinned entries.
+ *
+ * This used to add one copy of every candidate in turn, which produced a deck of
+ * ~48 singletons that scored 0% — technically 60 cards, useless as a deck. Real
+ * lists are built from a small number of cards at sensible counts, so fill from
+ * a template of target counts instead, and only then top up with Energy.
+ */
+const FILL_TEMPLATE = [
+  ["Lillie's Determination", 4],
+  ['Ultra Ball', 4],
+  ['Buddy-Buddy Poffin', 4],
+  ["Boss's Orders", 3],
+  ['Night Stretcher', 3],
+  ['Energy Search', 3],
+  ['Switch', 2],
+  ['Energy Retrieval', 2],
+  ['Lacey', 2],
+  ['Poké Pad', 2],
+  ['Energy Switch', 2],
+  ['Master Ball', 2],
+  ['Prime Catcher', 1],
+  ['Maximum Belt', 1],
+];
+
 function makeLegal60(counts, index, pool, locked) {
   const out = { ...counts };
   const size = () => Object.values(out).reduce((a, b) => a + b, 0);
+  const inPool = new Set(pool);
 
   // trim overflow from the least valuable unpinned cards
-  const trimOrder = () => Object.keys(out)
-    .filter((n) => !locked.has(n) && out[n] > 0)
-    .sort((a, b) => (isEnergy(index, a) ? 1 : 0) - (isEnergy(index, b) ? 1 : 0));
   let guard = 0;
   while (size() > 60 && guard++ < 200) {
-    const order = trimOrder();
+    const order = Object.keys(out)
+      .filter((n) => !locked.has(n) && out[n] > 0)
+      .sort((a, b) => (isEnergy(index, a) ? 1 : 0) - (isEnergy(index, b) ? 1 : 0));
     if (!order.length) break;
     const pick = order[order.length - 1];
     out[pick] -= 1;
     if (!out[pick]) delete out[pick];
   }
+  if (size() === 60) return out;
 
-  // fill shortfall with staples, then Energy
-  const fillers = [...pool].filter((n) => !locked.has(n));
+  // 1. bring the Pokemon line up to a workable count, using what is already here
+  const monsInDeck = () => Object.entries(out)
+    .filter(([n]) => index[n] && index[n].category === 'pokemon')
+    .reduce((a, [, c]) => a + c, 0);
+  const monCandidates = Object.keys(out)
+    .filter((n) => index[n] && index[n].category === 'pokemon' && !locked.has(n));
+  guard = 0;
+  while (monsInDeck() < 9 && size() < 60 && guard++ < 30) {
+    const pick = monCandidates.find((n) => out[n] < maxCopies(index, n));
+    if (!pick) break;
+    out[pick] += 1;
+  }
+
+  // 2. fill the engine from the template, at counts a real list would run
+  for (const [name, target] of FILL_TEMPLATE) {
+    if (size() >= 60) break;
+    if (!index[name] || locked.has(name) || !inPool.has(name)) continue;
+    while ((out[name] || 0) < Math.min(target, maxCopies(index, name)) && size() < 60) {
+      out[name] = (out[name] || 0) + 1;
+    }
+  }
+
+  // 3. the rest is Energy the attackers can actually use
+  const energyPicks = pool.filter((n) => isEnergy(index, n)
+    && index[n].sim && index[n].sim.basicEnergy && !locked.has(n));
+  if (energyPicks.length) {
+    guard = 0;
+    while (size() < 60 && guard++ < 80) {
+      out[energyPicks[0]] = (out[energyPicks[0]] || 0) + 1;
+    }
+  }
+
+  // 4. last resort: anything legal, so the deck is always exactly 60
   guard = 0;
   while (size() < 60 && guard++ < 200) {
-    let added = false;
-    for (const n of fillers) {
-      const cur = out[n] || 0;
-      if (cur >= maxCopies(index, n)) continue;
-      out[n] = cur + 1;
-      added = true;
-      if (size() >= 60) break;
-    }
-    if (!added) {
-      const energy = fillers.find((n) => isEnergy(index, n));
-      if (!energy) break;
-      out[energy] = (out[energy] || 0) + 1;
-    }
+    const pick = pool.find((n) => !locked.has(n) && (out[n] || 0) < maxCopies(index, n));
+    if (!pick) break;
+    out[pick] = (out[pick] || 0) + 1;
   }
   return out;
 }
