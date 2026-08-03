@@ -5,12 +5,16 @@
 
 import {
   runGauntlet, validateDeck, deckStats, DRAW_SUPPORTERS,
-} from './engine.js';
+} from './engine.js?v=dev';
 import {
   makeCardIndex, buildSpec, PRESETS, applyControlOverride,
-} from './decks.js';
+} from './decks.js?v=dev';
 
 const $ = (id) => document.getElementById(id);
+
+// Stamped by the deploy workflow with the commit SHA so a new release can never be
+// served from a stale browser cache. Stays 'dev' when running locally.
+const APP_VERSION = 'dev';
 const CATS = ['pokemon', 'item', 'tool', 'supporter', 'energy'];
 const CAT_LABEL = {
   pokemon: 'Pokémon', item: 'Item', tool: 'Tool',
@@ -93,8 +97,8 @@ function cardFromForm(fd) {
 /* ---------------------------------------------------------------- boot --- */
 async function boot() {
   const [cardsJson, metaJson] = await Promise.all([
-    fetch('data/cards.json').then((r) => r.json()),
-    fetch('data/meta.json').then((r) => r.json()),
+    fetch(`data/cards.json?v=${APP_VERSION}`).then((r) => r.json()),
+    fetch(`data/meta.json?v=${APP_VERSION}`).then((r) => r.json()),
   ]);
   // custom cards win on name collision, so you can correct a bundled card
   const custom = loadCustom();
@@ -163,6 +167,12 @@ async function boot() {
     $('search').value = '';
     renderAll();
   };
+
+  const b = $('build');
+  if (b) {
+    b.textContent = `Build ${APP_VERSION} · ${CARDS.length} cards loaded`
+      + (loadCustom().length ? ` (${loadCustom().length} custom)` : '');
+  }
 
   renderAll();
 }
