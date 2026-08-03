@@ -15,6 +15,8 @@ simulation engine are both plain ES modules, so GitHub Pages hosts the whole thi
   counts with a stepper. The main view shows only what's in your deck. Legality updates
   live: 60 cards exactly, 4-copy limit, basic Energy exempt, and every evolution checked
   against its Basic.
+- **Optimiser** — pin the cards you're building around, and it fills the rest of the
+  deck to maximise meta-weighted win rate. Pinned cards are never touched.
 - **Simulator** — plays thousands of games against the top 8 archetypes, weighted by
   real meta share, and reports win rate, matchup breakdown, and how the games ended.
 - **Consistency maths** — exact hypergeometric mulligan rate, Pokémon count, draw
@@ -57,6 +59,34 @@ and configured to build using GitHub Actions. Error: Not Found
 
 Then re-run the failed job from the Actions tab. Note that Pages on a **private** repo
 requires a paid plan; make the repo public if you're on Free.
+
+## The optimiser
+
+Pin cards with the ○ button on each deck row, then press **Optimise deck**. It searches
+single-card swaps, keeps the best improvement each round, and shows exactly what it
+changed before you apply anything.
+
+Three things it does deliberately:
+
+**Common random numbers.** Every candidate deck is scored on the *same* set of random
+games. A 250-game evaluation carries several points of noise, and without a shared seed
+the search cheerfully "improves" a deck by reshuffling luck. Sharing the seed means a
+measured difference reflects the decklist rather than the dice.
+
+**Fresh-sample verification.** Because the search tunes against one sample, the before
+and after it reports are re-scored on a different, larger sample. A change that only
+looked good during the search shows no gain here, and the optimiser says so rather than
+claiming a win.
+
+**The prior proposes, the simulation decides.** It tries a structurally repaired version
+of your deck — Pokémon count and draw Supporters raised to the usual minimums — as a
+second starting point, because hill climbing one card at a time cannot cross that valley.
+But it only adopts that shape if it actually scores better. On a focused list, padding
+with filler Pokémon often costs more than the mulligan rate gains, and it will tell you
+that happened.
+
+It is hill climbing, not exhaustive search. It finds a local improvement on what you gave
+it, not the best possible deck.
 
 ## How the simulation works
 

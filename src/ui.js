@@ -9,6 +9,7 @@ import {
 import {
   makeCardIndex, buildSpec, PRESETS, applyControlOverride,
 } from './decks.js?v=dev';
+import { optimiseDeck } from './optimise.js?v=dev';
 
 const $ = (id) => document.getElementById(id);
 
@@ -25,6 +26,7 @@ let CARDS = [];
 let INDEX = {};
 let META = [];
 let deck = {};                 // { cardName: count }
+let pinned = new Set();        // cards the optimiser must not change
 
 /* ------------------------------------------------------- custom cards --- */
 // Cards the user adds live here and are merged over data/cards.json at boot.
@@ -139,6 +141,7 @@ async function boot() {
   };
 
   $('run').onclick = run;
+  $('optimise').onclick = optimise;
   $('clear').onclick = () => { deck = {}; renderAll(); };
   $('copy').onclick = copyList;
 
@@ -315,7 +318,7 @@ function renderGrid() {
       const q = deck[n];
       const max = maxFor(c);
       html += `
-        <div class="row${c.warning ? ' warnrow' : ''}" title="${
+        <div class="row${c.warning ? ' warnrow' : ''}${pinned.has(n) ? ' pinned' : ''}" title="${
   (c.warning ? c.warning + '\n\n' : '') + (c.text || '').replace(/"/g, '&quot;')}">
           <div class="stepper">
             <button data-dec="${n}">−</button>
@@ -326,6 +329,9 @@ function renderGrid() {
             <div class="r-nm">${n}</div>
             <div class="r-meta">${cardMeta(c)}</div>
           </div>
+          <button class="pin${pinned.has(n) ? ' on' : ''}" data-pin="${n}"
+            title="${pinned.has(n) ? 'Pinned — the optimiser will not change this'
+    : 'Pin: build around this card'}">${pinned.has(n) ? '●' : '○'}</button>
           <button class="r-x" data-rm="${n}" title="Remove">✕</button>
         </div>`;
     }
@@ -341,6 +347,13 @@ function renderGrid() {
   });
   wrap.querySelectorAll('[data-rm]').forEach((b) => {
     b.onclick = () => setCount(b.dataset.rm, 0);
+  });
+  wrap.querySelectorAll('[data-pin]').forEach((b) => {
+    b.onclick = () => {
+      const n = b.dataset.pin;
+      if (pinned.has(n)) pinned.delete(n); else pinned.add(n);
+      renderGrid();
+    };
   });
 }
 
@@ -398,6 +411,88 @@ function copyList() {
     const b = $('copy'); const t = b.textContent;
     b.textContent = 'Copied'; setTimeout(() => { b.textContent = t; }, 1200);
   });
+}
+
+/* ------------------------------------------------------------ optimise --- */
+async function optimise() {
+  const size = Object.values(deck).reduce((a, c) => a + c, 0);
+  if (!size) return;
+
+  const btn = $('optimise');
+  btn.disabled = true;
+  btn.textContent = 'Optimising…';
+  const panel = $('opt');
+  panel.classList.remove('hidden');
+  $('opt-body').innerHTML =
+    '<div class="progress"><span id="opt-bar"></span></div>'
+    + '<p class="hint" style="margin:0">Searching card swaps and re-scoring each one. '
+    + 'This runs a few hundred simulations, so it takes a few seconds.</p>';
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  await new Promise((r) => setTimeout(r, 40));
+
+  let res;
+  try {
+    res = optimiseDeck(deck, INDEX, META, {
+      locked: [...pinned],
+      games: 250, rounds: 8, maxMoves: 44, budget: 340, finalGames: 2500,
+    });
+  } catch (e) {
+    $('opt-body').innerHTML = `<div class="msg err">Optimiser failed: ${e.message}</div>`;
+    btn.disabled = false; btn.textContent = 'Optimise deck';
+    return;
+  }
+
+  const gain = res.afterScore - res.beforeScore;
+  const improved = gain > 0 && res.diff.length > 0;
+
+  const diffRows = res.diff.length ? res.diff.map((d) => `
+    <span class="${d.to > d.from ? 'up' : 'down'}">${d.to > d.from ? '+' : '−'}</span>
+    <span>${d.name}</span>
+    <span class="qty">${d.from} → ${d.to}</span>`).join('') : '';
+
+  $('opt-body').innerHTML = `
+    <div class="optbar">
+      <div>
+        <div class="optbig" style="color:${improved ? 'var(--good)' : 'var(--dim)'}">
+          ${res.beforeScore.toFixed(1)}% → ${res.afterScore.toFixed(1)}%
+        </div>
+        <div class="hint" style="margin:2px 0 0">
+          ${improved ? `+${gain.toFixed(1)} points, meta-weighted`
+    : 'no change worth making'}
+        </div>
+      </div>
+      ${improved ? '<button id="opt-apply" class="btn primary">Apply changes</button>' : ''}
+    </div>
+
+    ${res.note ? `<div class="msg warn">${res.note}</div>` : ''}
+    ${res.structuralNote ? `<div class="msg">${res.structuralNote}</div>` : ''}
+    ${pinned.size ? `<div class="msg ok">Pinned and left untouched:
+       ${[...pinned].join(', ')}</div>` : `<div class="msg warn">Nothing is pinned, so
+       every card was fair game. Pin the cards you are building around with the ○
+       button on each row.</div>`}
+
+    ${diffRows ? `<div class="difftbl">${diffRows}</div>` : ''}
+
+    <p class="hint">
+      The search is hill climbing over single-card swaps, scored on a fixed set of
+      random games so that a measured difference reflects the decklist rather than
+      the dice. The before and after above are then re-scored on a fresh, larger
+      sample — a change that only looked good on the search sample will not show a
+      gain here. It finds a local improvement on what you gave it, not the best
+      possible deck.
+    </p>`;
+
+  if (improved) {
+    $('opt-apply').onclick = () => {
+      deck = { ...res.after };
+      renderAll();
+      panel.classList.add('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Optimise deck';
 }
 
 /* ----------------------------------------------------------------- run --- */
