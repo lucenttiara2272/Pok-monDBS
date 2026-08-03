@@ -1,9 +1,8 @@
 name: tests
 
 on:
-  push:
-    branches: [main]
   pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -13,5 +12,4 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Run engine, parity and data tests
-        run: npm test
+      - run: npm test

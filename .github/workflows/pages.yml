@@ -15,27 +15,45 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      # never publish a build whose calibration check is failing
-      - run: npm test
+
+      # Never publish a build whose calibration check is failing.
+      - name: Test
+        run: npm test
+
+      # Stage only what the site needs. Uploading '.' would ship .git,
+      # node_modules and the Python reference alongside the site.
+      - name: Stage site
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r src data docs _site/
+          touch _site/.nojekyll
+
+      # enablement: true turns Pages on via the API if it isn't already, instead of
+      # failing with "Get Pages site failed ... Not Found". Needs the repo-level
+      # pages: write permission granted above.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
 
   deploy:
-    needs: test
+    needs: build
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
-        with:
-          path: '.'
       - id: deployment
         uses: actions/deploy-pages@v4

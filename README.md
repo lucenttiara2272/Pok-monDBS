@@ -33,6 +33,30 @@ Tests:
 npm test
 ```
 
+## Deploying to GitHub Pages
+
+Push to `main` and the `deploy` workflow builds and publishes the site.
+
+**First deploy only:** Pages has to exist before a workflow can publish to it. The
+workflow passes `enablement: true` to `actions/configure-pages`, which turns it on
+automatically — but that only works if Actions has write permission on the repo:
+
+> Settings → Actions → General → Workflow permissions → **Read and write permissions**
+
+If the deploy job fails with:
+
+```
+Get Pages site failed. Please verify that the repository has Pages enabled
+and configured to build using GitHub Actions. Error: Not Found
+```
+
+…then set it by hand instead:
+
+> Settings → Pages → Build and deployment → Source → **GitHub Actions**
+
+Then re-run the failed job from the Actions tab. Note that Pages on a **private** repo
+requires a paid plan; make the repo public if you're on Free.
+
 ## How the simulation works
 
 Two halves, deliberately asymmetric:
