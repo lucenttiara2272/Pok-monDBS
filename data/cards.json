@@ -262,6 +262,14 @@
       "imported": true
     },
     {
+      "id": "boxed-order",
+      "name": "Boxed Order",
+      "set": "TEF 143",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for up to 2 Item cards and put them into your hand. Your turn ends."
+    },
+    {
       "id": "buddy-buddy-poffin",
       "name": "Buddy-Buddy Poffin",
       "set": "TEF 144",
@@ -300,6 +308,14 @@
       }
     },
     {
+      "id": "energy-recycler",
+      "name": "Energy Recycler",
+      "set": "DRI 164",
+      "category": "item",
+      "max": 4,
+      "text": "Shuffle up to 5 basic Energy cards from your discard pile into your deck."
+    },
+    {
       "id": "energy-retrieval",
       "name": "Energy Retrieval",
       "set": "SVI 171",
@@ -323,6 +339,14 @@
       }
     },
     {
+      "id": "energy-swatter",
+      "name": "Energy Swatter",
+      "set": "POR 73",
+      "category": "item",
+      "max": 4,
+      "text": "Your opponent reveals their hand; choose an Energy card there and put it on the bottom of their deck."
+    },
+    {
       "id": "energy-switch",
       "name": "Energy Switch",
       "set": "SVI 173",
@@ -332,6 +356,38 @@
       "sim": {
         "effect": "moveEnergy"
       }
+    },
+    {
+      "id": "hand-trimmer",
+      "name": "Hand Trimmer",
+      "set": "TEF 150",
+      "category": "item",
+      "max": 4,
+      "text": "Each player discards from hand down to 5 cards; your opponent discards first."
+    },
+    {
+      "id": "hole-digging-shovel",
+      "name": "Hole-Digging Shovel",
+      "set": "POR 74",
+      "category": "item",
+      "max": 4,
+      "text": "Discard the top 2 cards of your deck."
+    },
+    {
+      "id": "lumiose-galette",
+      "name": "Lumiose Galette",
+      "set": "POR 78",
+      "category": "item",
+      "max": 4,
+      "text": "Heal 20 damage and remove a Special Condition from your Active Pokémon."
+    },
+    {
+      "id": "master-ball",
+      "name": "Master Ball",
+      "set": "TEF 153",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for a Pokémon and put it into your hand."
     },
     {
       "id": "buddy-buddy-poffin-x",
@@ -356,6 +412,46 @@
       }
     },
     {
+      "id": "pok-ball",
+      "name": "Poké Ball",
+      "set": "POR 80",
+      "category": "item",
+      "max": 4,
+      "text": "Flip a coin. If heads, search your deck for a Pokémon and put it into your hand."
+    },
+    {
+      "id": "pok-pad",
+      "name": "Poké Pad",
+      "set": "POR 81",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for a Pokémon that doesn't have a Rule Box and put it into your hand."
+    },
+    {
+      "id": "pok-mon-catcher",
+      "name": "Pokémon Catcher",
+      "set": "POR 82",
+      "category": "item",
+      "max": 4,
+      "text": "Flip a coin. If heads, switch in 1 of your opponent's Benched Pokémon to the Active Spot."
+    },
+    {
+      "id": "potion",
+      "name": "Potion",
+      "set": "POR 83",
+      "category": "item",
+      "max": 4,
+      "text": "Heal 30 damage from 1 of your Pokémon."
+    },
+    {
+      "id": "prime-catcher",
+      "name": "Prime Catcher",
+      "set": "TEF 157",
+      "category": "item",
+      "max": 4,
+      "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot. If you do, switch your Active Pokémon with a Benched one."
+    },
+    {
       "id": "rare-candy",
       "name": "Rare Candy",
       "set": "MEG 125",
@@ -365,6 +461,22 @@
       "sim": {
         "effect": "rareCandy"
       }
+    },
+    {
+      "id": "reboot-pod",
+      "name": "Reboot Pod",
+      "set": "TEF 158",
+      "category": "item",
+      "max": 4,
+      "text": "Attach a Basic Energy card from your discard pile to each of your Future Pokémon."
+    },
+    {
+      "id": "sacred-ash",
+      "name": "Sacred Ash",
+      "set": "DRI 168",
+      "category": "item",
+      "max": 4,
+      "text": "Shuffle 5 Pokémon from your discard pile into your deck."
     },
     {
       "id": "switch",
@@ -378,6 +490,46 @@
       }
     },
     {
+      "id": "team-rocket-s-bother-bot",
+      "name": "Team Rocket's Bother-Bot",
+      "set": "DRI 172",
+      "category": "item",
+      "max": 4,
+      "text": "Turn 1 of your opponent's Prize cards face up and choose a random card from their hand; you may have them switch those cards."
+    },
+    {
+      "id": "team-rocket-s-great-ball",
+      "name": "Team Rocket's Great Ball",
+      "set": "DRI 175",
+      "category": "item",
+      "max": 4,
+      "text": "Flip a coin. Heads: search your deck for an Evolution Team Rocket's Pokémon. Tails: a Basic one. Put it into your hand."
+    },
+    {
+      "id": "team-rocket-s-transceiver",
+      "name": "Team Rocket's Transceiver",
+      "set": "DRI 178",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for a Supporter card with \"Team Rocket\" in its name and put it into your hand."
+    },
+    {
+      "id": "team-rocket-s-venture-bomb",
+      "name": "Team Rocket's Venture Bomb",
+      "set": "DRI 179",
+      "category": "item",
+      "max": 4,
+      "text": "Flip a coin. Heads: put 2 damage counters on one of your opponent's Pokémon. Tails: on your own Active Pokémon."
+    },
+    {
+      "id": "tm-machine",
+      "name": "TM Machine",
+      "set": "DRI 181",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for up to 3 Pokémon Tool cards with \"Technical Machine\" in their name and put them into your hand."
+    },
+    {
       "id": "ultra-ball",
       "name": "Ultra Ball",
       "set": "MEG 131",
@@ -388,6 +540,14 @@
         "effect": "searchPokemon",
         "discardCost": 2
       }
+    },
+    {
+      "id": "wondrous-patch",
+      "name": "Wondrous Patch",
+      "set": "POR 117",
+      "category": "item",
+      "max": 4,
+      "text": "Attach a Basic [P] Energy from your discard pile to 1 of your Benched [P] Pokémon."
     },
     {
       "id": "sv6-80",
@@ -4576,12 +4736,92 @@
       "imported": true
     },
     {
+      "id": "forest-of-vitality",
+      "name": "Forest of Vitality",
+      "set": "POR 109",
+      "category": "stadium",
+      "max": 4,
+      "text": "Each player's [G] Pokémon can evolve into [G] Pokémon the turn they are played, except on their first turn."
+    },
+    {
       "id": "fossil-quarry",
       "name": "Fossil Quarry",
       "set": "PBL 76",
       "category": "stadium",
       "max": 4,
       "text": "Once during each player's turn, that player may search their deck for up to 2 Item cards with \"Antique\" in their name and put them onto their Bench."
+    },
+    {
+      "id": "full-metal-lab",
+      "name": "Full Metal Lab",
+      "set": "TEF 148",
+      "category": "stadium",
+      "max": 4,
+      "text": "[M] Pokémon (both players') take 30 less damage from the opponent's attacks."
+    },
+    {
+      "id": "granite-cave",
+      "name": "Granite Cave",
+      "set": "DRI 166",
+      "category": "stadium",
+      "max": 4,
+      "text": "Steven's Pokémon (both players') take 30 less damage from the opponent's attacks."
+    },
+    {
+      "id": "jamming-tower",
+      "name": "Jamming Tower",
+      "set": "DRI 243",
+      "category": "stadium",
+      "max": 4,
+      "text": "Pokémon Tools attached to each Pokémon (both players') have no effect."
+    },
+    {
+      "id": "levincia",
+      "name": "Levincia",
+      "set": "DRI 244",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may put up to 2 Basic [L] Energy from their discard pile into their hand."
+    },
+    {
+      "id": "lumiose-city",
+      "name": "Lumiose City",
+      "set": "POR 77",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may search their deck for a Basic Pokémon and bench it. If they do, their turn ends."
+    },
+    {
+      "id": "perilous-jungle",
+      "name": "Perilous Jungle",
+      "set": "TEF 156",
+      "category": "stadium",
+      "max": 4,
+      "text": "During Pokémon Checkup, put 2 more damage counters on each Poisoned non-[D] Pokémon."
+    },
+    {
+      "id": "spikemuth-gym",
+      "name": "Spikemuth Gym",
+      "set": "DRI 169",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may search their deck for a Marnie's Pokémon and put it into their hand."
+    },
+    {
+      "id": "team-rocket-s-factory",
+      "name": "Team Rocket's Factory",
+      "set": "DRI 173",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, if they played a \"Team Rocket\" Supporter this turn, they may draw 2 cards."
+    },
+    {
+      "id": "team-rocket-s-watchtower",
+      "name": "Team Rocket's Watchtower",
+      "set": "DRI 180",
+      "category": "stadium",
+      "max": 4,
+      "text": "[C] Pokémon in play (both yours and your opponent's) have no Abilities."
     },
     {
       "id": "me1-183",
@@ -4673,6 +4913,46 @@
       }
     },
     {
+      "id": "ciphermaniac-s-codebreaking",
+      "name": "Ciphermaniac's Codebreaking",
+      "set": "TEF 145",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for 2 cards, shuffle, then put those cards on top of your deck in any order."
+    },
+    {
+      "id": "emcee-s-hype",
+      "name": "Emcee's Hype",
+      "set": "DRI 163",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw 2 cards. If your opponent has 3 or fewer Prize cards remaining, draw 2 more."
+    },
+    {
+      "id": "eri",
+      "name": "Eri",
+      "set": "TEF 146",
+      "category": "supporter",
+      "max": 4,
+      "text": "Your opponent reveals their hand and you discard up to 2 Item cards you find there."
+    },
+    {
+      "id": "ethan-s-adventure",
+      "name": "Ethan's Adventure",
+      "set": "DRI 165",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for up to 3 in any combination of Ethan's Pokémon and Basic [R] Energy and put them into your hand."
+    },
+    {
+      "id": "explorer-s-guidance",
+      "name": "Explorer's Guidance",
+      "set": "TEF 147",
+      "category": "supporter",
+      "max": 4,
+      "text": "Look at the top 6 cards of your deck, put 2 into your hand and discard the rest."
+    },
+    {
       "id": "gladion-s-final-battle",
       "name": "Gladion's Final Battle",
       "set": "PBL 77",
@@ -4687,6 +4967,14 @@
       "category": "supporter",
       "max": 4,
       "text": "Discard up to 2 Pokémon without a Rule Box from your hand, and draw 3 cards for each card discarded."
+    },
+    {
+      "id": "jacinthe",
+      "name": "Jacinthe",
+      "set": "POR 75",
+      "category": "supporter",
+      "max": 4,
+      "text": "Heal 150 damage from 1 of your [P] Pokémon."
     },
     {
       "id": "janines-secret-art",
@@ -4761,12 +5049,76 @@
       "text": "Search your deck for up to 4 Basic [W] Energy and attach them to 1 of your Pokémon. Your turn ends."
     },
     {
+      "id": "morty-s-conviction",
+      "name": "Morty's Conviction",
+      "set": "TEF 155",
+      "category": "supporter",
+      "max": 4,
+      "text": "Discard a card from your hand, then draw a card for each of your opponent's Benched Pokémon."
+    },
+    {
+      "id": "naveen",
+      "name": "Naveen",
+      "set": "POR 79",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw cards until you have 5 in hand. Before drawing you may discard any number of cards from your hand."
+    },
+    {
+      "id": "rosa-s-encouragement",
+      "name": "Rosa's Encouragement",
+      "set": "POR 84",
+      "category": "supporter",
+      "max": 4,
+      "text": "Usable only if you have more Prize cards remaining than your opponent. Attach up to 2 Basic Energy from your discard pile to 1 of your Stage 2 Pokémon."
+    },
+    {
       "id": "rust-syndicate-grunt",
       "name": "Rust Syndicate Grunt",
       "set": "PBL 81",
       "category": "supporter",
       "max": 4,
       "text": "Usable only if any of your Pokémon were Knocked Out during your opponent's last turn. Discard an Energy from 1 of your opponent's Pokémon."
+    },
+    {
+      "id": "salvatore",
+      "name": "Salvatore",
+      "set": "TEF 160",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for a card with no Abilities that evolves from one of your Pokémon and put it onto that Pokémon, even one played this turn."
+    },
+    {
+      "id": "tarragon",
+      "name": "Tarragon",
+      "set": "POR 85",
+      "category": "supporter",
+      "max": 4,
+      "text": "Put up to 4 in any combination of [F] Pokémon and Basic [F] Energy from your discard pile into your hand."
+    },
+    {
+      "id": "team-rocket-s-archer",
+      "name": "Team Rocket's Archer",
+      "set": "DRI 170",
+      "category": "supporter",
+      "max": 4,
+      "text": "Usable only if one of your Team Rocket's Pokémon was Knocked Out last turn. Both players shuffle their hand into their deck; you draw 5, your opponent draws 3."
+    },
+    {
+      "id": "team-rocket-s-ariana",
+      "name": "Team Rocket's Ariana",
+      "set": "DRI 171",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw cards until you have 5 in hand, or 8 instead if all your Pokémon in play are Team Rocket's Pokémon."
+    },
+    {
+      "id": "team-rocket-s-giovanni",
+      "name": "Team Rocket's Giovanni",
+      "set": "DRI 174",
+      "category": "supporter",
+      "max": 4,
+      "text": "Switch your Active Team Rocket's Pokémon with a Benched one. If you do, switch in one of your opponent's Benched Pokémon."
     },
     {
       "id": "team-rockets-petrel",
@@ -4779,6 +5131,14 @@
         "effect": "searchTrainer",
         "isDraw": true
       }
+    },
+    {
+      "id": "team-rocket-s-proton",
+      "name": "Team Rocket's Proton",
+      "set": "DRI 177",
+      "category": "supporter",
+      "max": 4,
+      "text": "Usable on your first turn if you go first. Search your deck for up to 3 Basic Team Rocket's Pokémon and put them into your hand."
     },
     {
       "id": "me4-74",
@@ -4840,6 +5200,46 @@
       "imported": true
     },
     {
+      "id": "core-memory",
+      "name": "Core Memory",
+      "set": "POR 70",
+      "category": "tool",
+      "max": 4,
+      "text": "The Mega Zygarde ex this is attached to can use Geobuster [F][F][F][F] 350, which discards all Energy from this Pokémon."
+    },
+    {
+      "id": "cynthia-s-power-weight",
+      "name": "Cynthia's Power Weight",
+      "set": "DRI 162",
+      "category": "tool",
+      "max": 4,
+      "text": "The Cynthia's Pokémon this card is attached to gets +70 HP."
+    },
+    {
+      "id": "heavy-baton",
+      "name": "Heavy Baton",
+      "set": "TEF 151",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this is attached to has Retreat Cost exactly 4, is Active and is Knocked Out by an attack, move up to 3 Basic Energy from it to your Bench."
+    },
+    {
+      "id": "hero-s-cape",
+      "name": "Hero's Cape",
+      "set": "TEF 152",
+      "category": "tool",
+      "max": 4,
+      "text": "The Pokémon this card is attached to gets +100 HP."
+    },
+    {
+      "id": "maximum-belt",
+      "name": "Maximum Belt",
+      "set": "TEF 154",
+      "category": "tool",
+      "max": 4,
+      "text": "Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex."
+    },
+    {
       "id": "powerglass",
       "name": "Powerglass",
       "set": "SFA 63",
@@ -4861,6 +5261,14 @@
         "retaliate": 40,
         "requiresDark": true
       }
+    },
+    {
+      "id": "rescue-board",
+      "name": "Rescue Board",
+      "set": "TEF 159",
+      "category": "tool",
+      "max": 4,
+      "text": "The Retreat Cost of the Pokémon this is attached to is [C] less, or zero if its remaining HP is 30 or less."
     },
     {
       "id": "tremendous-bomb",

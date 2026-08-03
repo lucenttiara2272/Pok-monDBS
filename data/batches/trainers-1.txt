@@ -1,0 +1,66 @@
+# Meta priority batch 1 — Trainer staples from Destined Rivals, Perfect Order and
+# Temporal Forces. Trainers are the cards every archetype shares, so these unlock
+# the most decks per card transcribed.
+# Alternate-art reprints share a name and dedupe automatically.
+
+# ---- Destined Rivals (DRI) ----
+I|Arven's Sandwich|DRI 161|Heal 30 damage from your Active Pokémon, or 100 instead if it is an Arven's Pokémon.
+O|Cynthia's Power Weight|DRI 162|The Cynthia's Pokémon this card is attached to gets +70 HP.
+S|Emcee's Hype|DRI 163|Draw 2 cards. If your opponent has 3 or fewer Prize cards remaining, draw 2 more.
+I|Energy Recycler|DRI 164|Shuffle up to 5 basic Energy cards from your discard pile into your deck.
+S|Ethan's Adventure|DRI 165|Search your deck for up to 3 in any combination of Ethan's Pokémon and Basic [R] Energy and put them into your hand.
+D|Granite Cave|DRI 166|Steven's Pokémon (both players') take 30 less damage from the opponent's attacks.
+I|Sacred Ash|DRI 168|Shuffle 5 Pokémon from your discard pile into your deck.
+D|Spikemuth Gym|DRI 169|Once during each player's turn, that player may search their deck for a Marnie's Pokémon and put it into their hand.
+S|Team Rocket's Archer|DRI 170|Usable only if one of your Team Rocket's Pokémon was Knocked Out last turn. Both players shuffle their hand into their deck; you draw 5, your opponent draws 3.
+S|Team Rocket's Ariana|DRI 171|Draw cards until you have 5 in hand, or 8 instead if all your Pokémon in play are Team Rocket's Pokémon.
+I|Team Rocket's Bother-Bot|DRI 172|Turn 1 of your opponent's Prize cards face up and choose a random card from their hand; you may have them switch those cards.
+D|Team Rocket's Factory|DRI 173|Once during each player's turn, if they played a "Team Rocket" Supporter this turn, they may draw 2 cards.
+S|Team Rocket's Giovanni|DRI 174|Switch your Active Team Rocket's Pokémon with a Benched one. If you do, switch in one of your opponent's Benched Pokémon.
+I|Team Rocket's Great Ball|DRI 175|Flip a coin. Heads: search your deck for an Evolution Team Rocket's Pokémon. Tails: a Basic one. Put it into your hand.
+S|Team Rocket's Proton|DRI 177|Usable on your first turn if you go first. Search your deck for up to 3 Basic Team Rocket's Pokémon and put them into your hand.
+I|Team Rocket's Transceiver|DRI 178|Search your deck for a Supporter card with "Team Rocket" in its name and put it into your hand.
+I|Team Rocket's Venture Bomb|DRI 179|Flip a coin. Heads: put 2 damage counters on one of your opponent's Pokémon. Tails: on your own Active Pokémon.
+D|Team Rocket's Watchtower|DRI 180|[C] Pokémon in play (both yours and your opponent's) have no Abilities.
+I|TM Machine|DRI 181|Search your deck for up to 3 Pokémon Tool cards with "Technical Machine" in their name and put them into your hand.
+D|Jamming Tower|DRI 243|Pokémon Tools attached to each Pokémon (both players') have no effect.
+D|Levincia|DRI 244|Once during each player's turn, that player may put up to 2 Basic [L] Energy from their discard pile into their hand.
+
+# ---- Perfect Order (POR) ----
+I|Antique Jaw Fossil|POR 68|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Intimidating Jaw: while Active, your opponent's attacks do 30 less damage.
+I|Antique Sail Fossil|POR 69|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Protective Sail: prevent all effects of your opponent's Supporters done to this Pokémon.
+O|Core Memory|POR 70|The Mega Zygarde ex this is attached to can use Geobuster [F][F][F][F] 350, which discards all Energy from this Pokémon.
+I|Energy Swatter|POR 73|Your opponent reveals their hand; choose an Energy card there and put it on the bottom of their deck.
+I|Hole-Digging Shovel|POR 74|Discard the top 2 cards of your deck.
+S|Jacinthe|POR 75|Heal 150 damage from 1 of your [P] Pokémon.
+D|Lumiose City|POR 77|Once during each player's turn, that player may search their deck for a Basic Pokémon and bench it. If they do, their turn ends.
+I|Lumiose Galette|POR 78|Heal 20 damage and remove a Special Condition from your Active Pokémon.
+S|Naveen|POR 79|Draw cards until you have 5 in hand. Before drawing you may discard any number of cards from your hand.
+I|Poké Ball|POR 80|Flip a coin. If heads, search your deck for a Pokémon and put it into your hand.
+I|Poké Pad|POR 81|Search your deck for a Pokémon that doesn't have a Rule Box and put it into your hand.
+I|Pokémon Catcher|POR 82|Flip a coin. If heads, switch in 1 of your opponent's Benched Pokémon to the Active Spot.
+I|Potion|POR 83|Heal 30 damage from 1 of your Pokémon.
+S|Rosa's Encouragement|POR 84|Usable only if you have more Prize cards remaining than your opponent. Attach up to 2 Basic Energy from your discard pile to 1 of your Stage 2 Pokémon.
+S|Tarragon|POR 85|Put up to 4 in any combination of [F] Pokémon and Basic [F] Energy from your discard pile into your hand.
+D|Forest of Vitality|POR 109|Each player's [G] Pokémon can evolve into [G] Pokémon the turn they are played, except on their first turn.
+I|Wondrous Patch|POR 117|Attach a Basic [P] Energy from your discard pile to 1 of your Benched [P] Pokémon.
+
+# ---- Temporal Forces (TEF) ----
+I|Awakening Drum|TEF 141|Draw a card for each of your Ancient Pokémon in play.
+S|Bianca's Devotion|TEF 142|Heal all damage from 1 of your Pokémon that has 30 HP or less remaining.
+I|Boxed Order|TEF 143|Search your deck for up to 2 Item cards and put them into your hand. Your turn ends.
+S|Ciphermaniac's Codebreaking|TEF 145|Search your deck for 2 cards, shuffle, then put those cards on top of your deck in any order.
+S|Eri|TEF 146|Your opponent reveals their hand and you discard up to 2 Item cards you find there.
+S|Explorer's Guidance|TEF 147|Look at the top 6 cards of your deck, put 2 into your hand and discard the rest.
+D|Full Metal Lab|TEF 148|[M] Pokémon (both players') take 30 less damage from the opponent's attacks.
+I|Hand Trimmer|TEF 150|Each player discards from hand down to 5 cards; your opponent discards first.
+O|Heavy Baton|TEF 151|If the Pokémon this is attached to has Retreat Cost exactly 4, is Active and is Knocked Out by an attack, move up to 3 Basic Energy from it to your Bench.
+O|Hero's Cape|TEF 152|The Pokémon this card is attached to gets +100 HP.
+I|Master Ball|TEF 153|Search your deck for a Pokémon and put it into your hand.
+O|Maximum Belt|TEF 154|Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex.
+S|Morty's Conviction|TEF 155|Discard a card from your hand, then draw a card for each of your opponent's Benched Pokémon.
+D|Perilous Jungle|TEF 156|During Pokémon Checkup, put 2 more damage counters on each Poisoned non-[D] Pokémon.
+I|Prime Catcher|TEF 157|Switch in 1 of your opponent's Benched Pokémon to the Active Spot. If you do, switch your Active Pokémon with a Benched one.
+I|Reboot Pod|TEF 158|Attach a Basic Energy card from your discard pile to each of your Future Pokémon.
+O|Rescue Board|TEF 159|The Retreat Cost of the Pokémon this is attached to is [C] less, or zero if its remaining HP is 30 or less.
+S|Salvatore|TEF 160|Search your deck for a card with no Abilities that evolves from one of your Pokémon and put it onto that Pokémon, even one played this turn.

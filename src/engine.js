@@ -126,9 +126,31 @@ function chooseAttack(S, mon, opp, bonusDamage, rng) {
   }
   return best;
 }
-export const DRAW_SUPPORTERS = new Set([
-  "Lillie's Determination", 'Judge', 'Jett', "Team Rocket's Petrel",
-]);
+/**
+ * Supporters whose job is refilling your hand. Counted for deck-shape advice and
+ * played by the turn policy.
+ *
+ * `draw` is how many cards the sim gives you. Cards with conditional or
+ * board-dependent draw (Morty's Conviction scales off the opponent's Bench,
+ * Emcee's Hype off their Prize count) are approximated with a typical value —
+ * good enough to judge whether a deck can function, not a substitute for the
+ * real card. `shuffle` means hand goes back into the deck first.
+ */
+export const DRAW_SUPPORTER_INFO = {
+  "Lillie's Determination": { draw: 6, shuffle: true, firstTurnDraw: 8 },
+  'Judge': { draw: 4, shuffle: true },
+  "Team Rocket's Archer": { draw: 5, shuffle: true },
+  "Team Rocket's Ariana": { drawTo: 5 },
+  'Naveen': { drawTo: 5 },
+  "Emcee's Hype": { draw: 3 },
+  "Explorer's Guidance": { draw: 2 },
+  "Morty's Conviction": { draw: 3 },
+  'Gwynn': { draw: 3 },
+  "Team Rocket's Petrel": { search: true },
+  'Jett': { draw: 0 },
+};
+
+export const DRAW_SUPPORTERS = new Set(Object.keys(DRAW_SUPPORTER_INFO));
 
 /**
  * A deck spec is { cardName: { n, kind, ...simFields } }.
@@ -334,18 +356,38 @@ class Side {
 
 /* --------------------------------------------------------- turn policy --- */
 
+// Best first: biggest refill, then partial draw, then tutors.
+const DRAW_ORDER = Object.entries(DRAW_SUPPORTER_INFO)
+  .sort((a, b) => {
+    const score = (d) => (d.shuffle ? 100 : 0) + (d.draw || 0) + (d.drawTo || 0)
+      + (d.search ? 1 : 0);
+    return score(b[1]) - score(a[1]);
+  })
+  .map(([name]) => name);
+
 function playDrawSupporter(S) {
   if (S.supporterUsed) return false;
-  for (const s of ["Lillie's Determination", 'Judge', "Team Rocket's Petrel", 'Jett']) {
+  for (const s of DRAW_ORDER) {
     if (!S.has(s)) continue;
+    const info = DRAW_SUPPORTER_INFO[s];
     S.play(s);
     S.supporterUsed = true;
-    if (s === "Lillie's Determination") {
+
+    if (info.shuffle) {
       S.deck.push(...S.hand); S.hand = []; shuffle(S.rng, S.deck);
-      S.draw(S.prizes.length === 6 ? 8 : 6);
-    } else if (s === 'Judge') {
-      S.deck.push(...S.hand); S.hand = []; shuffle(S.rng, S.deck); S.draw(4);
-    } else if (s === "Team Rocket's Petrel") {
+      S.draw(info.firstTurnDraw && S.prizes.length === 6 ? info.firstTurnDraw : info.draw);
+      return true;
+    }
+    if (info.drawTo) {
+      S.draw(Math.max(0, info.drawTo - S.hand.length));
+      return true;
+    }
+    if (!info.search) {
+      if (info.draw) S.draw(info.draw);
+      else S.dead_draw_turns = (S.dead_draw_turns || 0) + 1;
+      return true;
+    }
+    if (s === "Team Rocket's Petrel") {
       const A = S.active;
       let want;
       if (![S.active, ...S.bench].some((m) => m && S.attackers.has(m.name))) want = 'Ultra Ball';
@@ -358,7 +400,6 @@ function playDrawSupporter(S) {
         S.searchDeck((c) => c === 'Ultra Ball', 1);
       }
     }
-    // Jett draws 1 per opponent Mega Evolution ex in play — none in this gauntlet.
     return true;
   }
   return false;
