@@ -12,7 +12,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { runGauntlet, playGame, makeRng, deckSize } from '../src/engine.js';
+import { runGauntlet, playGame, makeRng, deckSize, validateDeck } from '../src/engine.js';
 import { makeCardIndex, buildSpec } from '../src/decks.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
@@ -111,4 +111,72 @@ test('Dark Bell Confuses your own non-Darkness attacker too', () => {
   assert.ok(dk > cl,
     `the Darkness attacker should beat the identical Colorless one because Dark Bell ` +
     `cannot Confuse it (${dk.toFixed(1)}% vs ${cl.toFixed(1)}%)`);
+});
+
+test('the engine attaches Energy of any type, not just Darkness', () => {
+  // Regression: Energy attachment was hardcoded to Darkness, so a Fire/Psychic
+  // deck never attached anything and silently scored 0% in every matchup.
+  const fire = {
+    id: 'blaze-ex', name: 'Blaze ex', set: 'PBL 1', category: 'pokemon', type: 'R',
+    max: 4, text: 'Inferno [R][R] 200.',
+    sim: { stage: 0, basic: true, hp: 280, prizes: 2, retreat: 1, role: 'attacker',
+      attacks: [{ name: 'Inferno', cost: { R: 2 }, damage: 200 }] },
+  };
+  const idx = makeCardIndex({ cards: [...cards.cards, fire] });
+  const spec = buildSpec({
+    'Blaze ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 2, 'Fire Energy': 14,
+    'Ultra Ball': 4, 'Night Stretcher': 3, 'Energy Search': 4, 'Switch': 2,
+    "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
+    'Buddy-Buddy Poffin': 4, 'Master Ball': 2, 'Poké Pad': 2, 'Prime Catcher': 2,
+    'Energy Retrieval': 2, 'Judge': 2,
+  }, idx);
+
+  const rng = makeRng(4);
+  let attacked = 0;
+  for (let i = 0; i < 300; i++) {
+    if (playGame(spec, meta.decks[0], rng).S.firstAttackTurn !== null) attacked++;
+  }
+  assert.ok(attacked > 150,
+    `a Fire deck must actually attack; only ${attacked}/300 games saw an attack`);
+
+  const r = runGauntlet(spec, meta.decks, { games: 600, seed: 4 });
+  assert.ok(r.weighted > 10,
+    `a 280 HP / 200 damage Fire attacker should not score ${r.weighted.toFixed(1)}%`);
+});
+
+test('an Energy cost is paid with the right type', () => {
+  // Same shell, but the Energy in the deck does not match the attack cost.
+  const fire = {
+    id: 'blaze2-ex', name: 'Blaze2 ex', set: 'PBL 1', category: 'pokemon', type: 'R',
+    max: 4, text: 'Inferno [R][R] 200.',
+    sim: { stage: 0, basic: true, hp: 280, prizes: 2, retreat: 1, role: 'attacker',
+      attacks: [{ name: 'Inferno', cost: { R: 2 }, damage: 200 }] },
+  };
+  const idx = makeCardIndex({ cards: [...cards.cards, fire] });
+  const shell = (energy) => buildSpec({
+    'Blaze2 ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 2, [energy]: 14,
+    'Ultra Ball': 4, 'Night Stretcher': 3, 'Energy Search': 4, 'Switch': 2,
+    "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
+    'Buddy-Buddy Poffin': 4, 'Master Ball': 2, 'Poké Pad': 2, 'Prime Catcher': 2,
+    'Energy Retrieval': 2, 'Judge': 2,
+  }, idx);
+
+  const right = runGauntlet(shell('Fire Energy'), meta.decks, { games: 600, seed: 6 });
+  const wrong = runGauntlet(shell('Water Energy'), meta.decks, { games: 600, seed: 6 });
+  assert.ok(right.weighted > wrong.weighted + 5,
+    `[R][R] must not be payable with Water Energy `
+    + `(Fire ${right.weighted.toFixed(1)}% vs Water ${wrong.weighted.toFixed(1)}%)`);
+});
+
+test('evolution decks are flagged as under-played rather than silently wrong', () => {
+  const spec = buildSpec({
+    'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2, 'Fezandipiti ex': 1,
+    'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4, 'Night Stretcher': 3,
+    'Switch': 2, "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
+    'Poké Pad': 2, 'Master Ball': 2, 'Fire Energy': 8, 'Psychic Energy': 8,
+  }, INDEX);
+  const v = validateDeck(spec);
+  assert.equal(v.ok, true, v.errors.join('; '));
+  assert.ok(v.warnings.some((w) => /Stage 2/.test(w) && /lower bound/.test(w)),
+    `expected a warning that Stage 2 decks are under-played, got: ${v.warnings.join(' | ')}`);
 });

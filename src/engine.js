@@ -71,16 +71,59 @@ function attackerNames(spec) {
     .map(([n]) => n));
 }
 
-/** Can `mon` pay `cost`? [C] accepts any Energy; typed symbols need that type. */
-function canPay(mon, cost) {
+/**
+ * Can `mon` pay `cost`? [C] accepts any Energy; typed symbols need that type.
+ * `symOf` maps an attached Energy card name to the symbol it provides, so the
+ * engine works for any deck rather than assuming Darkness.
+ */
+function canPay(mon, cost, symOf) {
   const total = mon.energy.length;
   let need = 0;
   for (const [sym, n] of Object.entries(cost)) {
     need += n;
     if (sym === 'C') continue;
-    if (mon.energy.filter((e) => e === sym).length < n) return false;
+    if (mon.energy.filter((e) => symOf(e) === sym).length < n) return false;
   }
   return total >= need;
+}
+
+/**
+ * What this Pokemon still needs to use its *best* attack — not its cheapest.
+ *
+ * Targeting the cheapest attack is wrong and was a real regression: Mega Darkrai
+ * would stop at 2 Energy because Dusk Raid was payable, and never reach the 3 it
+ * needs for Abyss Eye, which is the whole point of the deck. Knockout effects
+ * outrank damage; ties go to the cheaper cost.
+ */
+function energyShortfall(S, mon) {
+  const card = S.card(mon.name);
+  if (!card || !Array.isArray(card.attacks) || !card.attacks.length) return null;
+  let best = null;
+  for (const atk of card.attacks) {
+    const cost = atk.cost || {};
+    const total = Object.values(cost).reduce((a, b) => a + b, 0);
+    const missing = [];
+    for (const [sym, n] of Object.entries(cost)) {
+      if (sym === 'C') continue;
+      const have = mon.energy.filter((e) => S.symOf(e) === sym).length;
+      for (let i = have; i < n; i++) missing.push(sym);
+    }
+    const shortAny = Math.max(0, total - mon.energy.length - missing.length);
+    const gap = missing.length + shortAny;
+    // A Special-Condition knockout is worth fuelling toward, because we can turn
+    // the condition on ourselves (Dark Bell). A knockout that needs the opponent
+    // to be sitting on an exact damage total is situational, so it must not drive
+    // Energy attachment — otherwise Mega Absol stops at 2 Energy waiting for a
+    // coincidence and never powers its 200-damage attack.
+    const value = atk.koIfSpecialCondition ? 9999
+      : (typeof atk.koIfExactDamage === 'number') ? 0
+        : (atk.damage || 0) + (atk.bonusIfOwnBenchDamaged || 0);
+    if (best === null || value > best.value
+        || (value === best.value && total < best.total)) {
+      best = { gap, missing, shortAny, value, total };
+    }
+  }
+  return best;
 }
 
 /**
@@ -97,7 +140,7 @@ function chooseAttack(S, mon, opp, bonusDamage, rng) {
 
   let best = null;
   for (const atk of card.attacks) {
-    if (!canPay(mon, atk.cost || {})) continue;
+    if (!canPay(mon, atk.cost || {}, (e) => S.symOf(e))) continue;
 
     if (atk.koIfSpecialCondition) {
       // Dark Bell only Confuses non-[D] Pokémon, so a Darkness opponent is immune
@@ -111,6 +154,26 @@ function chooseAttack(S, mon, opp, bonusDamage, rng) {
     if (typeof atk.koIfExactDamage === 'number') {
       if (opp.dmgOnActive !== atk.koIfExactDamage) continue;
       return { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name };
+    }
+
+    // Night Joker and friends: use the best attack from a matching Benched
+    // Pokemon instead of a printed damage number.
+    if (atk.copiesBenchedAttack) {
+      let borrowed = 0;
+      for (const m of S.bench) {
+        if (!m.name.includes(atk.copiesBenchedAttack)) continue;
+        for (const b of (S.card(m.name).attacks || [])) {
+          if (b.copiesBenchedAttack) continue;          // no recursion
+          borrowed = Math.max(borrowed, b.damage || 0);
+        }
+      }
+      if (borrowed > 0) {
+        const d = borrowed + bonusDamage;
+        if (!best || d > best.dmg) {
+          best = { ko: false, dmg: d, reason: 'attack', name: atk.name };
+        }
+      }
+      continue;
     }
 
     let dmg = (atk.damage || 0) + bonusDamage;
@@ -208,6 +271,34 @@ export function validateDeck(spec) {
       `Only ${basics} Pokémon — mulligan rate ${(mulliganRate(spec) * 100).toFixed(1)}%. ` +
       'Competitive lists normally run 12–16.');
   }
+  // An attacker whose attacks are all effect-text does nothing in the sim. Say so
+  // rather than reporting a confident win rate built on a Pokemon that never swings.
+  const inert = Object.entries(spec).filter(([, d]) =>
+    d.kind === 'pokemon' && Array.isArray(d.attacks) && d.attacks.length
+    && d.attacks.every((a) => !a.damage && !a.koIfSpecialCondition
+      && typeof a.koIfExactDamage !== 'number' && !a.copiesBenchedAttack));
+  if (inert.length && size === 60) {
+    warnings.push(
+      `${inert.map(([n]) => n).join(', ')} ${inert.length > 1 ? 'have' : 'has'} no `
+      + 'damage the simulator understands — their attacks are effect text that is not '
+      + 'modelled, so they will not attack. Treat the win rate as a lower bound.');
+  }
+
+  // The play policy was built around Basic attackers. It evolves when it draws the
+  // pieces, but it does not search out evolutions or model Abilities that
+  // accelerate Energy, so evolution decks are played worse than a human would.
+  const evoAttackers = Object.entries(spec).filter(([, d]) =>
+    d.kind === 'pokemon' && d.stage >= 1 && Array.isArray(d.attacks) && d.attacks.length);
+  if (evoAttackers.length && size === 60) {
+    const worst = Math.max(...evoAttackers.map(([, d]) => d.stage));
+    warnings.push(
+      `Main attackers are Stage ${worst}. The simulator evolves when it draws the `
+      + 'pieces but does not tutor for evolutions or model Ability-based Energy '
+      + 'acceleration, so it plays these decks worse than you would. Read the win '
+      + 'rate as a lower bound, and compare evolution decks against each other '
+      + 'rather than against Basic-attacker decks.');
+  }
+
   const draw = Object.entries(spec)
     .filter(([n]) => DRAW_SUPPORTERS.has(n)).reduce((a, [, d]) => a + d.n, 0);
   if (draw < 4) {
@@ -328,7 +419,24 @@ class Side {
     return got;
   }
 
-  darkCount(m) { return m.energy.filter((e) => e === DARK).length; }
+  /** Energy card name -> the symbol it provides. */
+  symOf(cardName) {
+    const d = this.spec[cardName];
+    return (d && d.provides) || 'C';
+  }
+
+  /** Energy cards in hand, best first for what `mon` still needs. */
+  energyInHand(mon) {
+    const names = this.hand.filter((c) => this.spec[c] && this.spec[c].kind === 'energy');
+    if (!mon) return names;
+    const want = energyShortfall(this, mon);
+    if (!want || !want.missing.length) return names;
+    return names.sort((a, b) =>
+      (want.missing.includes(this.symOf(b)) ? 1 : 0)
+      - (want.missing.includes(this.symOf(a)) ? 1 : 0));
+  }
+
+  darkCount(m) { return m.energy.filter((e) => this.symOf(e) === DARK).length; }
   totalEnergy(m) { return m.energy.length; }
   benchHasDamage() { return this.bench.some((m) => m.dmg > 0); }
 
@@ -563,8 +671,7 @@ function userTurn(S, opp, turn) {
       } else if (S.totalEnergy(S.active) >= (S.card(S.active.name).retreat || 0)) {
         const cost = S.card(S.active.name).retreat || 0;
         for (let i = 0; i < cost; i++) {
-          const e = S.active.energy.pop();
-          S.discard.push(e === DARK ? 'Darkness Energy' : 'Spiky Energy');
+          S.discard.push(S.active.energy.pop());
         }
         moved = true;
       }
@@ -587,67 +694,72 @@ function userTurn(S, opp, turn) {
 
   const A = S.active;
   const isAttacker = S.attackers.has(A.name);
-  let dk = S.darkCount(A);
+  const needsEnergy = (m) => {
+    const sf = energyShortfall(S, m);
+    return sf ? sf.gap > 0 : false;
+  };
 
   // Supporter that enables an attack
-  if (!S.supporterUsed && isAttacker && dk < 3 && S.has("Janine's Secret Art")
-      && S.deck.filter((c) => c === 'Darkness Energy').length >= 1) {
+  if (!S.supporterUsed && isAttacker && needsEnergy(A) && S.has("Janine's Secret Art")
+      && S.deck.filter((c) => S.spec[c] && S.symOf(c) === DARK
+        && S.spec[c].kind === 'energy').length >= 1) {
     S.play("Janine's Secret Art");
     S.supporterUsed = true;
     const got = S.searchDeck((c) => c === 'Darkness Energy', 2);
     for (const g of got) S.hand.splice(S.hand.indexOf(g), 1);
     if (got.length) {
-      A.energy.push(DARK);
+      A.energy.push(got[0]);
       A.poisoned = true;                      // our own Active gets Poisoned
       if (got.length > 1) {
         const tgt = S.bench.find((m) => S.attackers.has(m.name)) || A;
-        tgt.energy.push(DARK);
+        tgt.energy.push(got[1]);
       }
     }
-    dk = S.darkCount(A);
   }
 
   // items to reach the attack threshold
-  if (isAttacker && dk < 3) {
+  if (isAttacker && needsEnergy(A)) {
+    const want = energyShortfall(S, A);
+    const wanted = (c) => S.spec[c] && S.spec[c].kind === 'energy' && S.spec[c].basicEnergy
+      && (!want.missing.length || want.missing.includes(S.symOf(c)));
+
     if (S.has('Energy Search')) {
       S.play('Energy Search');
-      S.searchDeck((c) => c === 'Darkness Energy', 1);
-    }
-    if (S.has('Energy Retrieval')
-        && S.discard.filter((c) => c === 'Darkness Energy').length >= 1) {
-      S.play('Energy Retrieval');
-      const avail = Math.min(2, S.discard.filter((c) => c === 'Darkness Energy').length);
-      for (let i = 0; i < avail; i++) {
-        S.discard.splice(S.discard.indexOf('Darkness Energy'), 1);
-        S.hand.push('Darkness Energy');
+      if (!S.searchDeck(wanted, 1).length) {
+        S.searchDeck((c) => S.spec[c] && S.spec[c].kind === 'energy'
+          && S.spec[c].basicEnergy, 1);
       }
     }
-    while (S.has('Energy Switch') && S.darkCount(A) < 3) {
-      const src = S.bench.find((m) => S.darkCount(m) > 0);
+    if (S.has('Energy Retrieval') && S.discard.some(wanted)) {
+      S.play('Energy Retrieval');
+      for (let i = 0; i < 2; i++) {
+        const j = S.discard.findIndex(wanted);
+        if (j < 0) break;
+        S.hand.push(S.discard.splice(j, 1)[0]);
+      }
+    }
+    while (S.has('Energy Switch') && needsEnergy(A)) {
+      const src = S.bench.find((m) => m.energy.length > 0);
       if (!src) break;
       S.play('Energy Switch');
-      src.energy.splice(src.energy.indexOf(DARK), 1);
-      A.energy.push(DARK);
+      A.energy.push(src.energy.pop());
     }
-    dk = S.darkCount(A);
   }
 
   // attach for turn — fuel the Active, then pre-load the backup
   if (!S.energyAttached) {
     let target = A;
-    if (isAttacker && dk >= 3) {
-      target = S.bench.find((m) => S.attackers.has(m.name) && S.darkCount(m) < 3) || A;
+    if (isAttacker && !needsEnergy(A)) {
+      target = S.bench.find((m) => S.attackers.has(m.name) && needsEnergy(m)) || A;
     } else if (!isAttacker) {
       target = S.bench.find((m) => S.attackers.has(m.name)) || A;
     }
-    if (S.has('Darkness Energy')) {
-      S.hand.splice(S.hand.indexOf('Darkness Energy'), 1);
-      target.energy.push(DARK); S.energyAttached = true;
-    } else if (S.has('Spiky Energy')) {
-      S.hand.splice(S.hand.indexOf('Spiky Energy'), 1);
-      target.energy.push('C'); S.energyAttached = true;
+    const pick = S.energyInHand(target)[0];
+    if (pick) {
+      S.hand.splice(S.hand.indexOf(pick), 1);
+      target.energy.push(pick);
+      S.energyAttached = true;
     }
-    dk = S.darkCount(A);
   }
 
   // tools
@@ -660,7 +772,6 @@ function userTurn(S, opp, turn) {
   // spare Supporter -> dig
   if (!S.supporterUsed && S.hand.length <= 4) {
     playDrawSupporter(S);
-    dk = S.darkCount(A);
   }
 
   const tot = S.totalEnergy(A);
@@ -701,9 +812,10 @@ function userTurn(S, opp, turn) {
     S.firstAttackTurn = turn;
   }
 
-  if (A.tool === 'Powerglass' && S.discard.includes('Darkness Energy')) {
-    S.discard.splice(S.discard.indexOf('Darkness Energy'), 1);
-    A.energy.push(DARK);
+  if (A.tool === 'Powerglass') {
+    const j = S.discard.findIndex((c) => S.spec[c] && S.spec[c].kind === 'energy'
+      && S.spec[c].basicEnergy);
+    if (j >= 0) A.energy.push(S.discard.splice(j, 1)[0]);
   }
   if (A.poisoned) A.dmg += 10;
 
@@ -759,8 +871,7 @@ export function playGame(spec, meta, rng) {
     /* ---- opponent turn ---- */
     if (turn >= setup && turn >= opp.offlineUntil) {
       if (meta.hammers > 0 && S.active && S.active.energy.length && rng() < meta.hammers) {
-        S.active.energy.pop();
-        S.discard.push('Darkness Energy');
+        S.discard.push(S.active.energy.pop());
       }
 
       const whiffed = rng() < (meta.whiff ?? 0.15);
@@ -770,7 +881,10 @@ export function playGame(spec, meta, rng) {
       if (S.active && dmg > 0) {
         let retaliate = 0;
         if (S.active.tool === 'Punk Helmet') retaliate += 40;
-        if (S.active.energy.includes('C')) retaliate += 20;
+        for (const e of S.active.energy) {
+          const d = S.spec[e];
+          if (d && d.retaliate) retaliate += d.retaliate;
+        }
         if (retaliate) {
           opp.hpLeft -= retaliate;
           opp.dmgOnActive = meta.hp - opp.hpLeft;

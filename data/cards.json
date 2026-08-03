@@ -2872,6 +2872,40 @@
       }
     },
     {
+      "id": "cubone",
+      "name": "Cubone",
+      "set": "JTG 76",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Stampede [C] 10. Light Punch [C][C] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Stampede",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Light Punch",
+            "cost": {
+              "C": 2
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
       "id": "dhelmise",
       "name": "Dhelmise",
       "set": "PBL 39",
@@ -3138,6 +3172,41 @@
       }
     },
     {
+      "id": "grimmsnarl",
+      "name": "Grimmsnarl",
+      "set": "JTG 73",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Shadowy Knot [P] 50. Mega Punch [P][C] 120. Shadowy Knot does 50 damage for each [C] in your opponent's Active Pokémon's Retreat Cost.",
+      "sim": {
+        "stage": 2,
+        "hp": 170,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Morgrem",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Shadowy Knot",
+            "cost": {
+              "P": 1
+            },
+            "damage": 50
+          },
+          {
+            "name": "Mega Punch",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
       "id": "grubbin",
       "name": "Grubbin",
       "set": "PBL 2",
@@ -3200,6 +3269,104 @@
       }
     },
     {
+      "id": "hop-s-sandaconda",
+      "name": "Hop's Sandaconda",
+      "set": "JTG 87",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Rumble [F][C] 30. Break Ground [F][C][C] 140. Rumble stops the Defending Pokémon retreating. Break Ground also does 20 to each of your Benched Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Hop's Silicobra",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rumble",
+            "cost": {
+              "F": 1,
+              "C": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Break Ground",
+            "cost": {
+              "F": 1,
+              "C": 2
+            },
+            "damage": 140
+          }
+        ]
+      }
+    },
+    {
+      "id": "hop-s-silicobra",
+      "name": "Hop's Silicobra",
+      "set": "JTG 86",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Turf Maker [C]. Gnaw [F][C] 20. Turf Maker: search your deck for a Stadium card and put it into your hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Turf Maker",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Gnaw",
+            "cost": {
+              "F": 1,
+              "C": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "impidimp",
+      "name": "Impidimp",
+      "set": "JTG 71",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Gentle Slap [P] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Gentle Slap",
+            "cost": {
+              "P": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
       "id": "inkay",
       "name": "Inkay",
       "set": "PBL 51",
@@ -3229,6 +3396,117 @@
               "D": 2
             },
             "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "iono-s-bellibolt-ex",
+      "name": "Iono's Bellibolt ex",
+      "set": "JTG 53",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Thunderous Bolt [L][L][L][C] 230. Ability Electric Streamer: as often as you like, attach a Basic [L] Energy from hand to 1 of your Iono's Pokémon. Thunderous Bolt prevents attacking next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 280,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Iono's Tadbulb",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Thunderous Bolt",
+            "cost": {
+              "L": 3,
+              "C": 1
+            },
+            "damage": 230
+          }
+        ]
+      }
+    },
+    {
+      "id": "iono-s-kilowattrel",
+      "name": "Iono's Kilowattrel",
+      "set": "JTG 55",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Mach Bolt [L][C][C] 70. Ability Flashing Draw: discard a Basic [L] Energy from this Pokémon to draw until you have 6 cards in hand.",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Iono's Wattrel",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mach Bolt",
+            "cost": {
+              "L": 1,
+              "C": 2
+            },
+            "damage": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "iono-s-tadbulb",
+      "name": "Iono's Tadbulb",
+      "set": "JTG 52",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Tiny Charge [L][C] 30",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Tiny Charge",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "iono-s-wattrel",
+      "name": "Iono's Wattrel",
+      "set": "JTG 54",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Quick Attack [L] 10. Quick Attack: flip a coin; heads does 20 more.",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Quick Attack",
+            "cost": {
+              "L": 1
+            },
+            "damage": 10
           }
         ]
       }
@@ -3264,6 +3542,76 @@
               "C": 1
             },
             "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "klawf",
+      "name": "Klawf",
+      "set": "JTG 90",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Snipping Pincers [C][C]. Hammer In [F][C][C] 100. Snipping Pincers: flip 2 coins; discard an Energy from your opponent's Active Pokémon for each heads.",
+      "sim": {
+        "stage": 0,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 3,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Snipping Pincers",
+            "cost": {
+              "C": 2
+            },
+            "damage": 0
+          },
+          {
+            "name": "Hammer In",
+            "cost": {
+              "F": 1,
+              "C": 2
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "koffing",
+      "name": "Koffing",
+      "set": "JTG 91",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Tackle [C] 10. Suffocating Gas [D][C] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Tackle",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Suffocating Gas",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 20
           }
         ]
       }
@@ -3331,6 +3679,149 @@
       }
     },
     {
+      "id": "larvitar",
+      "name": "Larvitar",
+      "set": "JTG 80",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Crunch [C][C] 20. Crunch: flip a coin; on heads discard an Energy from your opponent's Active Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Crunch",
+            "cost": {
+              "C": 2
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "lillie-s-clefairy-ex",
+      "name": "Lillie's Clefairy ex",
+      "set": "JTG 56",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Full Moon Rondo [P][C] 20. Ability Fairy Zone: your opponent's [N] Pokémon are Weak to [P]. Full Moon Rondo does 20 more for each Benched Pokémon in play.",
+      "sim": {
+        "stage": 0,
+        "hp": 190,
+        "prizes": 2,
+        "retreat": 1,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Full Moon Rondo",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "lillie-s-comfey",
+      "name": "Lillie's Comfey",
+      "set": "JTG 68",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Inviting Flowers [C]. Fade Out [P] 30. Inviting Flowers: search your deck for any number of Basic Lillie's Pokémon and bench them. Fade Out returns this Pokémon and attached cards to your hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Inviting Flowers",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Fade Out",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "lillie-s-cutiefly",
+      "name": "Lillie's Cutiefly",
+      "set": "JTG 66",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Hold Still [P]. Hold Still heals 10 damage from this Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 30,
+        "prizes": 1,
+        "retreat": 0,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Hold Still",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "lillie-s-ribombee",
+      "name": "Lillie's Ribombee",
+      "set": "JTG 67",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Magical Shot [P] 50. Ability Inviting Wink: when played to evolve, your opponent reveals their hand and you bench any Basic Pokémon found there.",
+      "sim": {
+        "stage": 1,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 0,
+        "evolvesFrom": "Lillie's Cutiefly",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Magical Shot",
+            "cost": {
+              "P": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
       "id": "litwick",
       "name": "Litwick",
       "set": "PBL 36",
@@ -3353,6 +3844,33 @@
               "P": 1
             },
             "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "lokix",
+      "name": "Lokix",
+      "set": "JTG 100",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Low Sweep [D] 60",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Nymble",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Low Sweep",
+            "cost": {
+              "D": 1
+            },
+            "damage": 60
           }
         ]
       }
@@ -3388,6 +3906,33 @@
               "C": 1
             },
             "damage": 140
+          }
+        ]
+      }
+    },
+    {
+      "id": "lycanroc",
+      "name": "Lycanroc",
+      "set": "JTG 85",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Clamping Fangs [C][C][C] 40. Ability Spike-Clad: when played to evolve, attach up to 2 Spiky Energy from your discard pile to this Pokémon. Clamping Fangs does 40 more for each damage counter on the Defending Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Rockruff",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Clamping Fangs",
+            "cost": {
+              "C": 3
+            },
+            "damage": 40
           }
         ]
       }
@@ -3456,6 +4001,33 @@
               "D": 1
             },
             "damage": 130
+          }
+        ]
+      }
+    },
+    {
+      "id": "mamoswine-ex",
+      "name": "Mamoswine ex",
+      "set": "JTG 79",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Rumbling March [F][F] 180. Ability Mammoth Hauler: once during your turn, search your deck for a Pokémon and put it into your hand. Rumbling March does 40 more for each Stage 2 on your Bench.",
+      "sim": {
+        "stage": 2,
+        "hp": 340,
+        "prizes": 2,
+        "retreat": 4,
+        "evolvesFrom": "Piloswine",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rumbling March",
+            "cost": {
+              "F": 2
+            },
+            "damage": 180
           }
         ]
       }
@@ -3871,6 +4443,137 @@
       }
     },
     {
+      "id": "metagross",
+      "name": "Metagross",
+      "set": "JTG 63",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Wrack Down [P] 60. Conjoined Beams [P][P] 130. Conjoined Beams does 150 more if Beldum and Metang are on your Bench.",
+      "sim": {
+        "stage": 2,
+        "hp": 170,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Metang",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Wrack Down",
+            "cost": {
+              "P": 1
+            },
+            "damage": 60
+          },
+          {
+            "name": "Conjoined Beams",
+            "cost": {
+              "P": 2
+            },
+            "damage": 130
+          }
+        ]
+      }
+    },
+    {
+      "id": "metang",
+      "name": "Metang",
+      "set": "JTG 62",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Psypunch [P] 30. Zen Headbutt [P][P] 50",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Beldum",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Psypunch",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Zen Headbutt",
+            "cost": {
+              "P": 2
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "milcery",
+      "name": "Milcery",
+      "set": "JTG 74",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Tackle [C] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 50,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Tackle",
+            "cost": {
+              "C": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "mimikyu-ex",
+      "name": "Mimikyu ex",
+      "set": "JTG 69",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Mischievous Hands [P][C]. Ghostly Trip [P][P][C] 120. Mischievous Hands puts 3 damage counters on each of 2 of your opponent's Pokémon. Ghostly Trip Confuses the Defending Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 190,
+        "prizes": 2,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mischievous Hands",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Ghostly Trip",
+            "cost": {
+              "P": 2,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
       "id": "miraidon",
       "name": "Miraidon",
       "set": "PBL 28",
@@ -3893,6 +4596,41 @@
               "L": 2
             },
             "damage": 90
+          }
+        ]
+      }
+    },
+    {
+      "id": "morgrem",
+      "name": "Morgrem",
+      "set": "JTG 72",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Light Punch [P] 30. Smash Kick [P][C] 50",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Impidimp",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Light Punch",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Smash Kick",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 50
           }
         ]
       }
@@ -3932,6 +4670,41 @@
       }
     },
     {
+      "id": "mr-mime",
+      "name": "Mr. Mime",
+      "set": "JTG 58",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Mimic [P]. Psy Bolt [P][C] 40. Mimic shuffles your hand into your deck and draws a card for each card in your opponent's hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mimic",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Psy Bolt",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
       "id": "munkidori",
       "name": "Munkidori",
       "set": "TWM 95",
@@ -3948,6 +4721,124 @@
         "retreat": 1,
         "role": "support",
         "stage": 0
+      }
+    },
+    {
+      "id": "n-s-purrloin",
+      "name": "N's Purrloin",
+      "set": "JTG 96",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Thieving Swipe [D][C] 30. Thieving Swipe: your opponent reveals their hand and you put a card from it on the bottom of their deck.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Thieving Swipe",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "n-s-sigilyph",
+      "name": "N's Sigilyph",
+      "set": "JTG 64",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Psychic Sphere [P] 20. Victory Symbol [P][C][C]. Victory Symbol: if used with exactly 1 Prize card remaining, you win the game.",
+      "sim": {
+        "stage": 0,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Psychic Sphere",
+            "cost": {
+              "P": 1
+            },
+            "damage": 20
+          },
+          {
+            "name": "Victory Symbol",
+            "cost": {
+              "P": 1,
+              "C": 2
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "n-s-zoroark-ex",
+      "name": "N's Zoroark ex",
+      "set": "JTG 98",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Night Joker [D][D]. Ability Trade: discard a card from your hand to draw 2. Night Joker uses an attack from one of your Benched N's Pokémon. DARKNESS TYPE — cannot be Confused by Dark Bell.",
+      "sim": {
+        "stage": 1,
+        "hp": 280,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "N's Zorua",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Night Joker",
+            "cost": {
+              "D": 2
+            },
+            "damage": 0,
+            "copiesBenchedAttack": "N's"
+          }
+        ]
+      }
+    },
+    {
+      "id": "n-s-zorua",
+      "name": "N's Zorua",
+      "set": "JTG 97",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Scratch [D] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Scratch",
+            "cost": {
+              "D": 1
+            },
+            "damage": 20
+          }
+        ]
       }
     },
     {
@@ -3986,6 +4877,40 @@
       }
     },
     {
+      "id": "oricorio",
+      "name": "Oricorio",
+      "set": "JTG 65",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Call for Family [C]. Spooky Shot [P] 20. Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Call for Family",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Spooky Shot",
+            "cost": {
+              "P": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
       "id": "palafin",
       "name": "Palafin",
       "set": "PBL 22",
@@ -4013,6 +4938,138 @@
       }
     },
     {
+      "id": "paldean-clodsire-ex",
+      "name": "Paldean Clodsire ex",
+      "set": "JTG 94",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Poison Ring [D][C] 60. Giga Impact [D][D][C] 220. Poison Ring Poisons the Defending Pokémon and stops it retreating. Giga Impact prevents attacking next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 280,
+        "prizes": 2,
+        "retreat": 3,
+        "evolvesFrom": "Paldean Wooper",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Poison Ring",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 60
+          },
+          {
+            "name": "Giga Impact",
+            "cost": {
+              "D": 2,
+              "C": 1
+            },
+            "damage": 220
+          }
+        ]
+      }
+    },
+    {
+      "id": "paldean-wooper",
+      "name": "Paldean Wooper",
+      "set": "JTG 93",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Trip Over [D] 10. Trip Over: flip a coin; heads does 20 more.",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Trip Over",
+            "cost": {
+              "D": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "pancham",
+      "name": "Pancham",
+      "set": "JTG 83",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Corkscrew Punch [C] 10. Focus Fist [C][C][C] 50. Focus Fist: flip a coin; tails does nothing.",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "P",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Corkscrew Punch",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Focus Fist",
+            "cost": {
+              "C": 3
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "pangoro",
+      "name": "Pangoro",
+      "set": "JTG 99",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Torment [D] 30. Power Tackle [D][D][C] 160. Torment blocks one of the Defending Pokémon's attacks next turn. Power Tackle prevents attacking next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Pancham",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Torment",
+            "cost": {
+              "D": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Power Tackle",
+            "cost": {
+              "D": 2,
+              "C": 1
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
       "id": "pikipek",
       "name": "Pikipek",
       "set": "PBL 66",
@@ -4035,6 +5092,40 @@
               "C": 1
             },
             "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "piloswine",
+      "name": "Piloswine",
+      "set": "JTG 78",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Strength [C] 20. Impaling Tusk [F][F] 50",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Swinub",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Strength",
+            "cost": {
+              "C": 1
+            },
+            "damage": 20
+          },
+          {
+            "name": "Impaling Tusk",
+            "cost": {
+              "F": 2
+            },
+            "damage": 50
           }
         ]
       }
@@ -4149,6 +5240,33 @@
       }
     },
     {
+      "id": "pupitar",
+      "name": "Pupitar",
+      "set": "JTG 81",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Take Down [C][C] 60. Take Down also does 20 damage to itself.",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Larvitar",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Take Down",
+            "cost": {
+              "C": 2
+            },
+            "damage": 60
+          }
+        ]
+      }
+    },
+    {
       "id": "rampardos-ex",
       "name": "Rampardos ex",
       "set": "PBL 45",
@@ -4176,6 +5294,33 @@
       }
     },
     {
+      "id": "regirock",
+      "name": "Regirock",
+      "set": "JTG 82",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Breaching Lariat [F][F][F] 120. Ability Rock Armor: with any Energy attached, this Pokémon takes 30 less damage. Breaching Lariat ignores Resistance.",
+      "sim": {
+        "stage": 0,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 3,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Breaching Lariat",
+            "cost": {
+              "F": 3
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
       "id": "relicanth",
       "name": "Relicanth",
       "set": "PBL 17",
@@ -4198,6 +5343,40 @@
               "C": 1
             },
             "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "rockruff",
+      "name": "Rockruff",
+      "set": "JTG 84",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Dig It Up [C]. Stampede [C][C] 20. Dig It Up: look at the top card of your deck and you may discard it.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Dig It Up",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Stampede",
+            "cost": {
+              "C": 2
+            },
+            "damage": 20
           }
         ]
       }
@@ -4495,6 +5674,68 @@
       }
     },
     {
+      "id": "swinub",
+      "name": "Swinub",
+      "set": "JTG 77",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Call for Family [C]. Lunge Out [F] 10. Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Call for Family",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Lunge Out",
+            "cost": {
+              "F": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "tapu-koko-ex",
+      "name": "Tapu Koko ex",
+      "set": "JTG 51",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Linked Lightning [L][C] 60. Linked Lightning does 20 more for each of your Benched Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 200,
+        "prizes": 2,
+        "retreat": 0,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Linked Lightning",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 60
+          }
+        ]
+      }
+    },
+    {
       "id": "thievul",
       "name": "Thievul",
       "set": "PBL 54",
@@ -4522,6 +5763,61 @@
             "name": "Sharp Fang",
             "cost": {
               "D": 1,
+              "C": 2
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "toedscool",
+      "name": "Toedscool",
+      "set": "JTG 88",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Spray Fluid [C] 10",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Spray Fluid",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "toedscruel",
+      "name": "Toedscruel",
+      "set": "JTG 89",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Mud Shot [F][C][C] 80. Ability Secret Forest Path: while this is Benched, your Active Pokémon's Retreat Cost is [C][C] less.",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Toedscool",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mud Shot",
+            "cost": {
+              "F": 1,
               "C": 2
             },
             "damage": 80
@@ -4641,6 +5937,34 @@
               "C": 2
             },
             "damage": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "tyranitar",
+      "name": "Tyranitar",
+      "set": "JTG 95",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Cracking Stomp [D][C] 150. Ability Daunting Gaze: while this is Active, your opponent can't play Item cards. Cracking Stomp discards the top 2 cards of your opponent's deck.",
+      "sim": {
+        "stage": 2,
+        "hp": 190,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Pupitar",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Cracking Stomp",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 150
           }
         ]
       }
@@ -4778,6 +6102,41 @@
               "W": 5
             },
             "damage": 270
+          }
+        ]
+      }
+    },
+    {
+      "id": "weezing",
+      "name": "Weezing",
+      "set": "JTG 92",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Pervasive Gas [D] 30. Crazy Blast [D][C] 50. Pervasive Gas Confuses the Defending Pokémon. Crazy Blast does 120 more if Pervasive Gas was used last turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Koffing",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Pervasive Gas",
+            "cost": {
+              "D": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Crazy Blast",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 50
           }
         ]
       }

@@ -1,0 +1,51 @@
+# Journey Together (JTG) Pokémon #51–100. Contains the N's Zoroark line (2nd in the
+# meta at 8.0%), Lillie's Clefairy ex (2.2%), Marnie's Grimmsnarl line and the
+# Metagross line.
+
+P|Tapu Koko ex|JTG 51|L|200|0||0|F|Linked Lightning:LC:60|Linked Lightning does 20 more for each of your Benched Pokémon.
+P|Iono's Tadbulb|JTG 52|L|60|0||2|F|Tiny Charge:LC:30|
+P|Iono's Bellibolt ex|JTG 53|L|280|1|Iono's Tadbulb|2|F|Thunderous Bolt:LLLC:230|Ability Electric Streamer: as often as you like, attach a Basic [L] Energy from hand to 1 of your Iono's Pokémon. Thunderous Bolt prevents attacking next turn.
+P|Iono's Wattrel|JTG 54|L|60|0||1|L|Quick Attack:L:10|Quick Attack: flip a coin; heads does 20 more.
+P|Iono's Kilowattrel|JTG 55|L|120|1|Iono's Wattrel|1|L|Mach Bolt:LCC:70|Ability Flashing Draw: discard a Basic [L] Energy from this Pokémon to draw until you have 6 cards in hand.
+P|Lillie's Clefairy ex|JTG 56|P|190|0||1|M|Full Moon Rondo:PC:20|Ability Fairy Zone: your opponent's [N] Pokémon are Weak to [P]. Full Moon Rondo does 20 more for each Benched Pokémon in play.
+P|Alolan Marowak|JTG 57|P|120|1|Cubone|2|D|Retaliate:P:30;Will-O-Wisp:PCC:90|Retaliate does 90 more if any of your Pokémon were Knocked Out last turn.
+P|Mr. Mime|JTG 58|P|90|0||1|D|Mimic:P:;Psy Bolt:PC:40|Mimic shuffles your hand into your deck and draws a card for each card in your opponent's hand.
+P|Beldum|JTG 61|P|60|0||1|D|Spinning Attack:P:10;Beam:PP:30|
+P|Metang|JTG 62|P|100|1|Beldum|2|D|Psypunch:P:30;Zen Headbutt:PP:50|
+P|Metagross|JTG 63|P|170|2|Metang|3|D|Wrack Down:P:60;Conjoined Beams:PP:130|Conjoined Beams does 150 more if Beldum and Metang are on your Bench.
+P|N's Sigilyph|JTG 64|P|110|0||1|L|Psychic Sphere:P:20;Victory Symbol:PCC:|Victory Symbol: if used with exactly 1 Prize card remaining, you win the game.
+P|Oricorio|JTG 65|P|80|0||1|D|Call for Family:C:;Spooky Shot:P:20|Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.
+P|Lillie's Cutiefly|JTG 66|P|30|0||0|M|Hold Still:P:|Hold Still heals 10 damage from this Pokémon.
+P|Lillie's Ribombee|JTG 67|P|70|1|Lillie's Cutiefly|0|M|Magical Shot:P:50|Ability Inviting Wink: when played to evolve, your opponent reveals their hand and you bench any Basic Pokémon found there.
+P|Lillie's Comfey|JTG 68|P|70|0||1|M|Inviting Flowers:C:;Fade Out:P:30|Inviting Flowers: search your deck for any number of Basic Lillie's Pokémon and bench them. Fade Out returns this Pokémon and attached cards to your hand.
+P|Mimikyu ex|JTG 69|P|190|0||1|D|Mischievous Hands:PC:;Ghostly Trip:PPC:120|Mischievous Hands puts 3 damage counters on each of 2 of your opponent's Pokémon. Ghostly Trip Confuses the Defending Pokémon.
+P|Impidimp|JTG 71|P|70|0||1|M|Gentle Slap:P:20|
+P|Morgrem|JTG 72|P|90|1|Impidimp|1|M|Light Punch:P:30;Smash Kick:PC:50|
+P|Grimmsnarl|JTG 73|P|170|2|Morgrem|2|M|Shadowy Knot:P:50;Mega Punch:PC:120|Shadowy Knot does 50 damage for each [C] in your opponent's Active Pokémon's Retreat Cost.
+P|Milcery|JTG 74|P|50|0||1|M|Tackle:C:20|
+P|Alcremie ex|JTG 75|P|250|1|Milcery|2|M|Whipped Shot:PCC:160|Ability Confectionary Gift: once during your turn, heal 30 damage from 1 of your Pokémon.
+P|Cubone|JTG 76|F|70|0||1|G|Stampede:C:10;Light Punch:CC:20|
+P|Swinub|JTG 77|F|70|0||2|G|Call for Family:C:;Lunge Out:F:10|Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.
+P|Piloswine|JTG 78|F|100|1|Swinub|3|G|Strength:C:20;Impaling Tusk:FF:50|
+P|Mamoswine ex|JTG 79|F|340|2|Piloswine|4|G|Rumbling March:FF:180|Ability Mammoth Hauler: once during your turn, search your deck for a Pokémon and put it into your hand. Rumbling March does 40 more for each Stage 2 on your Bench.
+P|Larvitar|JTG 80|F|70|0||1|G|Crunch:CC:20|Crunch: flip a coin; on heads discard an Energy from your opponent's Active Pokémon.
+P|Pupitar|JTG 81|F|90|1|Larvitar|1|G|Take Down:CC:60|Take Down also does 20 damage to itself.
+P|Regirock|JTG 82|F|130|0||3|G|Breaching Lariat:FFF:120|Ability Rock Armor: with any Energy attached, this Pokémon takes 30 less damage. Breaching Lariat ignores Resistance.
+P|Pancham|JTG 83|F|60|0||1|P|Corkscrew Punch:C:10;Focus Fist:CCC:50|Focus Fist: flip a coin; tails does nothing.
+P|Rockruff|JTG 84|F|70|0||1|G|Dig It Up:C:;Stampede:CC:20|Dig It Up: look at the top card of your deck and you may discard it.
+P|Lycanroc|JTG 85|F|120|1|Rockruff|2|G|Clamping Fangs:CCC:40|Ability Spike-Clad: when played to evolve, attach up to 2 Spiky Energy from your discard pile to this Pokémon. Clamping Fangs does 40 more for each damage counter on the Defending Pokémon.
+P|Hop's Silicobra|JTG 86|F|80|0||2|G|Turf Maker:C:;Gnaw:FC:20|Turf Maker: search your deck for a Stadium card and put it into your hand.
+P|Hop's Sandaconda|JTG 87|F|140|1|Hop's Silicobra|3|G|Rumble:FC:30;Break Ground:FCC:140|Rumble stops the Defending Pokémon retreating. Break Ground also does 20 to each of your Benched Pokémon.
+P|Toedscool|JTG 88|F|60|0||1|G|Spray Fluid:C:10|
+P|Toedscruel|JTG 89|F|130|1|Toedscool|2|G|Mud Shot:FCC:80|Ability Secret Forest Path: while this is Benched, your Active Pokémon's Retreat Cost is [C][C] less.
+P|Klawf|JTG 90|F|120|0||3|G|Snipping Pincers:CC:;Hammer In:FCC:100|Snipping Pincers: flip 2 coins; discard an Energy from your opponent's Active Pokémon for each heads.
+P|Koffing|JTG 91|D|60|0||1|F|Tackle:C:10;Suffocating Gas:DC:20|
+P|Weezing|JTG 92|D|130|1|Koffing|2|F|Pervasive Gas:D:30;Crazy Blast:DC:50|Pervasive Gas Confuses the Defending Pokémon. Crazy Blast does 120 more if Pervasive Gas was used last turn.
+P|Paldean Wooper|JTG 93|D|60|0||1|F|Trip Over:D:10|Trip Over: flip a coin; heads does 20 more.
+P|Paldean Clodsire ex|JTG 94|D|280|1|Paldean Wooper|3|F|Poison Ring:DC:60;Giga Impact:DDC:220|Poison Ring Poisons the Defending Pokémon and stops it retreating. Giga Impact prevents attacking next turn.
+P|Tyranitar|JTG 95|D|190|2|Pupitar|3|G|Cracking Stomp:DC:150|Ability Daunting Gaze: while this is Active, your opponent can't play Item cards. Cracking Stomp discards the top 2 cards of your opponent's deck.
+P|N's Purrloin|JTG 96|D|70|0||1|G|Thieving Swipe:DC:30|Thieving Swipe: your opponent reveals their hand and you put a card from it on the bottom of their deck.
+P|N's Zorua|JTG 97|D|70|0||1|G|Scratch:D:20|
+P|N's Zoroark ex|JTG 98|D|280|1|N's Zorua|2|G|Night Joker:DD:|Ability Trade: discard a card from your hand to draw 2. Night Joker uses an attack from one of your Benched N's Pokémon. DARKNESS TYPE — cannot be Confused by Dark Bell.
+P|Pangoro|JTG 99|D|140|1|Pancham|3|G|Torment:D:30;Power Tackle:DDC:160|Torment blocks one of the Defending Pokémon's attacks next turn. Power Tackle prevents attacking next turn.
+P|Lokix|JTG 100|D|120|1|Nymble|1|G|Low Sweep:D:60|
