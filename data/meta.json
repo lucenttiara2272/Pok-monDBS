@@ -1,0 +1,87 @@
+{
+  "_comment": "Opponent archetypes. Shares from limitlesstcg.com/decks (Standard, August 2026). `confidence: high` means the attacker is modelled card-exact; `medium` means the archetype is approximated from its role and results.",
+  "source": "https://limitlesstcg.com/decks",
+  "asOf": "2026-08",
+  "decks": [
+    {
+      "id": "dragapult",
+      "name": "Dragapult ex",
+      "share": 49.22,
+      "hp": 320, "prizes": 2, "dmg": 200, "spread": 60,
+      "setupMu": 2.3, "setupSd": 0.7, "whiff": 0.20, "rebuild": 1.6,
+      "darkType": false, "grass": false, "hammers": 0.55, "stage": 2,
+      "confidence": "high",
+      "note": "Card-exact: 320 HP Stage 2, Phantom Dive [R][P] 200 plus 6 damage counters spread, no Weakness, Tera prevents damage while Benched. Reference list runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."
+    },
+    {
+      "id": "zoroark",
+      "name": "N's Zoroark ex",
+      "share": 8.02,
+      "hp": 280, "prizes": 2, "dmg": 200, "spread": 0,
+      "setupMu": 2.0, "setupSd": 0.6, "whiff": 0.14, "rebuild": 1.1,
+      "darkType": true, "grass": false, "hammers": 0.0, "stage": 1,
+      "confidence": "high",
+      "note": "Card-exact: 280 HP Darkness Stage 1, Night Joker copies a Benched N's Pokémon attack. Being a Darkness Pokémon it cannot be Confused by Dark Bell, so the Abyss Eye auto-KO line does not function in this matchup."
+    },
+    {
+      "id": "crustle",
+      "name": "Crustle Rock Inn",
+      "share": 6.14,
+      "hp": 140, "prizes": 1, "dmg": 140, "spread": 20,
+      "setupMu": 2.0, "setupSd": 0.6, "whiff": 0.16, "rebuild": 0.8,
+      "darkType": false, "grass": false, "hammers": 0.0, "stage": 1,
+      "confidence": "medium",
+      "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker — the worst prize-trade shape to face with 3-prize Megas."
+    },
+    {
+      "id": "slowking",
+      "name": "Slowking Inspiration",
+      "share": 5.59,
+      "hp": 160, "prizes": 1, "dmg": 130, "spread": 0,
+      "setupMu": 2.2, "setupSd": 0.7, "whiff": 0.18, "rebuild": 0.9,
+      "darkType": false, "grass": false, "hammers": 0.35, "stage": 1,
+      "confidence": "medium",
+      "note": "Single-prize control. Moderate damage plus light resource denial."
+    },
+    {
+      "id": "hydrapple",
+      "name": "Hydrapple ex",
+      "share": 4.84,
+      "hp": 280, "prizes": 2, "dmg": 180, "spread": 0,
+      "setupMu": 2.6, "setupSd": 0.8, "whiff": 0.22, "rebuild": 1.7,
+      "darkType": false, "grass": true, "hammers": 0.0, "stage": 2,
+      "confidence": "medium",
+      "note": "Grass attacker. Both Megas are Grass-Weak, so its damage is doubled against them."
+    },
+    {
+      "id": "alakazam",
+      "name": "Alakazam Powerful Hand",
+      "share": 4.75,
+      "hp": 180, "prizes": 1, "dmg": 160, "spread": 0,
+      "setupMu": 2.1, "setupSd": 0.6, "whiff": 0.18, "rebuild": 1.4,
+      "darkType": false, "grass": false, "hammers": 0.0, "stage": 2,
+      "confidence": "medium",
+      "note": "Single-prize Psychic attacker scaling off hand size."
+    },
+    {
+      "id": "raging-bolt",
+      "name": "Raging Bolt ex",
+      "share": 3.51,
+      "hp": 240, "prizes": 2, "dmg": 220, "spread": 0,
+      "setupMu": 2.4, "setupSd": 0.8, "whiff": 0.16, "rebuild": 0.9,
+      "darkType": false, "grass": false, "hammers": 0.0, "stage": 0,
+      "confidence": "medium",
+      "note": "Big Dragon Basic. High damage, no Weakness interaction either way."
+    },
+    {
+      "id": "ogerpon",
+      "name": "Ogerpon Box",
+      "share": 3.18,
+      "hp": 210, "prizes": 2, "dmg": 160, "spread": 0,
+      "setupMu": 2.0, "setupSd": 0.6, "whiff": 0.13, "rebuild": 0.7,
+      "darkType": false, "grass": true, "hammers": 0.0, "stage": 0,
+      "confidence": "medium",
+      "note": "Toolbox with Grass attackers — doubled damage into both Megas."
+    }
+  ]
+}

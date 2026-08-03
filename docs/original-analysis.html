@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mega Darkrai ex - Deck Analysis</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161b22; --panel2:#1c2129; --line:#2b323c;
+  --tx:#e6edf3; --dim:#8b949e; --acc:#a371f7; --good:#3fb950; --bad:#f85149;
+  --warn:#d29922; --blue:#58a6ff;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);
+  font:15px/1.55 ui-sans-serif,-apple-system,"Segoe UI",Roboto,sans-serif}
+.wrap{max-width:1120px;margin:0 auto;padding:28px 20px 80px}
+h1{font-size:26px;margin:0 0 4px;letter-spacing:-.3px}
+h2{font-size:17px;margin:34px 0 12px;letter-spacing:-.2px;
+  display:flex;align-items:center;gap:9px}
+h2::before{content:"";width:3px;height:16px;background:var(--acc);border-radius:2px}
+.sub{color:var(--dim);font-size:13.5px;margin-bottom:20px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(3,1fr)}
+.g2{grid-template-columns:repeat(2,1fr)}
+.g4{grid-template-columns:repeat(4,1fr)}
+@media(max-width:820px){.g3,.g2,.g4{grid-template-columns:1fr}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+.kpi .n{font-size:30px;font-weight:660;letter-spacing:-1px;line-height:1.1}
+.kpi .l{font-size:11.5px;color:var(--dim);text-transform:uppercase;
+  letter-spacing:.6px;margin-top:6px}
+.kpi .d{font-size:12px;margin-top:7px;color:var(--dim)}
+.bad{color:var(--bad)}.good{color:var(--good)}.warn{color:var(--warn)}.blue{color:var(--blue)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th{text-align:left;color:var(--dim);font-weight:560;font-size:11.5px;
+  text-transform:uppercase;letter-spacing:.5px;padding:8px 10px;
+  border-bottom:1px solid var(--line);cursor:pointer;user-select:none;white-space:nowrap}
+th:hover{color:var(--tx)}
+td{padding:9px 10px;border-bottom:1px solid #21262d;vertical-align:middle}
+tr:last-child td{border-bottom:none}
+.bar{position:relative;height:20px;background:#21262d;border-radius:4px;
+  min-width:120px;overflow:hidden}
+.bar span{position:absolute;left:0;top:0;bottom:0;border-radius:4px}
+.bar b{position:absolute;right:6px;top:0;line-height:20px;font-size:11.5px;
+  font-weight:600;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.7)}
+.tag{display:inline-block;font-size:10.5px;padding:2px 7px;border-radius:20px;
+  border:1px solid var(--line);color:var(--dim);white-space:nowrap}
+.tag.hi{border-color:#2ea04326;background:#2ea04322;color:var(--good)}
+.tag.md{border-color:#d2992226;background:#d2992222;color:var(--warn)}
+.note{font-size:12.5px;color:var(--dim);line-height:1.5}
+.callout{border-left:3px solid var(--acc);background:var(--panel2);
+  padding:13px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.callout.bad{border-left-color:var(--bad)}
+.callout.good{border-left-color:var(--good)}
+.callout.warn{border-left-color:var(--warn)}
+.callout b{color:var(--tx)}
+.ladder{display:flex;flex-direction:column;gap:7px}
+.rung{display:grid;grid-template-columns:190px 1fr 62px;gap:12px;align-items:center;
+  font-size:13px}
+.rung .track{height:26px;background:#21262d;border-radius:5px;position:relative}
+.rung .fill{position:absolute;left:0;top:0;bottom:0;border-radius:5px;
+  background:linear-gradient(90deg,#6e40c9,#a371f7)}
+.rung.ctrl .fill{background:linear-gradient(90deg,#1f6feb,#58a6ff)}
+.rung.cur .fill{background:linear-gradient(90deg,#8b2a24,#f85149)}
+.rung .v{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.delta{font-size:11px;color:var(--good);margin-left:6px}
+.dl{display:grid;grid-template-columns:repeat(2,1fr);gap:0 26px;font-size:13px}
+@media(max-width:700px){.dl{grid-template-columns:1fr}}
+.dl .row{display:flex;justify-content:space-between;padding:4px 0;
+  border-bottom:1px solid #21262d}
+.dl .row.add{color:var(--good)}
+.dl .row.cut{color:var(--bad);text-decoration:line-through;opacity:.65}
+.dl h4{margin:14px 0 6px;font-size:11.5px;color:var(--dim);
+  text-transform:uppercase;letter-spacing:.6px}
+.pill{display:inline-flex;gap:6px;align-items:center;background:var(--panel2);
+  border:1px solid var(--line);border-radius:20px;padding:4px 12px;font-size:12px;
+  margin:0 6px 6px 0}
+details{margin-top:10px}
+summary{cursor:pointer;color:var(--dim);font-size:12.5px;padding:6px 0}
+summary:hover{color:var(--tx)}
+code{background:#21262d;padding:1px 5px;border-radius:4px;font-size:12px}
+.foot{margin-top:40px;padding-top:18px;border-top:1px solid var(--line);
+  font-size:12px;color:var(--dim)}
+a{color:var(--blue)}
+</style></head><body><div class="wrap">
+
+<h1>Mega Darkrai ex &middot; Abyss Eye</h1>
+<div class="sub">Simulated against the top 8 Standard archetypes (Reg H/I/J), weighted by
+Limitless meta share &middot; 6,000 games per matchup &middot; August 2026</div>
+
+<div id="kpis" class="grid g4"></div>
+
+<div id="verdict"></div>
+
+<h2>Build ladder &mdash; where the win rate actually comes from</h2>
+<div class="panel"><div class="ladder" id="ladder"></div>
+<div class="note" style="margin-top:14px">
+CONTROL is a deliberately ordinary shell run through the same engine. It lands at
+<b>52.8%</b>, which is what tells you the simulator is calibrated &mdash; every other
+number here is only meaningful because of that.
+</div></div>
+
+<h2>Matchup breakdown</h2>
+<div class="sub" style="margin-bottom:12px">Click any column header to sort.
+Bars show win rate; the meta share column is how often you actually face it.</div>
+<div class="panel"><table id="mt"><thead><tr>
+<th data-k="name">Deck</th>
+<th data-k="share">Meta share</th>
+<th data-k="cur">As sent</th>
+<th data-k="opt">Optimised</th>
+<th data-k="delta">Change</th>
+<th data-k="conf">Model</th>
+</tr></thead><tbody></tbody></table>
+<div id="mnotes"></div></div>
+
+<h2>Why you lose</h2>
+<div class="grid g2" id="loss"></div>
+
+<h2>Consistency</h2>
+<div class="grid g3" id="cons"></div>
+
+<h2>The three structural problems</h2>
+<div id="struct"></div>
+
+<h2>Recommended 60</h2>
+<div class="panel"><div id="deck"></div></div>
+
+<div class="foot" id="foot"></div>
+</div>
+
+<script>
+const D = {"meta": {"Dragapult ex": {"share": 49.22, "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination.", "confidence": "high", "dark": false, "grass": false}, "N's Zoroark ex": {"share": 8.02, "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup.", "confidence": "high", "dark": true, "grass": false}, "Crustle Rock Inn": {"share": 6.14, "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas.", "confidence": "medium", "dark": false, "grass": false}, "Slowking Inspiration": {"share": 5.59, "note": "Single-prize control. Modelled with moderate damage plus light resource denial.", "confidence": "medium", "dark": false, "grass": false}, "Hydrapple ex": {"share": 4.84, "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup.", "confidence": "medium", "dark": false, "grass": true}, "Alakazam Powerful Hand": {"share": 4.75, "note": "Single-prize Psychic attacker scaling off hand size.", "confidence": "medium", "dark": false, "grass": false}, "Raging Bolt ex": {"share": 3.51, "note": "Big Dragon Basic. High damage, no Weakness interaction either way.", "confidence": "medium", "dark": false, "grass": false}, "Ogerpon Box": {"share": 3.18, "note": "Toolbox with Grass attackers - doubled damage into your Megas.", "confidence": "medium", "dark": false, "grass": true}}, "builds": [{"label": "CONTROL", "desc": "calibration probe - an ordinary shell", "weighted": 52.78535679374389, "matchups": {"Dragapult ex": {"winrate": 64.41666666666667, "avg_prizes": 4.139333333333333, "never_attacked": 15.233333333333333, "reasons": {"prizes": 3865, "prize_race": 1714, "bench_out": 421}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 13.566666666666666, "avg_prizes": 2.1513333333333335, "never_attacked": 10.25, "reasons": {"prize_race": 4627, "prizes": 814, "bench_out": 559}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 66.01666666666667, "avg_prizes": 4.616333333333333, "never_attacked": 10.616666666666667, "reasons": {"prize_race": 1611, "prizes": 3961, "bench_out": 428}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 43.36666666666667, "avg_prizes": 4.010166666666667, "never_attacked": 8.066666666666666, "reasons": {"bench_out": 279, "prize_race": 3119, "prizes": 2602}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 24.933333333333334, "avg_prizes": 2.165, "never_attacked": 16.6, "reasons": {"prize_race": 3889, "bench_out": 615, "prizes": 1496}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 56.88333333333333, "avg_prizes": 4.260666666666666, "never_attacked": 8.816666666666666, "reasons": {"prizes": 3413, "prize_race": 2236, "bench_out": 351}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 38.95, "avg_prizes": 3.337, "never_attacked": 11.016666666666667, "reasons": {"prize_race": 3157, "prizes": 2337, "bench_out": 506}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 14.216666666666667, "avg_prizes": 1.698, "never_attacked": 27.166666666666668, "reasons": {"prizes": 853, "prize_race": 4229, "bench_out": 918}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 60, "mulligan": 16.28440500237541, "pokemon": 13, "energy": 14, "trainers": 33, "draw_supporters": 8}, "decklist": {"Mega Darkrai ex": 4, "Munkidori": 5, "Fezandipiti ex": 4, "Darkness Energy": 14, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Energy Search": 2, "Energy Switch": 2, "Switch": 2, "Powerglass": 1, "Lillie's Determination": 8, "Boss's Orders": 3, "Janine's Secret Art": 2, "Black Belt's Training": 2}}, {"label": "AS SENT", "desc": "your list, 61 cards", "weighted": 28.570516129032253, "matchups": {"Dragapult ex": {"winrate": 34.166666666666664, "avg_prizes": 2.3366666666666664, "never_attacked": 39.13333333333333, "reasons": {"prize_race": 2443, "bench_out": 1507, "prizes": 2050}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 7.183333333333334, "avg_prizes": 1.1146666666666667, "never_attacked": 35.333333333333336, "reasons": {"prize_race": 3626, "bench_out": 1943, "prizes": 431}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 34.733333333333334, "avg_prizes": 2.8193333333333332, "never_attacked": 34.833333333333336, "reasons": {"prizes": 2084, "bench_out": 1514, "prize_race": 2402}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 30.8, "avg_prizes": 2.8798333333333335, "never_attacked": 25.566666666666666, "reasons": {"prizes": 1848, "bench_out": 1016, "prize_race": 3136}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 11.383333333333333, "avg_prizes": 1.0376666666666667, "never_attacked": 47.46666666666667, "reasons": {"prize_race": 3130, "bench_out": 2187, "prizes": 683}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 35.083333333333336, "avg_prizes": 2.6685, "never_attacked": 32.7, "reasons": {"bench_out": 1361, "prize_race": 2534, "prizes": 2105}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 22.066666666666666, "avg_prizes": 2.0633333333333335, "never_attacked": 32.55, "reasons": {"bench_out": 1621, "prize_race": 3055, "prizes": 1324}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 3.683333333333333, "avg_prizes": 0.6216666666666667, "never_attacked": 59.36666666666667, "reasons": {"prizes": 221, "prize_race": 2883, "bench_out": 2896}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 61, "mulligan": 35.331974330254255, "pokemon": 8, "energy": 12, "trainers": 41, "draw_supporters": 4}, "decklist": {"Mega Darkrai ex": 3, "Mega Absol ex": 2, "Fezandipiti ex": 1, "Munkidori": 2, "Darkness Energy": 11, "Spiky Energy": 1, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Punk Helmet": 2, "Amulet of Hope": 1, "Air Balloon": 1, "Powerglass": 1, "Energy Retrieval": 3, "Energy Search": 3, "Switch": 2, "Energy Switch": 3, "AZ's Tranquility": 2, "Boss's Orders": 2, "Janine's Secret Art": 2, "Black Belt's Training": 2, "Lisia's Appeal": 2, "Judge": 1, "Lillie's Determination": 1, "Jett": 1, "Team Rocket's Petrel": 1}}, {"label": "STEP 1: legal 60", "desc": "trim one card", "weighted": 27.07995894428152, "matchups": {"Dragapult ex": {"winrate": 32.2, "avg_prizes": 2.2123333333333335, "never_attacked": 41.36666666666667, "reasons": {"prizes": 1932, "prize_race": 2515, "bench_out": 1553}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 7.033333333333333, "avg_prizes": 1.129, "never_attacked": 36.85, "reasons": {"prize_race": 3671, "bench_out": 1907, "prizes": 422}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 32.333333333333336, "avg_prizes": 2.7165, "never_attacked": 35.483333333333334, "reasons": {"prizes": 1940, "bench_out": 1551, "prize_race": 2509}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 28.933333333333334, "avg_prizes": 2.7723333333333335, "never_attacked": 28.0, "reasons": {"prizes": 1736, "prize_race": 3242, "bench_out": 1022}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 11.4, "avg_prizes": 1.009, "never_attacked": 47.86666666666667, "reasons": {"bench_out": 2178, "prize_race": 3138, "prizes": 684}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 34.11666666666667, "avg_prizes": 2.6205, "never_attacked": 33.666666666666664, "reasons": {"prizes": 2047, "bench_out": 1273, "prize_race": 2680}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 22.0, "avg_prizes": 2.0673333333333335, "never_attacked": 33.28333333333333, "reasons": {"bench_out": 1615, "prize_race": 3065, "prizes": 1320}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 3.95, "avg_prizes": 0.6203333333333333, "never_attacked": 62.03333333333333, "reasons": {"prize_race": 2911, "bench_out": 2852, "prizes": 237}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 60, "mulligan": 34.64064289681811, "pokemon": 8, "energy": 12, "trainers": 40, "draw_supporters": 4}, "decklist": {"Mega Darkrai ex": 3, "Mega Absol ex": 2, "Fezandipiti ex": 1, "Munkidori": 2, "Darkness Energy": 11, "Spiky Energy": 1, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Punk Helmet": 2, "Amulet of Hope": 1, "Air Balloon": 1, "Powerglass": 1, "Energy Retrieval": 3, "Energy Search": 2, "Switch": 2, "Energy Switch": 3, "AZ's Tranquility": 2, "Boss's Orders": 2, "Janine's Secret Art": 2, "Black Belt's Training": 2, "Lisia's Appeal": 2, "Judge": 1, "Lillie's Determination": 1, "Jett": 1, "Team Rocket's Petrel": 1}}, {"label": "STEP 2: 13 Pokemon", "desc": "raise Pokemon count", "weighted": 29.57772434017595, "matchups": {"Dragapult ex": {"winrate": 35.766666666666666, "avg_prizes": 2.424, "never_attacked": 38.333333333333336, "reasons": {"bench_out": 866, "prizes": 2146, "prize_race": 2988}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 6.9, "avg_prizes": 1.1363333333333334, "never_attacked": 30.933333333333334, "reasons": {"prize_race": 4503, "bench_out": 1083, "prizes": 414}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 38.916666666666664, "avg_prizes": 3.0921666666666665, "never_attacked": 32.15, "reasons": {"prize_race": 2875, "prizes": 2335, "bench_out": 790}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 28.133333333333333, "avg_prizes": 2.7315, "never_attacked": 26.016666666666666, "reasons": {"prizes": 1688, "bench_out": 591, "prize_race": 3721}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 11.383333333333333, "avg_prizes": 1.0706666666666667, "never_attacked": 41.6, "reasons": {"bench_out": 1198, "prizes": 683, "prize_race": 4119}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 35.016666666666666, "avg_prizes": 2.755, "never_attacked": 29.816666666666666, "reasons": {"prizes": 2101, "bench_out": 711, "prize_race": 3188}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 21.05, "avg_prizes": 2.0296666666666665, "never_attacked": 29.666666666666668, "reasons": {"bench_out": 932, "prize_race": 3805, "prizes": 1263}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 4.466666666666667, "avg_prizes": 0.713, "never_attacked": 53.483333333333334, "reasons": {"prize_race": 3986, "bench_out": 1746, "prizes": 268}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 60, "mulligan": 16.28440500237541, "pokemon": 13, "energy": 11, "trainers": 36, "draw_supporters": 3}, "decklist": {"Mega Darkrai ex": 4, "Mega Absol ex": 2, "Fezandipiti ex": 2, "Munkidori": 5, "Darkness Energy": 11, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Energy Retrieval": 2, "Energy Switch": 2, "Switch": 2, "Punk Helmet": 1, "Powerglass": 1, "Air Balloon": 1, "Energy Search": 3, "AZ's Tranquility": 2, "Boss's Orders": 2, "Janine's Secret Art": 2, "Black Belt's Training": 2, "Lisia's Appeal": 2, "Judge": 1, "Lillie's Determination": 1, "Team Rocket's Petrel": 1}}, {"label": "STEP 3: + draw engine", "desc": "4 Lillie's Determination", "weighted": 37.879945259042024, "matchups": {"Dragapult ex": {"winrate": 45.266666666666666, "avg_prizes": 3.0446666666666666, "never_attacked": 29.95, "reasons": {"prize_race": 2694, "prizes": 2716, "bench_out": 590}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 9.816666666666666, "avg_prizes": 1.4443333333333332, "never_attacked": 22.05, "reasons": {"prize_race": 4590, "bench_out": 821, "prizes": 589}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 47.483333333333334, "avg_prizes": 3.6161666666666665, "never_attacked": 23.05, "reasons": {"prize_race": 2558, "prizes": 2849, "bench_out": 593}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 38.86666666666667, "avg_prizes": 3.395166666666667, "never_attacked": 17.216666666666665, "reasons": {"prize_race": 3257, "prizes": 2332, "bench_out": 411}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 17.2, "avg_prizes": 1.5103333333333333, "never_attacked": 32.15, "reasons": {"prize_race": 4059, "bench_out": 909, "prizes": 1032}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 44.9, "avg_prizes": 3.3541666666666665, "never_attacked": 20.416666666666668, "reasons": {"prizes": 2694, "prize_race": 2803, "bench_out": 503}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 27.6, "avg_prizes": 2.523, "never_attacked": 20.533333333333335, "reasons": {"prize_race": 3699, "prizes": 1656, "bench_out": 645}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 6.383333333333334, "avg_prizes": 0.9303333333333333, "never_attacked": 44.9, "reasons": {"prize_race": 4294, "bench_out": 1323, "prizes": 383}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 60, "mulligan": 16.28440500237541, "pokemon": 13, "energy": 12, "trainers": 35, "draw_supporters": 5}, "decklist": {"Mega Darkrai ex": 4, "Mega Absol ex": 2, "Fezandipiti ex": 2, "Munkidori": 5, "Darkness Energy": 12, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Energy Retrieval": 2, "Energy Switch": 2, "Switch": 2, "Powerglass": 1, "Energy Search": 3, "Lillie's Determination": 4, "Boss's Orders": 3, "Janine's Secret Art": 2, "Black Belt's Training": 2, "AZ's Tranquility": 1, "Lisia's Appeal": 1, "Team Rocket's Petrel": 1}}, {"label": "OPTIMISED", "desc": "best legal build found", "weighted": 43.387159335288366, "matchups": {"Dragapult ex": {"winrate": 52.1, "avg_prizes": 3.4263333333333335, "never_attacked": 24.2, "reasons": {"prizes": 3126, "prize_race": 2268, "bench_out": 606}, "share": 49.22, "confidence": "high", "note": "Card-exact: Dragapult ex 320HP, Phantom Dive [R][P] 200 + 6 counters, no Weakness, Tera (no bench damage). List runs 4 Crushing Hammer, 2 Team Rocket's Watchtower, 4 Lillie's Determination."}, "N's Zoroark ex": {"winrate": 11.016666666666667, "avg_prizes": 1.6306666666666667, "never_attacked": 18.666666666666668, "reasons": {"bench_out": 963, "prize_race": 4376, "prizes": 661}, "share": 8.02, "confidence": "high", "note": "Card-exact: 280HP Darkness Stage 1, Night Joker copies a Benched N's Pokemon attack. DARKNESS TYPE -> Dark Bell cannot Confuse it -> your Abyss Eye auto-KO line is dead in this matchup."}, "Crustle Rock Inn": {"winrate": 53.61666666666667, "avg_prizes": 3.9298333333333333, "never_attacked": 19.15, "reasons": {"prize_race": 2091, "prizes": 3217, "bench_out": 692}, "share": 6.14, "confidence": "medium", "note": "Single-prize engine deck. Modelled as a fast, low-HP, 1-prize attacker - the worst possible prize-trade shape against 3-prize Megas."}, "Slowking Inspiration": {"winrate": 45.483333333333334, "avg_prizes": 3.791333333333333, "never_attacked": 13.883333333333333, "reasons": {"prize_race": 2778, "prizes": 2729, "bench_out": 493}, "share": 5.59, "confidence": "medium", "note": "Single-prize control. Modelled with moderate damage plus light resource denial."}, "Hydrapple ex": {"winrate": 18.6, "avg_prizes": 1.601, "never_attacked": 28.783333333333335, "reasons": {"prizes": 1116, "prize_race": 3852, "bench_out": 1032}, "share": 4.84, "confidence": "medium", "note": "GRASS. Both your Megas are Grass-Weak, so its damage is DOUBLED against them. Structurally your worst matchup."}, "Alakazam Powerful Hand": {"winrate": 49.9, "avg_prizes": 3.6763333333333335, "never_attacked": 16.2, "reasons": {"prizes": 2994, "prize_race": 2433, "bench_out": 573}, "share": 4.75, "confidence": "medium", "note": "Single-prize Psychic attacker scaling off hand size."}, "Raging Bolt ex": {"winrate": 32.31666666666667, "avg_prizes": 2.8223333333333334, "never_attacked": 17.133333333333333, "reasons": {"prizes": 1939, "prize_race": 3307, "bench_out": 754}, "share": 3.51, "confidence": "medium", "note": "Big Dragon Basic. High damage, no Weakness interaction either way."}, "Ogerpon Box": {"winrate": 6.95, "avg_prizes": 1.0006666666666666, "never_attacked": 42.63333333333333, "reasons": {"prize_race": 4008, "bench_out": 1575, "prizes": 417}, "share": 3.18, "confidence": "medium", "note": "Toolbox with Grass attackers - doubled damage into your Megas."}}, "consistency": {"size": 60, "mulligan": 19.06466927107365, "pokemon": 12, "energy": 14, "trainers": 34, "draw_supporters": 4}, "decklist": {"Mega Darkrai ex": 4, "Mega Absol ex": 2, "Fezandipiti ex": 2, "Munkidori": 4, "Darkness Energy": 14, "Ultra Ball": 4, "Dark Bell": 4, "Night Stretcher": 3, "Energy Retrieval": 3, "Energy Switch": 2, "Switch": 2, "Energy Search": 4, "Lillie's Determination": 4, "Boss's Orders": 2, "Janine's Secret Art": 2, "Black Belt's Training": 2, "AZ's Tranquility": 1, "Lisia's Appeal": 1}}], "diagnostic_2prize": 35.751221896383186};
+const B = {};
+D.builds.forEach(b => B[b.label] = b);
+const CUR = B["AS SENT"], OPT = B["OPTIMISED"], CTRL = B["CONTROL"];
+const names = Object.keys(D.meta);
+
+function wrColor(v){
+  if(v>=50) return "#3fb950";
+  if(v>=40) return "#57a64a";
+  if(v>=30) return "#d29922";
+  if(v>=20) return "#db7c22";
+  return "#f85149";
+}
+function bar(v,max=60){
+  const w = Math.max(2, Math.min(100, v/max*100));
+  return `<div class="bar"><span style="width:${w}%;background:${wrColor(v)}"></span>
+    <b>${v.toFixed(1)}%</b></div>`;
+}
+
+/* ---------- KPIs ---------- */
+const worst = names.reduce((a,b)=> CUR.matchups[a].winrate < CUR.matchups[b].winrate ? a:b);
+document.getElementById("kpis").innerHTML = `
+<div class="kpi"><div class="n bad">${CUR.weighted.toFixed(1)}%</div>
+  <div class="l">Win rate as sent</div>
+  <div class="d">Meta-weighted across 85.3% of the field</div></div>
+<div class="kpi"><div class="n good">${OPT.weighted.toFixed(1)}%</div>
+  <div class="l">After the rebuild</div>
+  <div class="d">+${(OPT.weighted-CUR.weighted).toFixed(1)} points, same core cards</div></div>
+<div class="kpi"><div class="n bad">${CUR.consistency.mulligan.toFixed(1)}%</div>
+  <div class="l">Mulligan rate</div>
+  <div class="d">Only ${CUR.consistency.pokemon} Pokémon in the deck</div></div>
+<div class="kpi"><div class="n bad">${CUR.consistency.size}</div>
+  <div class="l">Cards in deck</div>
+  <div class="d">Must be exactly 60 &mdash; currently illegal</div></div>`;
+
+/* ---------- verdict ---------- */
+document.getElementById("verdict").innerHTML = `
+<div class="callout bad"><b>Your list is 61 cards.</b> That is a deck-check failure before
+a single game is played. You need to cut exactly one card.</div>
+<div class="callout warn"><b>The engine, not the strategy, is what is losing.</b>
+The Dark Bell &rarr; Abyss Eye auto-KO line is genuinely strong &mdash; it ignores HP entirely,
+so a 320 HP Dragapult ex dies the same as anything else. The problem is you reach it far
+too rarely: with 8 Pokémon and 4 draw Supporters you mulligan ${CUR.consistency.mulligan.toFixed(0)}% of
+games and never attack at all in ${CUR.matchups["Dragapult ex"].never_attacked.toFixed(0)}% of them.</div>
+<div class="callout"><b>Worst matchup: ${worst}</b> at
+${CUR.matchups[worst].winrate.toFixed(1)}%. ${D.meta[worst].note}</div>`;
+
+/* ---------- ladder ---------- */
+const order = ["AS SENT","STEP 1: legal 60","STEP 2: 13 Pokemon",
+               "STEP 3: + draw engine","OPTIMISED","CONTROL"];
+let prev = null;
+document.getElementById("ladder").innerHTML = order.map(k=>{
+  const b = B[k]; if(!b) return "";
+  const cls = k==="CONTROL" ? "ctrl" : (k==="AS SENT" ? "cur" : "");
+  const d = prev===null ? "" :
+    `<span class="delta">${b.weighted-prev>=0?"+":""}${(b.weighted-prev).toFixed(1)}</span>`;
+  const row = `<div class="rung ${cls}">
+    <div>${k}<div class="note" style="font-size:11px">${b.desc}</div></div>
+    <div class="track"><div class="fill" style="width:${b.weighted/60*100}%"></div></div>
+    <div class="v">${b.weighted.toFixed(1)}%${d}</div></div>`;
+  if(k!=="CONTROL") prev = b.weighted;
+  return row;
+}).join("");
+
+/* ---------- matchup table ---------- */
+let rows = names.map(n=>({
+  name:n, share:D.meta[n].share, cur:CUR.matchups[n].winrate,
+  opt:OPT.matchups[n].winrate, delta:OPT.matchups[n].winrate-CUR.matchups[n].winrate,
+  conf:D.meta[n].confidence
+}));
+let sortK="share", sortDir=-1;
+function draw(){
+  rows.sort((a,b)=> typeof a[sortK]==="string"
+    ? sortDir*a[sortK].localeCompare(b[sortK]) : sortDir*(a[sortK]-b[sortK]));
+  document.querySelector("#mt tbody").innerHTML = rows.map(r=>`
+    <tr><td><b>${r.name}</b></td>
+    <td style="color:var(--dim)">${r.share.toFixed(1)}%</td>
+    <td>${bar(r.cur)}</td><td>${bar(r.opt)}</td>
+    <td style="color:${r.delta>=0?"var(--good)":"var(--bad)"};font-variant-numeric:tabular-nums">
+      ${r.delta>=0?"+":""}${r.delta.toFixed(1)}</td>
+    <td><span class="tag ${r.conf==="high"?"hi":"md"}">${r.conf}</span></td></tr>`).join("");
+}
+document.querySelectorAll("#mt th").forEach(th=>th.onclick=()=>{
+  const k=th.dataset.k; sortDir = (k===sortK) ? -sortDir : -1; sortK=k; draw();
+});
+draw();
+document.getElementById("mnotes").innerHTML =
+  `<details><summary>How each opponent is modelled</summary>` +
+  names.map(n=>`<div style="margin:9px 0"><b>${n}</b>
+    <span class="tag ${D.meta[n].confidence==="high"?"hi":"md"}">${D.meta[n].confidence}</span>
+    <div class="note">${D.meta[n].note}</div></div>`).join("") + `</details>`;
+
+/* ---------- loss reasons ---------- */
+const LBL = {prize_race:"Lost the prize race", bench_out:"Ran out of Pokémon (bench-out)",
+  prizes:"You won", time_out:"Game went long", deck_out:"Decked out",
+  no_basic_disaster:"No Basic to start"};
+function lossPanel(b,title){
+  const agg={};
+  names.forEach(n=>{
+    const w=D.meta[n].share;
+    const rs=b.matchups[n].reasons, tot=Object.values(rs).reduce((a,c)=>a+c,0);
+    for(const k in rs){ agg[k]=(agg[k]||0)+ rs[k]/tot*w; }
+  });
+  const tot=Object.values(agg).reduce((a,c)=>a+c,0);
+  const items=Object.entries(agg).sort((a,b)=>b[1]-a[1]);
+  return `<div class="panel"><div style="font-weight:600;margin-bottom:12px">${title}</div>`+
+    items.map(([k,v])=>{
+      const p=v/tot*100;
+      const col = k==="prizes" ? "#3fb950" : (k==="bench_out"?"#f85149":"#d29922");
+      return `<div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;font-size:13px">
+          <span>${LBL[k]||k}</span><span style="color:var(--dim)">${p.toFixed(1)}%</span></div>
+        <div class="bar" style="height:7px;margin-top:3px">
+          <span style="width:${p}%;background:${col}"></span></div></div>`;
+    }).join("") + `</div>`;
+}
+document.getElementById("loss").innerHTML =
+  lossPanel(CUR,"As sent") + lossPanel(OPT,"Optimised");
+
+/* ---------- consistency ---------- */
+function cbox(label,cur,opt,unit,goodLow){
+  const better = goodLow ? opt<cur : opt>cur;
+  return `<div class="kpi"><div class="l">${label}</div>
+    <div style="display:flex;align-items:baseline;gap:10px;margin-top:6px">
+      <span class="n" style="font-size:22px">${cur}${unit}</span>
+      <span style="color:var(--dim)">&rarr;</span>
+      <span class="n ${better?"good":""}" style="font-size:22px">${opt}${unit}</span></div>
+    <div class="d">as sent &rarr; optimised</div></div>`;
+}
+const c1=CUR.consistency, c2=OPT.consistency;
+document.getElementById("cons").innerHTML =
+  cbox("Mulligan rate", c1.mulligan.toFixed(1), c2.mulligan.toFixed(1), "%", true) +
+  cbox("Pokémon count", c1.pokemon, c2.pokemon, "", false) +
+  cbox("Draw Supporters", c1.draw_supporters, c2.draw_supporters, "", false) +
+  cbox("Deck size", c1.size, c2.size, "", false) +
+  cbox("Energy", c1.energy, c2.energy, "", false) +
+  cbox("Trainers", c1.trainers, c2.trainers, "", false);
+
+/* ---------- structural ---------- */
+document.getElementById("struct").innerHTML = `
+<div class="callout bad"><b>1. Every Mega hands over three Prizes.</b>
+Mega Evolution Pokémon ex give up 3 Prizes when Knocked Out, so your opponent only needs
+<b>two</b> knockouts to win while you need three on a 2-Prize Dragapult ex. Re-running the
+optimised build with the Megas artificially set to 2 Prizes lifts it from
+${OPT.weighted.toFixed(1)}% to <b>${D.diagnostic_2prize.toFixed(1)}%</b> &mdash; that gap is the
+tax the Mega rule charges you, and no ratio change removes it. It is the price of the
+Abyss Eye auto-KO.</div>
+
+<div class="callout bad"><b>2. Abyss Eye does nothing to N's Zoroark ex.</b>
+Dark Bell reads "both Active <i>non-[D]</i> Pokémon are now Confused". N's Zoroark ex is a
+Darkness Pokémon, so it cannot be Confused by your own Dark Bell, which means the auto-KO
+never turns on. That matchup sits at ${CUR.matchups["N's Zoroark ex"].winrate.toFixed(1)}% and barely
+moves after the rebuild (${OPT.matchups["N's Zoroark ex"].winrate.toFixed(1)}%). Against Darkness decks
+you are a plain 110-damage deck holding 3-Prize liabilities. You need a non-Dark-Bell
+answer &mdash; a Poison or Sleep source would switch Abyss Eye back on.</div>
+
+<div class="callout bad"><b>3. Both your attackers are Grass-Weak.</b>
+Mega Darkrai ex and Mega Absol ex are Weak to Grass, and Hydrapple ex
+(${D.meta["Hydrapple ex"].share}% of the meta) plus Ogerpon Box (${D.meta["Ogerpon Box"].share}%)
+attack straight through it for double damage. Those are your two worst matchups at
+${OPT.matchups["Hydrapple ex"].winrate.toFixed(1)}% and ${OPT.matchups["Ogerpon Box"].winrate.toFixed(1)}%
+even after every consistency fix. ~8% of the field is close to unwinnable as built.</div>
+
+<div class="callout good"><b>What is working:</b> Dragapult ex is 49% of the field and the
+optimised build beats it ${OPT.matchups["Dragapult ex"].winrate.toFixed(1)}% of the time. Abyss Eye
+ignores its 320 HP and its Tera shield entirely, and Phantom Dive putting counters on your
+own Bench actually switches on Dusk Raid's +110 bonus. Your single most common matchup is
+the one your deck is built to beat &mdash; you just have to get there consistently.</div>`;
+
+/* ---------- decklist ---------- */
+const cur = CUR.decklist, opt = OPT.decklist;
+const all = [...new Set([...Object.keys(cur), ...Object.keys(opt)])].sort();
+const KIND = n => /Energy$/.test(n) ? "Energy"
+  : (["Mega Darkrai ex","Mega Absol ex","Fezandipiti ex","Munkidori"].includes(n) ? "Pokémon"
+  : "Trainer");
+let html = "";
+["Pokémon","Trainer","Energy"].forEach(k=>{
+  const list = all.filter(n=>KIND(n)===k);
+  if(!list.length) return;
+  const tot = list.reduce((a,n)=>a+(opt[n]||0),0);
+  html += `<h4>${k} (${tot})</h4>`;
+  html += list.map(n=>{
+    const a=cur[n]||0, b=opt[n]||0;
+    if(a===b) return `<div class="row"><span>${n}</span><span>${b}</span></div>`;
+    if(b===0) return `<div class="row cut"><span>${n}</span><span>${a} &rarr; 0</span></div>`;
+    return `<div class="row add"><span>${n}</span><span>${a} &rarr; ${b}</span></div>`;
+  }).join("");
+});
+document.getElementById("deck").innerHTML =
+  `<div class="callout good" style="margin-top:0">Exactly 60 cards, no card over 4 copies,
+   every card already in your list. Green = increased or added, struck through = cut.</div>
+   <div class="dl">${html}</div>
+   <div class="note" style="margin-top:16px">
+   The biggest single jump is <b>4 Lillie's Determination</b> (+8.3 points on its own).
+   Shuffle-draw-6 is what turns a pile of situational Supporters into a deck that actually
+   finds its 3rd Darkness Energy and a Dark Bell in the same turn. The cut techs
+   &mdash; Jett, Air Balloon, Amulet of Hope, Punk Helmet, Spiky Energy, Judge &mdash;
+   were each doing less than a draw card. Note Jett in particular: it reads
+   "draw a card for each of your opponent's Mega Evolution Pokémon ex in play", and
+   <i>none</i> of the top 8 decks plays one, so in this meta it is a blank.</div>`;
+
+document.getElementById("foot").innerHTML =
+  `Card text verified against limitlesstcg.com. Meta shares from the Limitless
+   Standard deck rankings, August 2026. Your deck is simulated at full card level
+   (real shuffles, mulligans, prizes, search and attachment); opponents are archetype
+   models &mdash; Dragapult ex and N's Zoroark ex are card-exact, the rest are calibrated
+   approximations, flagged in the Model column. Calibration: an ordinary control shell
+   scores ${CTRL.weighted.toFixed(1)}% through the same engine.
+   6,000 games per matchup per build.`;
+</script></body></html>

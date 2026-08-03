@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PTCG Deck Lab — build &amp; simulate</title>
+<link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="dot"></span>
+    <div>
+      <h1>PTCG Deck Lab</h1>
+      <div class="tag-line">Regulation H/I/J Standard · meta as of Aug 2026</div>
+    </div>
+  </div>
+  <div class="top-actions">
+    <label class="sel">
+      Preset
+      <select id="preset"></select>
+    </label>
+    <label class="sel">
+      Games
+      <select id="games">
+        <option value="1000">1,000 (fast)</option>
+        <option value="3000" selected>3,000</option>
+        <option value="6000">6,000 (accurate)</option>
+      </select>
+    </label>
+    <button id="run" class="btn primary">Run simulation</button>
+  </div>
+</header>
+
+<main class="layout">
+
+  <!-- ------------------------------------------------ card picker -->
+  <section class="picker">
+    <div class="picker-head">
+      <input id="search" type="search" placeholder="Search cards…" autocomplete="off">
+      <div class="filters" id="filters"></div>
+    </div>
+    <div id="grid"></div>
+    <p class="hint">
+      Set a count with the dropdown on each card. Basic Energy has no copy limit;
+      everything else caps at 4.
+    </p>
+  </section>
+
+  <!-- ------------------------------------------------ deck panel -->
+  <aside class="deck">
+    <div class="deck-head">
+      <h2>Deck</h2>
+      <div id="count" class="count">0<span>/60</span></div>
+    </div>
+    <div id="legality"></div>
+    <div id="composition" class="composition"></div>
+    <div id="decklist" class="decklist"></div>
+    <div class="deck-foot">
+      <button id="copy" class="btn ghost">Copy list</button>
+      <button id="clear" class="btn ghost">Clear</button>
+    </div>
+  </aside>
+</main>
+
+<!-- ------------------------------------------------ results -->
+<section id="results" class="results hidden">
+  <h2>Simulation results</h2>
+  <div id="res-kpis" class="kpis"></div>
+  <div class="res-grid">
+    <div class="card-panel">
+      <h3>Matchups</h3>
+      <div id="res-matchups"></div>
+      <p class="hint" id="res-cal"></p>
+    </div>
+    <div class="card-panel">
+      <h3>How games ended</h3>
+      <div id="res-reasons"></div>
+    </div>
+  </div>
+</section>
+
+<footer class="foot">
+  <p>
+    Card text verified against <a href="https://limitlesstcg.com" target="_blank"
+    rel="noopener">limitlesstcg.com</a>; meta shares from the Limitless Standard deck
+    rankings. Your deck is simulated at full card level — real shuffles, mulligans,
+    prizes, search and attachment. Opponents are archetype models: Dragapult ex and
+    N's Zoroark ex are card-exact, the rest are calibrated approximations and flagged
+    accordingly.
+  </p>
+  <p>
+    <strong>Trust check:</strong> the bundled control shell scores ~53% through this
+    engine. If a change ever drops that far from 50%, the opponent model is broken and
+    the other numbers mean nothing — <code>npm test</code> enforces this.
+  </p>
+</footer>
+
+<script type="module" src="src/ui.js"></script>
+</body>
+</html>
