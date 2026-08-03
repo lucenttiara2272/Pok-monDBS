@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test tests/*.test.js",
-    "serve": "python3 -m http.server 8000"
+    "serve": "python3 -m http.server 8000",
+    "import": "node tools/import-cards.mjs",
+    "import:dry": "node tools/import-cards.mjs --dry-run"
   },
   "license": "MIT",
   "private": true

@@ -59,6 +59,11 @@ function choice(rng, seq) {
  */
 export const ATTACKER_IDS = new Set(['Mega Darkrai ex', 'Mega Absol ex']);
 
+/** Basic = stage 0. Cards without a stage are treated as Basic. */
+export function isBasic(card) {
+  return !card || !card.stage;
+}
+
 /** Names in this spec that can actually attack. */
 function attackerNames(spec) {
   return new Set(Object.entries(spec)
@@ -156,10 +161,21 @@ export function validateDeck(spec) {
   }
   const pokemon = Object.values(spec)
     .filter((d) => d.kind === 'pokemon').reduce((a, c) => a + c.n, 0);
-  if (pokemon === 0) errors.push('Deck contains no Basic Pokémon.');
+  if (pokemon === 0) errors.push('Deck contains no Pokémon.');
+
+  // every evolution needs something to evolve from
+  for (const [name, d] of Object.entries(spec)) {
+    if (d.kind === 'pokemon' && d.evolvesFrom && !spec[d.evolvesFrom]) {
+      const viaCandy = spec['Rare Candy'] && d.stage === 2;
+      (viaCandy ? warnings : errors).push(
+        `${name} evolves from ${d.evolvesFrom}, which is not in the deck.`);
+    }
+  }
 
   const basics = Object.entries(spec)
-    .filter(([, d]) => d.kind === 'pokemon').reduce((a, [, d]) => a + d.n, 0);
+    .filter(([, d]) => d.kind === 'pokemon' && isBasic(d))
+    .reduce((a, [, d]) => a + d.n, 0);
+  if (size === 60 && basics === 0) errors.push('Deck contains no Basic Pokémon.');
   if (size === 60 && basics > 0 && basics < 10) {
     warnings.push(
       `Only ${basics} Pokémon — mulligan rate ${(mulliganRate(spec) * 100).toFixed(1)}%. ` +
@@ -185,7 +201,7 @@ function logC(n, k) {
 export function mulliganRate(spec) {
   const size = deckSize(spec);
   const basics = Object.values(spec)
-    .filter((d) => d.kind === 'pokemon').reduce((a, c) => a + c.n, 0);
+    .filter((d) => d.kind === 'pokemon' && isBasic(d)).reduce((a, c) => a + c.n, 0);
   if (size - basics < 7) return 0;
   return Math.exp(logC(size - basics, 7) - logC(size, 7));
 }
@@ -211,6 +227,7 @@ class Side {
     this.spec = spec;
     this.rng = rng;
     this.attackers = attackerNames(spec);
+    this.turn = 0;
     this.deck = [];
     this.hand = [];
     this.discard = [];
@@ -230,11 +247,21 @@ class Side {
 
   card(name) { return this.spec[name]; }
 
+  /** A Basic Pokemon card that can legally be put down from hand. */
+  isPlayableBasic(name) {
+    const d = this.spec[name];
+    return !!d && d.kind === 'pokemon' && isBasic(d);
+  }
+
+  /** All Pokemon currently in play. */
+  inPlay() { return [this.active, ...this.bench].filter(Boolean); }
+
   newMon(name) {
     const d = this.spec[name];
     return {
       name, dmg: 0, hp: d.hp, prizes: d.prizes, energy: [],
       tool: null, confused: false, poisoned: false,
+      turnPlayed: this.turn,
     };
   }
 
@@ -244,20 +271,20 @@ class Side {
       shuffle(this.rng, this.deck);
       this.hand = [];
       for (let i = 0; i < 7; i++) this.hand.push(this.deck.pop());
-      if (this.hand.some((c) => this.card(c).kind === 'pokemon')) break;
+      if (this.hand.some((c) => this.isPlayableBasic(c))) break;
       this.mulligans++;
       if (this.mulligans > 12) break;
     }
     this.prizes = [];
     for (let i = 0; i < 6; i++) this.prizes.push(this.deck.pop());
 
-    const basics = this.hand.filter((c) => this.card(c).kind === 'pokemon');
+    const basics = this.hand.filter((c) => this.isPlayableBasic(c));
     if (basics.length === 0) return;
     const pick = basics.find((c) => this.attackers.has(c)) || basics[0];
     this.hand.splice(this.hand.indexOf(pick), 1);
     this.active = this.newMon(pick);
     for (const c of [...this.hand]) {
-      if (this.card(c).kind === 'pokemon' && this.bench.length < 5) {
+      if (this.isPlayableBasic(c) && this.bench.length < 5) {
         this.hand.splice(this.hand.indexOf(c), 1);
         this.bench.push(this.newMon(c));
       }
@@ -348,6 +375,8 @@ function ultraBall(S) {
     S.hand.splice(S.hand.indexOf(junk), 1);
     S.discard.push(junk);
   }
+  // If an attacker is already in play or in hand, fetch the next piece of the
+  // line; otherwise fetch the Basic that starts the strongest line we own.
   const rank = (n) => {
     const a = S.card(n).attacks || [];
     return Math.max(0, ...a.map((x) => (x.damage || 0) + (x.koIfSpecialCondition ? 999 : 0)));
@@ -355,16 +384,95 @@ function ultraBall(S) {
   const wanted = [...S.attackers].sort((a, b) => rank(b) - rank(a));
   let got = [];
   for (const w of wanted) {
-    got = S.searchDeck((c) => c === w, 1);
-    if (got.length) break;
+    if (isBasic(S.card(w))) {
+      got = S.searchDeck((c) => c === w, 1);
+      if (got.length) break;
+    }
   }
+  if (!got.length) {
+    for (const b of basicsLeadingToAttackers(S)) {
+      got = S.searchDeck((c) => c === b, 1);
+      if (got.length) break;
+    }
+  }
+  if (!got.length) got = S.searchDeck((c) => S.isPlayableBasic(c), 1);
   if (!got.length) got = S.searchDeck((c) => S.card(c).kind === 'pokemon', 1);
   return got.length > 0;
+}
+
+/**
+ * Play evolutions from hand. A Pokemon cannot evolve on the turn it was played,
+ * which is what makes Stage 2 decks slow and is the whole reason Rare Candy exists.
+ */
+function doEvolutions(S, turn) {
+  let evolved = true;
+  while (evolved) {
+    evolved = false;
+    for (const mon of S.inPlay()) {
+      if (mon.turnPlayed >= turn) continue;             // came down this turn
+      // direct evolution
+      const up = S.hand.find((c) => {
+        const d = S.card(c);
+        return d && d.kind === 'pokemon' && d.evolvesFrom === mon.name;
+      });
+      if (up) {
+        S.hand.splice(S.hand.indexOf(up), 1);
+        S.discard.push(mon.name);
+        const d = S.card(up);
+        mon.name = up;
+        mon.hp = d.hp;
+        mon.prizes = d.prizes;
+        // damage, Energy and Tools stay on the Pokemon through evolution
+        evolved = true;
+        continue;
+      }
+      // Rare Candy: Basic straight to Stage 2
+      if (S.has('Rare Candy') && isBasic(S.card(mon.name))) {
+        const s2 = S.hand.find((c) => {
+          const d = S.card(c);
+          if (!d || d.kind !== 'pokemon' || d.stage !== 2) return false;
+          const mid = S.card(d.evolvesFrom);
+          return mid && mid.evolvesFrom === mon.name;
+        });
+        if (s2) {
+          S.play('Rare Candy');
+          S.hand.splice(S.hand.indexOf(s2), 1);
+          S.discard.push(mon.name);
+          const d = S.card(s2);
+          mon.name = s2;
+          mon.hp = d.hp;
+          mon.prizes = d.prizes;
+          evolved = true;
+        }
+      }
+    }
+  }
+}
+
+/** Basics in this deck that lead to an attacker, best line first. */
+function basicsLeadingToAttackers(S) {
+  const out = new Map();
+  for (const atkName of S.attackers) {
+    const power = Math.max(0, ...(S.card(atkName).attacks || [])
+      .map((a) => (a.damage || 0) + (a.koIfSpecialCondition ? 999 : 0)));
+    let cur = S.card(atkName);
+    let name = atkName;
+    let guard = 0;
+    while (cur && cur.evolvesFrom && guard++ < 4) {
+      name = cur.evolvesFrom;
+      cur = S.card(name);
+    }
+    if (cur && isBasic(cur)) {
+      out.set(name, Math.max(out.get(name) || 0, power));
+    }
+  }
+  return [...out.entries()].sort((a, b) => b[1] - a[1]).map(([n]) => n);
 }
 
 function userTurn(S, opp, turn) {
   S.supporterUsed = false;
   S.energyAttached = false;
+  S.turn = turn;
   if (!S.active) return { ko: false, dmg: 0, reason: 'no_active' };
   if (S.draw(1) === 0) return { ko: false, dmg: 0, deckout: true };
 
@@ -373,13 +481,14 @@ function userTurn(S, opp, turn) {
 
   const benchAll = () => {
     for (const c of [...S.hand]) {
-      if (S.card(c).kind === 'pokemon' && S.bench.length < 5) {
+      if (S.isPlayableBasic(c) && S.bench.length < 5) {
         S.hand.splice(S.hand.indexOf(c), 1);
         S.bench.push(S.newMon(c));
       }
     }
   };
   benchAll();
+  doEvolutions(S, turn);
 
   // dig for an attacker if we have none
   if (megasInPlay().length === 0) {
@@ -420,13 +529,14 @@ function userTurn(S, opp, turn) {
   // keep bodies on the board — bench-out is a real failure mode
   const bodies = [S.active, ...S.bench].filter(Boolean).length;
   if (bodies <= 2) {
-    if (S.has('Night Stretcher') && S.discard.some((c) => S.card(c).kind === 'pokemon')) {
+    if (S.has('Night Stretcher') && S.discard.some((c) => S.isPlayableBasic(c))) {
       S.play('Night Stretcher');
-      const i = S.discard.findIndex((c) => S.card(c).kind === 'pokemon');
+      const i = S.discard.findIndex((c) => S.isPlayableBasic(c));
       if (i >= 0) S.hand.push(S.discard.splice(i, 1)[0]);
     }
     if (bodies <= 1) ultraBall(S);
     benchAll();
+    doEvolutions(S, turn);
   }
 
   const A = S.active;

@@ -1,10 +1,10 @@
 /**
  * Deck builder UI.
- * Card grid in the middle, live deck list on the right, simulation below.
+ * Typeahead search adds cards; the main area shows only what is in the deck.
  */
 
 import {
-  runGauntlet, validateDeck, deckStats, DRAW_SUPPORTERS,
+  runGauntlet, validateDeck, deckStats,
 } from './engine.js?v=dev';
 import {
   makeCardIndex, buildSpec, PRESETS, applyControlOverride,
@@ -25,8 +25,6 @@ let CARDS = [];
 let INDEX = {};
 let META = [];
 let deck = {};                 // { cardName: count }
-let filter = 'all';
-let query = '';
 
 /* ------------------------------------------------------- custom cards --- */
 // Cards the user adds live here and are merged over data/cards.json at boot.
@@ -61,12 +59,19 @@ function cardFromForm(fd) {
   if (type) card.type = type;
 
   if (cat === 'pokemon') {
+    const stage = Number(fd.get('stage')) || 0;
     card.sim = {
-      basic: true,
+      stage,
       hp: Number(fd.get('hp')),
       prizes: Number(fd.get('prizes')),
       retreat: Number(fd.get('retreat')),
     };
+    if (stage === 0) card.sim.basic = true;
+    const from = (fd.get('evolvesFrom') || '').trim();
+    if (stage > 0) {
+      if (!from) throw new Error('A Stage 1 or 2 Pokémon must say what it evolves from.');
+      card.sim.evolvesFrom = from;
+    }
     const weak = fd.get('weak');
     if (weak) card.sim.weak = weak;
 
@@ -89,7 +94,7 @@ function cardFromForm(fd) {
       }];
     }
   } else if (cat === 'energy') {
-    card.sim = { basicEnergy: card.max > 4, provides: type || 'C' };
+    card.sim = { basicEnergy: !card.max || card.max > 4, provides: type || 'C' };
   }
   return card;
 }
@@ -100,7 +105,6 @@ async function boot() {
     fetch(`data/cards.json?v=${APP_VERSION}`).then((r) => r.json()),
     fetch(`data/meta.json?v=${APP_VERSION}`).then((r) => r.json()),
   ]);
-  // custom cards win on name collision, so you can correct a bundled card
   const custom = loadCustom();
   const merged = [...cardsJson.cards.filter(
     (c) => !custom.some((x) => x.name === c.name)), ...custom];
@@ -108,41 +112,47 @@ async function boot() {
   INDEX = makeCardIndex({ cards: merged });
   META = metaJson.decks;
 
-  // preset selector
   const sel = $('preset');
-  sel.innerHTML = Object.keys(PRESETS)
-    .map((p) => `<option>${p}</option>`).join('');
+  sel.innerHTML = Object.keys(PRESETS).map((p) => `<option>${p}</option>`).join('');
   sel.value = 'Optimised (43%)';
   sel.onchange = () => { deck = { ...PRESETS[sel.value] }; renderAll(); };
   deck = { ...PRESETS[sel.value] };
 
-  // filters
-  $('filters').innerHTML =
-    ['all', ...CATS].map((c) =>
-      `<div class="chip${c === 'all' ? ' on' : ''}" data-f="${c}">
-         ${c === 'all' ? 'All' : CAT_LABEL[c]}</div>`).join('');
-  $('filters').onclick = (e) => {
-    const chip = e.target.closest('.chip');
-    if (!chip) return;
-    filter = chip.dataset.f;
-    [...$('filters').children].forEach((c) => c.classList.toggle('on', c === chip));
-    renderGrid();
+  const box = $('search');
+  box.oninput = () => {
+    sugList = findMatches(box.value);
+    sugIdx = sugList.length ? 0 : -1;
+    renderSuggest();
+  };
+  box.onkeydown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault(); sugIdx = Math.min(sugList.length - 1, sugIdx + 1); renderSuggest();
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault(); sugIdx = Math.max(0, sugIdx - 1); renderSuggest();
+    } else if (e.key === 'Enter') {
+      e.preventDefault(); if (sugIdx >= 0) addCard(sugList[sugIdx]);
+    } else if (e.key === 'Escape') closeSuggest();
+  };
+  box.onblur = () => setTimeout(closeSuggest, 120);
+  box.onfocus = () => {
+    if (box.value) { sugList = findMatches(box.value); sugIdx = 0; renderSuggest(); }
   };
 
-  $('search').oninput = (e) => { query = e.target.value.toLowerCase(); renderGrid(); };
   $('run').onclick = run;
   $('clear').onclick = () => { deck = {}; renderAll(); };
   $('copy').onclick = copyList;
 
-  // add-card dialog
   const modal = $('cardModal');
   $('add-card').onclick = () => {
     $('cardForm').reset();
     $('form-err').classList.add('hidden');
+    if ($('search').value.trim()) {
+      $('cardForm').elements.namedItem('name').value = $('search').value.trim();
+    }
     modal.showModal();
   };
   $('cardForm').addEventListener('change', () => {
-    const cat = $('cardForm').category.value;
+    const cat = $('cardForm').elements.namedItem('category').value;
     $('mon-fields').style.display = cat === 'pokemon' ? '' : 'none';
   });
   $('save-card').onclick = (e) => {
@@ -153,9 +163,9 @@ async function boot() {
       card = cardFromForm(new FormData(form));
     } catch (err) {
       e.preventDefault();
-      const box = $('form-err');
-      box.textContent = err.message;
-      box.classList.remove('hidden');
+      const errBox = $('form-err');
+      errBox.textContent = err.message;
+      errBox.classList.remove('hidden');
       return;
     }
     const list = loadCustom().filter((c) => c.name !== card.name);
@@ -163,9 +173,9 @@ async function boot() {
     saveCustom(list);
     CARDS = [...CARDS.filter((c) => c.name !== card.name), card];
     INDEX = makeCardIndex({ cards: CARDS });
-    query = '';
     $('search').value = '';
-    renderAll();
+    closeSuggest();
+    addCard(card);
   };
 
   const b = $('build');
@@ -190,82 +200,151 @@ function exportCustom() {
   });
 }
 
-/* ---------------------------------------------------------------- grid --- */
+/* ------------------------------------------------------------ typeahead --- */
 function maxFor(card) {
-  return card.sim && card.sim.basicEnergy ? 30 : (card.max || 4);
+  return card.sim && card.sim.basicEnergy ? 60 : (card.max || 4);
 }
 
+let sugList = [];
+let sugIdx = -1;
+
+/** Rank matches: exact name first, then prefix, then word-start, then substring. */
+function findMatches(q) {
+  const s = q.trim().toLowerCase();
+  if (!s) return [];
+  const scored = [];
+  for (const c of CARDS) {
+    const n = c.name.toLowerCase();
+    let score = -1;
+    if (n === s) score = 0;
+    else if (n.startsWith(s)) score = 1;
+    else if (n.split(/[^a-z0-9']+/).some((w) => w.startsWith(s))) score = 2;
+    else if (n.includes(s)) score = 3;
+    else if ((c.text || '').toLowerCase().includes(s)) score = 5;
+    if (score >= 0) scored.push([score, c]);
+  }
+  scored.sort((a, b) => a[0] - b[0] || a[1].name.localeCompare(b[1].name));
+  return scored.slice(0, 12).map(([, c]) => c);
+}
+
+function cardMeta(c) {
+  return [
+    `<span>${c.set}</span>`,
+    c.type ? `<span class="badge ${c.type}">${c.type}</span>` : '',
+    c.sim && c.sim.stage ? `<span>Stage ${c.sim.stage}</span>` : '',
+    c.sim && c.sim.evolvesFrom ? `<span>← ${c.sim.evolvesFrom}</span>` : '',
+    c.sim && c.sim.prizes === 3 ? '<span class="badge mega">3 prizes</span>' : '',
+    c.custom ? '<span class="badge custom">custom</span>' : '',
+  ].join('');
+}
+
+function renderSuggest() {
+  const box = $('suggest');
+  if (!sugList.length) {
+    const q = $('search').value.trim();
+    if (!q) { box.classList.add('hidden'); return; }
+    box.innerHTML = `<div class="sug-empty">
+      No card called “${q}” among the ${CARDS.length} cards loaded.<br>
+      Use <b>+ Add card</b> to add it yourself.</div>`;
+    box.classList.remove('hidden');
+    return;
+  }
+  box.innerHTML = sugList.map((c, i) => {
+    const have = deck[c.name] || 0;
+    const full = have >= maxFor(c);
+    return `<div class="sug${i === sugIdx ? ' on' : ''}" data-i="${i}">
+      <div>
+        <div class="s-nm">${c.name}</div>
+        <div class="s-meta">${cardMeta(c)}<span>${CAT_LABEL[c.category]}</span>
+          ${have ? `<span class="s-in">${have} in deck</span>` : ''}</div>
+      </div>
+      <div class="s-add">${full ? 'max' : '+ add'}</div>
+    </div>`;
+  }).join('');
+  box.classList.remove('hidden');
+  box.querySelectorAll('.sug').forEach((el) => {
+    el.onmousedown = (e) => { e.preventDefault(); addCard(sugList[+el.dataset.i]); };
+  });
+}
+
+function closeSuggest() {
+  $('suggest').classList.add('hidden');
+  sugList = []; sugIdx = -1;
+}
+
+function addCard(card, n = 1) {
+  if (!card) return;
+  const cur = deck[card.name] || 0;
+  const next = Math.min(maxFor(card), cur + n);
+  deck[card.name] = next;
+  $('search').value = '';
+  closeSuggest();
+  renderAll();
+}
+
+function setCount(name, n) {
+  const card = INDEX[name];
+  if (!card) return;
+  const v = Math.max(0, Math.min(maxFor(card), n));
+  if (v === 0) delete deck[name]; else deck[name] = v;
+  renderAll();
+}
+
+/* ---------------------------------------------------------- deck editor --- */
 function renderGrid() {
   const wrap = $('grid');
-  const visible = CARDS.filter((c) => {
-    if (filter !== 'all' && c.category !== filter) return false;
-    if (!query) return true;
-    return (c.name + ' ' + (c.text || '')).toLowerCase().includes(query);
-  });
+  const names = Object.keys(deck).filter((n) => INDEX[n]);
+
+  if (!names.length) {
+    wrap.innerHTML = `<div class="deck-empty">
+      <b>Your deck is empty</b>
+      Start typing a card name above, or load a preset from the top bar.
+    </div>`;
+    return;
+  }
 
   let html = '';
   for (const cat of CATS) {
-    const group = visible.filter((c) => c.category === cat);
+    const group = names.filter((n) => INDEX[n].category === cat).sort();
     if (!group.length) continue;
-    html += `<div class="cat-head">${CAT_LABEL[cat]}</div><div class="cards">`;
-    for (const c of group) {
-      const n = deck[c.name] || 0;
+    const tot = group.reduce((a, n) => a + deck[n], 0);
+    html += `<div class="grp"><div class="grp-h">
+      <span>${CAT_LABEL[cat]}</span><span>${tot}</span></div><div class="rows">`;
+    for (const n of group) {
+      const c = INDEX[n];
+      const q = deck[n];
       const max = maxFor(c);
-      const opts = Array.from({ length: max + 1 }, (_, i) =>
-        `<option value="${i}"${i === n ? ' selected' : ''}>${i}</option>`).join('');
-      const prizes = c.sim && c.sim.prizes;
       html += `
-        <div class="card${n ? ' in' : ''}">
-          ${c.custom ? `<button class="rm-custom" data-del="${c.name}"
-            title="Delete this custom card">✕</button>` : ''}
-          <div class="nm">${c.name}</div>
-          <div class="meta">
-            <span>${c.set}</span>
-            ${c.type ? `<span class="badge ${c.type}">${c.type}</span>` : ''}
-            ${prizes === 3 ? '<span class="badge mega">3 prizes</span>' : ''}
-            ${c.custom ? '<span class="badge custom">custom</span>' : ''}
+        <div class="row${c.warning ? ' warnrow' : ''}" title="${
+  (c.warning ? c.warning + '\n\n' : '') + (c.text || '').replace(/"/g, '&quot;')}">
+          <div class="stepper">
+            <button data-dec="${n}">−</button>
+            <span class="qn">${q}</span>
+            <button data-inc="${n}"${q >= max ? ' disabled' : ''}>+</button>
           </div>
-          <div class="tx" title="${(c.text || '').replace(/"/g, '&quot;')}">${c.text || ''}</div>
-          ${c.warning ? `<div class="cardwarn">${c.warning}</div>` : ''}
-          <div class="qty">
-            <select data-card="${c.name}">${opts}</select>
+          <div>
+            <div class="r-nm">${n}</div>
+            <div class="r-meta">${cardMeta(c)}</div>
           </div>
+          <button class="r-x" data-rm="${n}" title="Remove">✕</button>
         </div>`;
     }
-    html += '</div>';
-  }
-
-  if (!html) {
-    const q = query ? `“${$('search').value}”` : 'that filter';
-    html = `<div class="empty">
-      <p style="margin:0 0 6px">No card matches ${q}.</p>
-      <p style="margin:0">This searches the ${CARDS.length} cards in
-      <code>data/cards.json</code> — it isn't a lookup of every card ever printed.
-      Use <b>+ Add card</b> to add it.</p></div>`;
+    html += '</div></div>';
   }
   wrap.innerHTML = html;
 
-  wrap.querySelectorAll('button[data-del]').forEach((b) => {
-    b.onclick = () => {
-      const name = b.dataset.del;
-      saveCustom(loadCustom().filter((c) => c.name !== name));
-      CARDS = CARDS.filter((c) => c.name !== name);
-      INDEX = makeCardIndex({ cards: CARDS });
-      delete deck[name];
-      renderAll();
-    };
+  wrap.querySelectorAll('[data-inc]').forEach((b) => {
+    b.onclick = () => setCount(b.dataset.inc, (deck[b.dataset.inc] || 0) + 1);
   });
-
-  wrap.querySelectorAll('select[data-card]').forEach((s) => {
-    s.onchange = () => {
-      const n = Number(s.value);
-      if (n > 0) deck[s.dataset.card] = n; else delete deck[s.dataset.card];
-      renderAll();
-    };
+  wrap.querySelectorAll('[data-dec]').forEach((b) => {
+    b.onclick = () => setCount(b.dataset.dec, (deck[b.dataset.dec] || 0) - 1);
+  });
+  wrap.querySelectorAll('[data-rm]').forEach((b) => {
+    b.onclick = () => setCount(b.dataset.rm, 0);
   });
 }
 
-/* ---------------------------------------------------------------- deck --- */
+/* ------------------------------------------------------------ deck panel --- */
 function currentSpec() {
   return buildSpec(deck, INDEX);
 }
@@ -293,24 +372,7 @@ function renderDeck() {
   }
   $('legality').innerHTML = msgs;
 
-  let html = '';
-  for (const cat of CATS) {
-    const rows = Object.keys(deck)
-      .filter((n) => INDEX[n] && INDEX[n].category === cat)
-      .sort();
-    if (!rows.length) continue;
-    const tot = rows.reduce((a, n) => a + deck[n], 0);
-    html += `<div class="dl-cat">${CAT_LABEL[cat]} (${tot})</div>`;
-    for (const n of rows) {
-      html += `<div class="dl-row"><span>${n}</span>
-        <span><span class="n">${deck[n]}</span>
-        <button data-rm="${n}" title="Remove">×</button></span></div>`;
-    }
-  }
-  $('decklist').innerHTML = html || '<p class="hint">Deck is empty.</p>';
-  $('decklist').querySelectorAll('button[data-rm]').forEach((b) => {
-    b.onclick = () => { delete deck[b.dataset.rm]; renderAll(); };
-  });
+  $('decklist').innerHTML = '';
 }
 
 function renderAll() {
@@ -355,12 +417,11 @@ async function run() {
   const btn = $('run');
   btn.disabled = true;
   btn.textContent = 'Running…';
-  await new Promise((r) => setTimeout(r, 30));   // let the button repaint
+  await new Promise((r) => setTimeout(r, 30));
 
   const games = Number($('games').value);
   const res = runGauntlet(spec, META, { games, seed: 20260803 });
 
-  // calibration probe, same settings, so the number is always in front of you
   const ctrl = applyControlOverride(buildSpec(PRESETS['Control (calibration)'], INDEX));
   const ctrlRes = runGauntlet(ctrl, META, { games: Math.min(games, 3000), seed: 20260803 });
 
@@ -378,7 +439,7 @@ async function run() {
       <div class="d">${s.pokemon} Pokémon in deck</div></div>
     <div class="kpi"><div class="n">${s.drawSupporters}</div>
       <div class="l">Draw Supporters</div>
-      <div class="d">6–10 is the usual range</div></div>
+      <div class="d">4 is the practical floor</div></div>
     <div class="kpi"><div class="n" style="color:${wrColor(worst.winrate)}">
       ${worst.winrate.toFixed(1)}%</div>
       <div class="l">Worst matchup</div>
@@ -404,7 +465,6 @@ async function run() {
      reference point — it should sit near 50%. Confidence tags mark how card-exact
      each opponent model is.`;
 
-  // aggregate end-of-game reasons, weighted by meta share
   const LBL = {
     prizes: 'You won', prize_race: 'Lost the prize race',
     bench_out: 'Ran out of Pokémon', time_out: 'Game went long',

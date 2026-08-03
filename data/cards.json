@@ -7,84 +7,6 @@
   },
   "cards": [
     {
-      "id": "mega-darkrai-ex",
-      "name": "Mega Darkrai ex",
-      "set": "PBL 48",
-      "category": "pokemon",
-      "subtype": "Basic · Mega Evolution ex",
-      "type": "D",
-      "max": 4,
-      "text": "Dusk Raid [D][D] 110+ — if your Benched Pokémon have any damage counters on them, this attack does 110 more damage. Abyss Eye [D][D][D] — if your opponent's Active Pokémon is affected by a Special Condition, it is Knocked Out.",
-      "sim": {
-        "basic": true, "hp": 280, "prizes": 3, "weak": "G", "retreat": 2,
-        "role": "attacker",
-        "attacks": [
-          { "name": "Dusk Raid", "cost": { "D": 2 }, "damage": 110, "bonusIfOwnBenchDamaged": 110 },
-          { "name": "Abyss Eye", "cost": { "D": 3 }, "koIfSpecialCondition": true }
-        ]
-      }
-    },
-    {
-      "id": "mega-absol-ex",
-      "name": "Mega Absol ex",
-      "set": "MEG 86",
-      "category": "pokemon",
-      "subtype": "Basic · Mega Evolution ex",
-      "type": "D",
-      "max": 4,
-      "text": "Terminal Period [D][C] — if your opponent's Active Pokémon has exactly 6 damage counters on it, that Pokémon is Knocked Out. Claw of Darkness [D][D][C] 200 — your opponent reveals their hand and you discard a card you find there.",
-      "sim": {
-        "basic": true, "hp": 280, "prizes": 3, "weak": "G", "retreat": 2,
-        "role": "attacker",
-        "attacks": [
-          { "name": "Terminal Period", "cost": { "D": 1, "C": 1 }, "koIfExactDamage": 60 },
-          { "name": "Claw of Darkness", "cost": { "D": 2, "C": 1 }, "damage": 200 }
-        ]
-      }
-    },
-    {
-      "id": "mega-kangaskhan-ex",
-      "name": "Mega Kangaskhan ex",
-      "set": "MEG 104",
-      "category": "pokemon",
-      "subtype": "Basic · Mega Evolution ex",
-      "type": "C",
-      "max": 4,
-      "text": "Ability: Run Errand — once during your turn, if this Pokémon is in the Active Spot, you may draw 2 cards. You can't use more than 1 Run Errand Ability each turn. Rapid-Fire Combo [C][C][C] 200+ — flip a coin until you get tails. This attack does 50 more damage for each heads.",
-      "warning": "Colorless, so Dark Bell Confuses IT TOO — playing Dark Bell while this is your Active gives you a 50% chance to whiff your own attack. Its Run Errand Ability is also switched off by Team Rocket's Watchtower, which ~49% of the field plays.",
-      "sim": {
-        "basic": true, "hp": 300, "prizes": 3, "weak": "F", "retreat": 3,
-        "role": "attacker",
-        "attacks": [
-          { "name": "Rapid-Fire Combo", "cost": { "C": 3 }, "damage": 200,
-            "flipUntilTailsBonus": 50 }
-        ]
-      }
-    },
-    {
-      "id": "fezandipiti-ex",
-      "name": "Fezandipiti ex",
-      "set": "ASC 142",
-      "category": "pokemon",
-      "subtype": "Basic · ex",
-      "type": "D",
-      "max": 4,
-      "text": "Ability: Adrena-Brain — once during your turn, if any of your Pokémon were Knocked Out during your opponent's last turn, you may draw 3 cards.",
-      "sim": { "basic": true, "hp": 210, "prizes": 2, "weak": "G", "retreat": 1, "role": "support" }
-    },
-    {
-      "id": "munkidori",
-      "name": "Munkidori",
-      "set": "TWM 95",
-      "category": "pokemon",
-      "subtype": "Basic",
-      "type": "D",
-      "max": 4,
-      "text": "Ability: Adrena-Brain — once during your turn, if you have a Darkness Energy attached to this Pokémon, you may move up to 3 damage counters from 1 of your Pokémon to another of your Pokémon.",
-      "sim": { "basic": true, "hp": 110, "prizes": 1, "weak": "G", "retreat": 1, "role": "support" }
-    },
-
-    {
       "id": "darkness-energy",
       "name": "Darkness Energy",
       "set": "MEE 7",
@@ -92,7 +14,94 @@
       "subtype": "Basic Energy",
       "max": null,
       "text": "Provides [D] Energy.",
-      "sim": { "basicEnergy": true, "provides": "D" }
+      "sim": {
+        "basicEnergy": true,
+        "provides": "D"
+      }
+    },
+    {
+      "id": "fighting-energy",
+      "name": "Fighting Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "F",
+      "max": null,
+      "text": "Provides [F] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "F"
+      }
+    },
+    {
+      "id": "fire-energy",
+      "name": "Fire Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "R",
+      "max": null,
+      "text": "Provides [R] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "R"
+      }
+    },
+    {
+      "id": "grass-energy",
+      "name": "Grass Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "G",
+      "max": null,
+      "text": "Provides [G] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "G"
+      }
+    },
+    {
+      "id": "lightning-energy",
+      "name": "Lightning Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "L",
+      "max": null,
+      "text": "Provides [L] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "L"
+      }
+    },
+    {
+      "id": "metal-energy",
+      "name": "Metal Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "M",
+      "max": null,
+      "text": "Provides [M] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "M"
+      }
+    },
+    {
+      "id": "psychic-energy",
+      "name": "Psychic Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "P",
+      "max": null,
+      "text": "Provides [P] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "P"
+      }
     },
     {
       "id": "spiky-energy",
@@ -102,17 +111,50 @@
       "subtype": "Special Energy",
       "max": 4,
       "text": "Provides [C] Energy. If the Pokémon this card is attached to is in the Active Spot and is damaged by an attack (even if Knocked Out), put 2 damage counters on the Attacking Pokémon.",
-      "sim": { "basicEnergy": false, "provides": "C", "retaliate": 20 }
+      "sim": {
+        "basicEnergy": false,
+        "provides": "C",
+        "retaliate": 20
+      }
     },
-
     {
-      "id": "ultra-ball",
-      "name": "Ultra Ball",
-      "set": "MEG 131",
+      "id": "water-energy",
+      "name": "Water Energy",
+      "set": "MEE",
+      "category": "energy",
+      "subtype": "Basic Energy",
+      "type": "W",
+      "max": null,
+      "text": "Provides [W] Energy.",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "W"
+      }
+    },
+    {
+      "id": "buddy-buddy-poffin",
+      "name": "Buddy-Buddy Poffin",
+      "set": "TEF 144",
       "category": "item",
       "max": 4,
-      "text": "Discard 2 cards from your hand, then search your deck for a Pokémon, reveal it and put it into your hand.",
-      "sim": { "effect": "searchPokemon", "discardCost": 2 }
+      "text": "Search your deck for up to 2 Basic Pokémon with 70 HP or less and put them onto your Bench.",
+      "sim": {
+        "effect": "searchSmallBasics",
+        "count": 2,
+        "hpLimit": 70
+      }
+    },
+    {
+      "id": "crushing-hammer",
+      "name": "Crushing Hammer",
+      "set": "POR 71",
+      "category": "item",
+      "max": 4,
+      "text": "Flip a coin. If heads, discard an Energy attached to 1 of your opponent's Pokémon.",
+      "sim": {
+        "effect": "discardOpponentEnergy",
+        "chance": 0.5
+      }
     },
     {
       "id": "dark-bell",
@@ -128,13 +170,16 @@
       }
     },
     {
-      "id": "night-stretcher",
-      "name": "Night Stretcher",
-      "set": "ASC 196",
+      "id": "energy-retrieval",
+      "name": "Energy Retrieval",
+      "set": "SVI 171",
       "category": "item",
       "max": 4,
-      "text": "Put a Pokémon or a Basic Energy card from your discard pile into your hand.",
-      "sim": { "effect": "recoverFromDiscard" }
+      "text": "Put 2 Basic Energy cards from your discard pile into your hand.",
+      "sim": {
+        "effect": "energyFromDiscard",
+        "count": 2
+      }
     },
     {
       "id": "energy-search",
@@ -143,16 +188,9 @@
       "category": "item",
       "max": 4,
       "text": "Search your deck for a Basic Energy card, reveal it and put it into your hand.",
-      "sim": { "effect": "searchBasicEnergy" }
-    },
-    {
-      "id": "energy-retrieval",
-      "name": "Energy Retrieval",
-      "set": "SVI 171",
-      "category": "item",
-      "max": 4,
-      "text": "Put 2 Basic Energy cards from your discard pile into your hand.",
-      "sim": { "effect": "energyFromDiscard", "count": 2 }
+      "sim": {
+        "effect": "searchBasicEnergy"
+      }
     },
     {
       "id": "energy-switch",
@@ -161,7 +199,42 @@
       "category": "item",
       "max": 4,
       "text": "Move a Basic Energy from 1 of your Pokémon to another of your Pokémon.",
-      "sim": { "effect": "moveEnergy" }
+      "sim": {
+        "effect": "moveEnergy"
+      }
+    },
+    {
+      "id": "buddy-buddy-poffin-x",
+      "name": "Nest Ball",
+      "set": "SVI 181",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for a Basic Pokémon and put it onto your Bench. Then, shuffle your deck.",
+      "sim": {
+        "effect": "searchBasicToBench"
+      }
+    },
+    {
+      "id": "night-stretcher",
+      "name": "Night Stretcher",
+      "set": "ASC 196",
+      "category": "item",
+      "max": 4,
+      "text": "Put a Pokémon or a Basic Energy card from your discard pile into your hand.",
+      "sim": {
+        "effect": "recoverFromDiscard"
+      }
+    },
+    {
+      "id": "rare-candy",
+      "name": "Rare Candy",
+      "set": "MEG 125",
+      "category": "item",
+      "max": 4,
+      "text": "Choose 1 of your Basic Pokémon in play. If you have a Stage 2 card in your hand that evolves from that Pokémon, put that card on the Basic Pokémon. You can't use this during your first turn or on a Basic Pokémon put into play this turn.",
+      "sim": {
+        "effect": "rareCandy"
+      }
     },
     {
       "id": "switch",
@@ -170,135 +243,233 @@
       "category": "item",
       "max": 4,
       "text": "Switch your Active Pokémon with 1 of your Benched Pokémon.",
-      "sim": { "effect": "switchActive" }
+      "sim": {
+        "effect": "switchActive"
+      }
     },
     {
-      "id": "buddy-buddy-poffin",
-      "name": "Buddy-Buddy Poffin",
-      "set": "TEF 144",
+      "id": "ultra-ball",
+      "name": "Ultra Ball",
+      "set": "MEG 131",
       "category": "item",
       "max": 4,
-      "text": "Search your deck for up to 2 Basic Pokémon with 70 HP or less and put them onto your Bench.",
-      "sim": { "effect": "searchSmallBasics", "count": 2, "hpLimit": 70 }
+      "text": "Discard 2 cards from your hand, then search your deck for a Pokémon, reveal it and put it into your hand.",
+      "sim": {
+        "effect": "searchPokemon",
+        "discardCost": 2
+      }
     },
     {
-      "id": "crushing-hammer",
-      "name": "Crushing Hammer",
-      "set": "POR 71",
-      "category": "item",
+      "id": "dragapult-ex",
+      "name": "Dragapult ex",
+      "set": "TWM 130",
+      "category": "pokemon",
+      "subtype": "Stage 2 · ex",
+      "type": "N",
       "max": 4,
-      "text": "Flip a coin. If heads, discard an Energy attached to 1 of your opponent's Pokémon.",
-      "sim": { "effect": "discardOpponentEnergy", "chance": 0.5 }
-    },
-
-    {
-      "id": "punk-helmet",
-      "name": "Punk Helmet",
-      "set": "PFL 92",
-      "category": "tool",
-      "max": 4,
-      "text": "If the [D] Pokémon this card is attached to is in the Active Spot and is damaged by an attack (even if Knocked Out), place 4 damage counters on the Attacking Pokémon.",
-      "sim": { "retaliate": 40, "requiresDark": true }
-    },
-    {
-      "id": "powerglass",
-      "name": "Powerglass",
-      "set": "SFA 63",
-      "category": "tool",
-      "max": 4,
-      "text": "At the end of your turn (after your attack), if the Pokémon this card is attached to is in the Active Spot, you may attach a Basic Energy card from your discard pile to it.",
-      "sim": { "effect": "endOfTurnEnergyFromDiscard" }
-    },
-    {
-      "id": "amulet-of-hope",
-      "name": "Amulet of Hope",
-      "set": "SSP 162",
-      "category": "tool",
-      "max": 4,
-      "text": "If the Pokémon this card is attached to is Knocked Out by damage from an attack, search your deck for up to 3 cards and put them into your hand.",
-      "sim": { "effect": "searchOnKnockout", "count": 3 }
+      "text": "Tera — as long as this Pokémon is on your Bench, prevent all damage done to it by attacks. Jet Headbutt [C] 70. Phantom Dive [R][P] 200 — put 6 damage counters on your opponent's Benched Pokémon in any way you like.",
+      "sim": {
+        "stage": 2,
+        "evolvesFrom": "Drakloak",
+        "hp": 320,
+        "prizes": 2,
+        "retreat": 1,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Jet Headbutt",
+            "cost": {
+              "C": 1
+            },
+            "damage": 70
+          },
+          {
+            "name": "Phantom Dive",
+            "cost": {
+              "R": 1,
+              "P": 1
+            },
+            "damage": 200
+          }
+        ]
+      }
     },
     {
-      "id": "air-balloon",
-      "name": "Air Balloon",
-      "set": "SVI 156",
-      "category": "tool",
+      "id": "drakloak",
+      "name": "Drakloak",
+      "set": "TWM 129",
+      "category": "pokemon",
+      "subtype": "Stage 1",
+      "type": "N",
       "max": 4,
-      "text": "The Retreat Cost of the Pokémon this card is attached to is [C][C] less.",
-      "sim": { "retreatReduction": 2 }
-    },
-
-    {
-      "id": "lillies-determination",
-      "name": "Lillie's Determination",
-      "set": "MEG 119",
-      "category": "supporter",
-      "max": 4,
-      "text": "Shuffle your hand into your deck. Then, draw 6 cards. If you have exactly 6 Prize cards remaining, draw 8 cards instead.",
-      "sim": { "effect": "shuffleDraw", "draw": 6, "drawIfSixPrizes": 8, "isDraw": true }
-    },
-    {
-      "id": "judge",
-      "name": "Judge",
-      "set": "POR 76",
-      "category": "supporter",
-      "max": 4,
-      "text": "Each player shuffles their hand into their deck, then draws 4 cards.",
-      "sim": { "effect": "shuffleDraw", "draw": 4, "isDraw": true }
+      "text": "Ability: Recon Directive — once during your turn, look at the top 2 cards of your deck and put 1 into your hand. Put the other on the bottom. Dragon Headbutt [R][P] 70.",
+      "sim": {
+        "stage": 1,
+        "evolvesFrom": "Dreepy",
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "role": "support"
+      }
     },
     {
-      "id": "jett",
-      "name": "Jett",
-      "set": "PBL 79",
-      "category": "supporter",
+      "id": "dreepy",
+      "name": "Dreepy",
+      "set": "TWM 128",
+      "category": "pokemon",
+      "subtype": "Basic",
+      "type": "N",
       "max": 4,
-      "text": "Draw a card for each of your opponent's Mega Evolution Pokémon ex in play.",
-      "sim": { "effect": "drawPerOpponentMega", "isDraw": true }
+      "text": "Petty Grudge [P] 10. Bite [R][P] 40.",
+      "sim": {
+        "basic": true,
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "role": "support"
+      }
     },
     {
-      "id": "team-rockets-petrel",
-      "name": "Team Rocket's Petrel",
-      "set": "DRI 176",
-      "category": "supporter",
+      "id": "fezandipiti-ex",
+      "name": "Fezandipiti ex",
+      "set": "ASC 142",
+      "category": "pokemon",
+      "subtype": "Basic · ex",
+      "type": "D",
       "max": 4,
-      "text": "Search your deck for a Trainer card, reveal it and put it into your hand.",
-      "sim": { "effect": "searchTrainer", "isDraw": true }
+      "text": "Ability: Adrena-Brain — once during your turn, if any of your Pokémon were Knocked Out during your opponent's last turn, you may draw 3 cards.",
+      "sim": {
+        "basic": true,
+        "hp": 210,
+        "prizes": 2,
+        "weak": "G",
+        "retreat": 1,
+        "role": "support",
+        "stage": 0
+      }
     },
     {
-      "id": "boss-orders",
-      "name": "Boss's Orders",
-      "set": "MEG 114",
-      "category": "supporter",
+      "id": "mega-absol-ex",
+      "name": "Mega Absol ex",
+      "set": "MEG 86",
+      "category": "pokemon",
+      "subtype": "Basic · Mega Evolution ex",
+      "type": "D",
       "max": 4,
-      "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot.",
-      "sim": { "effect": "gust" }
+      "text": "Terminal Period [D][C] — if your opponent's Active Pokémon has exactly 6 damage counters on it, that Pokémon is Knocked Out. Claw of Darkness [D][D][C] 200 — your opponent reveals their hand and you discard a card you find there.",
+      "sim": {
+        "basic": true,
+        "hp": 280,
+        "prizes": 3,
+        "weak": "G",
+        "retreat": 2,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Terminal Period",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "koIfExactDamage": 60
+          },
+          {
+            "name": "Claw of Darkness",
+            "cost": {
+              "D": 2,
+              "C": 1
+            },
+            "damage": 200
+          }
+        ],
+        "stage": 0
+      }
     },
     {
-      "id": "janines-secret-art",
-      "name": "Janine's Secret Art",
-      "set": "SFA 59",
-      "category": "supporter",
+      "id": "mega-darkrai-ex",
+      "name": "Mega Darkrai ex",
+      "set": "PBL 48",
+      "category": "pokemon",
+      "subtype": "Basic · Mega Evolution ex",
+      "type": "D",
       "max": 4,
-      "text": "Choose up to 2 of your [D] Pokémon. For each, search your deck for a Basic [D] Energy card and attach it. If you attached Energy to your Active Pokémon this way, it is now Poisoned.",
-      "sim": { "effect": "attachDarkFromDeck", "count": 2, "poisonsOwnActive": true }
+      "text": "Dusk Raid [D][D] 110+ — if your Benched Pokémon have any damage counters on them, this attack does 110 more damage. Abyss Eye [D][D][D] — if your opponent's Active Pokémon is affected by a Special Condition, it is Knocked Out.",
+      "sim": {
+        "basic": true,
+        "hp": 280,
+        "prizes": 3,
+        "weak": "G",
+        "retreat": 2,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Dusk Raid",
+            "cost": {
+              "D": 2
+            },
+            "damage": 110,
+            "bonusIfOwnBenchDamaged": 110
+          },
+          {
+            "name": "Abyss Eye",
+            "cost": {
+              "D": 3
+            },
+            "koIfSpecialCondition": true
+          }
+        ],
+        "stage": 0
+      }
     },
     {
-      "id": "black-belts-training",
-      "name": "Black Belt's Training",
-      "set": "JTG 143",
-      "category": "supporter",
+      "id": "mega-kangaskhan-ex",
+      "name": "Mega Kangaskhan ex",
+      "set": "MEG 104",
+      "category": "pokemon",
+      "subtype": "Basic · Mega Evolution ex",
+      "type": "C",
       "max": 4,
-      "text": "During this turn, attacks used by your Pokémon do 40 more damage to your opponent's Active Pokémon ex.",
-      "sim": { "effect": "damageBoostVsEx", "amount": 40 }
+      "text": "Ability: Run Errand — once during your turn, if this Pokémon is in the Active Spot, you may draw 2 cards. You can't use more than 1 Run Errand Ability each turn. Rapid-Fire Combo [C][C][C] 200+ — flip a coin until you get tails. This attack does 50 more damage for each heads.",
+      "warning": "Colorless, so Dark Bell Confuses IT TOO — playing Dark Bell while this is your Active gives you a 50% chance to whiff your own attack. Its Run Errand Ability is also switched off by Team Rocket's Watchtower, which ~49% of the field plays.",
+      "sim": {
+        "basic": true,
+        "hp": 300,
+        "prizes": 3,
+        "weak": "F",
+        "retreat": 3,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rapid-Fire Combo",
+            "cost": {
+              "C": 3
+            },
+            "damage": 200,
+            "flipUntilTailsBonus": 50
+          }
+        ],
+        "stage": 0
+      }
     },
     {
-      "id": "lisias-appeal",
-      "name": "Lisia's Appeal",
-      "set": "SSP 179",
-      "category": "supporter",
+      "id": "munkidori",
+      "name": "Munkidori",
+      "set": "TWM 95",
+      "category": "pokemon",
+      "subtype": "Basic",
+      "type": "D",
       "max": 4,
-      "text": "Switch in 1 of your opponent's Benched Basic Pokémon to the Active Spot. If you do, the new Active Pokémon is now Confused.",
-      "sim": { "effect": "gustAndConfuse", "basicsOnly": true }
+      "text": "Ability: Adrena-Brain — once during your turn, if you have a Darkness Energy attached to this Pokémon, you may move up to 3 damage counters from 1 of your Pokémon to another of your Pokémon.",
+      "sim": {
+        "basic": true,
+        "hp": 110,
+        "prizes": 1,
+        "weak": "G",
+        "retreat": 1,
+        "role": "support",
+        "stage": 0
+      }
     },
     {
       "id": "az-tranquility",
@@ -307,7 +478,160 @@
       "category": "supporter",
       "max": 4,
       "text": "Switch your Active Pokémon with 1 of your Benched Pokémon. If you moved a Pokémon ex to your Bench this way, heal 80 damage from that Pokémon.",
-      "sim": { "effect": "switchAndHeal", "heal": 80 }
+      "sim": {
+        "effect": "switchAndHeal",
+        "heal": 80
+      }
+    },
+    {
+      "id": "black-belts-training",
+      "name": "Black Belt's Training",
+      "set": "JTG 143",
+      "category": "supporter",
+      "max": 4,
+      "text": "During this turn, attacks used by your Pokémon do 40 more damage to your opponent's Active Pokémon ex.",
+      "sim": {
+        "effect": "damageBoostVsEx",
+        "amount": 40
+      }
+    },
+    {
+      "id": "boss-orders",
+      "name": "Boss's Orders",
+      "set": "MEG 114",
+      "category": "supporter",
+      "max": 4,
+      "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot.",
+      "sim": {
+        "effect": "gust"
+      }
+    },
+    {
+      "id": "janines-secret-art",
+      "name": "Janine's Secret Art",
+      "set": "SFA 59",
+      "category": "supporter",
+      "max": 4,
+      "text": "Choose up to 2 of your [D] Pokémon. For each, search your deck for a Basic [D] Energy card and attach it. If you attached Energy to your Active Pokémon this way, it is now Poisoned.",
+      "sim": {
+        "effect": "attachDarkFromDeck",
+        "count": 2,
+        "poisonsOwnActive": true
+      }
+    },
+    {
+      "id": "jett",
+      "name": "Jett",
+      "set": "PBL 79",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw a card for each of your opponent's Mega Evolution Pokémon ex in play.",
+      "sim": {
+        "effect": "drawPerOpponentMega",
+        "isDraw": true
+      }
+    },
+    {
+      "id": "judge",
+      "name": "Judge",
+      "set": "POR 76",
+      "category": "supporter",
+      "max": 4,
+      "text": "Each player shuffles their hand into their deck, then draws 4 cards.",
+      "sim": {
+        "effect": "shuffleDraw",
+        "draw": 4,
+        "isDraw": true
+      }
+    },
+    {
+      "id": "lillies-determination",
+      "name": "Lillie's Determination",
+      "set": "MEG 119",
+      "category": "supporter",
+      "max": 4,
+      "text": "Shuffle your hand into your deck. Then, draw 6 cards. If you have exactly 6 Prize cards remaining, draw 8 cards instead.",
+      "sim": {
+        "effect": "shuffleDraw",
+        "draw": 6,
+        "drawIfSixPrizes": 8,
+        "isDraw": true
+      }
+    },
+    {
+      "id": "lisias-appeal",
+      "name": "Lisia's Appeal",
+      "set": "SSP 179",
+      "category": "supporter",
+      "max": 4,
+      "text": "Switch in 1 of your opponent's Benched Basic Pokémon to the Active Spot. If you do, the new Active Pokémon is now Confused.",
+      "sim": {
+        "effect": "gustAndConfuse",
+        "basicsOnly": true
+      }
+    },
+    {
+      "id": "team-rockets-petrel",
+      "name": "Team Rocket's Petrel",
+      "set": "DRI 176",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for a Trainer card, reveal it and put it into your hand.",
+      "sim": {
+        "effect": "searchTrainer",
+        "isDraw": true
+      }
+    },
+    {
+      "id": "air-balloon",
+      "name": "Air Balloon",
+      "set": "SVI 156",
+      "category": "tool",
+      "max": 4,
+      "text": "The Retreat Cost of the Pokémon this card is attached to is [C][C] less.",
+      "sim": {
+        "retreatReduction": 2
+      }
+    },
+    {
+      "id": "amulet-of-hope",
+      "name": "Amulet of Hope",
+      "set": "SSP 162",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this card is attached to is Knocked Out by damage from an attack, search your deck for up to 3 cards and put them into your hand.",
+      "sim": {
+        "effect": "searchOnKnockout",
+        "count": 3
+      }
+    },
+    {
+      "id": "powerglass",
+      "name": "Powerglass",
+      "set": "SFA 63",
+      "category": "tool",
+      "max": 4,
+      "text": "At the end of your turn (after your attack), if the Pokémon this card is attached to is in the Active Spot, you may attach a Basic Energy card from your discard pile to it.",
+      "sim": {
+        "effect": "endOfTurnEnergyFromDiscard"
+      }
+    },
+    {
+      "id": "punk-helmet",
+      "name": "Punk Helmet",
+      "set": "PFL 92",
+      "category": "tool",
+      "max": 4,
+      "text": "If the [D] Pokémon this card is attached to is in the Active Spot and is damaged by an attack (even if Knocked Out), place 4 damage counters on the Attacking Pokémon.",
+      "sim": {
+        "retaliate": 40,
+        "requiresDark": true
+      }
     }
-  ]
+  ],
+  "_imported": {
+    "at": "2026-08-03T14:38:30.569Z",
+    "source": "pokemontcg.io",
+    "note": "Imported cards carry \"imported\": true. Their attack costs and damage are modelled; ability and Trainer effect text is NOT converted into game logic."
+  }
 }

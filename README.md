@@ -11,9 +11,10 @@ simulation engine are both plain ES modules, so GitHub Pages hosts the whole thi
 
 ## What it does
 
-- **Deck builder** — pick cards from a grid, set counts with a dropdown, watch the deck
-  list and legality checks update live (60 cards exactly, 4-copy limit, basic Energy
-  exempt).
+- **Deck builder** — type a card name, pick from the predictive dropdown, and adjust
+  counts with a stepper. The main view shows only what's in your deck. Legality updates
+  live: 60 cards exactly, 4-copy limit, basic Energy exempt, and every evolution checked
+  against its Basic.
 - **Simulator** — plays thousands of games against the top 8 archetypes, weighted by
   real meta share, and reports win rate, matchup breakdown, and how the games ended.
 - **Consistency maths** — exact hypergeometric mulligan rate, Pokémon count, draw
@@ -107,6 +108,7 @@ difference between two `medium` matchups as noise.
 ```
 index.html            deck builder + results UI
 src/engine.js         simulation engine (the thing worth reviewing)
+tools/import-cards.mjs  bulk card importer
 src/decks.js          preset decklists + spec builder
 src/ui.js             DOM wiring
 src/styles.css
@@ -116,9 +118,37 @@ tests/                parity, calibration, and data-integrity tests
 python/               original Python reference implementation
 ```
 
-## Adding a card
+## Importing the full Standard pool
 
-The search box only filters the cards in `data/cards.json` — it is **not** a lookup of
+`data/cards.json` ships with a hand-curated core. To pull in the whole Standard-legal
+pool:
+
+```bash
+node tools/import-cards.mjs --dry-run     # see what would come in
+node tools/import-cards.mjs               # import and merge
+npm test
+```
+
+Source is [pokemontcg.io](https://pokemontcg.io). Set `POKEMONTCG_API_KEY` if you hit
+rate limits.
+
+**Curated cards always win.** Anything already in `data/cards.json` keeps its
+hand-written `sim` block; the importer only adds names that aren't there. Those curated
+blocks encode mechanics no API exposes — Abyss Eye's conditional knockout, Dark Bell's
+self-Confusion trap, Mega prize counts.
+
+**What you get, and what you don't.** Imported cards are complete enough to *build*
+with: name, set, type, HP, stage, evolution line, retreat, weakness, attack costs and
+damage. They are not fully *simulated* — ability and Trainer effect text is prose that
+no parser turns into game logic. An imported Supporter is inert in the simulation until
+someone writes its effect into `src/engine.js`. Treat a win rate for a deck built mostly
+from imported Trainers with suspicion.
+
+A failed or offline run exits without touching `data/cards.json`.
+
+## Adding a card by hand
+
+The search box only searches the cards in `data/cards.json` — it is **not** a lookup of
 every card ever printed. If something doesn't appear, it isn't in the database yet.
 
 **In the app:** hit **+ Add card**, fill in the form, and it shows up immediately. Custom
@@ -170,6 +200,8 @@ reason about and a black box.
 
 ## Known limitations
 
+- Ability text and Trainer effects on **imported** cards are not simulated; only
+  hand-modelled cards have real mechanics.
 - Opponents don't play Trainers against you beyond an abstracted energy-denial rate.
 - No mirror matches, no bench-sniping targets beyond a flat spread value.
 - Prize-card mapping is random; the sim doesn't model playing around a prized key card.

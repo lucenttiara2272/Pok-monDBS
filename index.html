@@ -35,20 +35,19 @@
 
 <main class="layout">
 
-  <!-- ------------------------------------------------ card picker -->
+  <!-- ------------------------------------------------ deck editor -->
   <section class="picker">
-    <div class="picker-head">
-      <input id="search" type="search" placeholder="Search cards…" autocomplete="off">
-      <div class="filters" id="filters"></div>
+    <div class="searchbar">
+      <div class="typeahead">
+        <input id="search" type="text" autocomplete="off" spellcheck="false"
+               placeholder="Type a card name to add it…  (↑↓ to choose, Enter to add)">
+        <div id="suggest" class="suggest hidden"></div>
+      </div>
       <button id="add-card" class="btn">+ Add card</button>
       <button id="export" class="btn ghost hidden">Export JSON</button>
     </div>
+
     <div id="grid"></div>
-    <p class="hint">
-      Set a count with the dropdown on each card. Basic Energy has no copy limit;
-      everything else caps at 4. Missing a card? <b>+ Add card</b> — it saves in this
-      browser and can be exported into <code>data/cards.json</code> to keep for good.
-    </p>
   </section>
 
   <!-- ------------------------------------------------ deck panel -->
@@ -149,6 +148,17 @@
 
     <fieldset id="mon-fields">
       <legend>Pokémon stats</legend>
+      <div class="frow">
+        <label>Stage
+          <select name="stage">
+            <option value="0">Basic</option>
+            <option value="1">Stage 1</option>
+            <option value="2">Stage 2</option>
+          </select>
+        </label>
+        <label>Evolves from
+          <input name="evolvesFrom" placeholder="Drakloak — Stage 1/2 only"></label>
+      </div>
       <div class="frow">
         <label>HP<input name="hp" type="number" value="280" min="10" step="10"></label>
         <label>Prizes
