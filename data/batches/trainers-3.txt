@@ -1,0 +1,17 @@
+# Meta priority batch 3 — Mega Evolution (MEG) Trainers. This is the base set most
+# format staples are reprinted in, so it also settles the current printing for
+# Switch, Energy Switch and Air Balloon.
+
+S|Acerola's Mischief|MEG 113|Usable only if your opponent has 2 or fewer Prize cards remaining. Choose 1 of your Pokémon; during your opponent's next turn prevent all damage and effects from their Pokémon ex done to it.
+I|Fighting Gong|MEG 116|Search your deck for a Basic [F] Energy card or a Basic [F] Pokémon and put it into your hand.
+I|Iron Defender|MEG 118|During your opponent's next turn, all of your [M] Pokémon take 30 less damage from attacks.
+S|Lt. Surge's Bargain|MEG 120|Ask your opponent if each player may take a Prize card. If yes, each player takes one. If no, you draw 4 cards.
+I|Mega Signal|MEG 121|Search your deck for a Mega Evolution Pokémon ex, reveal it, and put it into your hand.
+D|Mystery Garden|MEG 122|Once during each player's turn, that player may discard an Energy from hand to draw until they have as many cards in hand as they have [P] Pokémon in play.
+S|Pokémon Center Lady|MEG 123|Heal 60 damage and remove all Special Conditions from 1 of your Pokémon.
+I|Premium Power Pro|MEG 124|During this turn, attacks by your [F] Pokémon do 30 more damage to your opponent's Active Pokémon.
+I|Repel|MEG 126|Your opponent switches their Active Pokémon with 1 of their Benched Pokémon.
+D|Risky Ruins|MEG 127|Whenever any player benches a Basic non-[D] Pokémon during their turn, place 2 damage counters on it.
+I|Strange Timepiece|MEG 128|Devolve 1 of your evolved [P] Pokémon by returning any number of Evolution cards on it to your hand. That Pokémon can't evolve this turn.
+S|Wally's Compassion|MEG 132|Heal all damage from 1 of your Mega Evolution Pokémon ex. If you did, put all Energy attached to it into your hand.
+D|Celebratory Fanfare|MEP 28|Once during each player's turn, that player may heal 10 damage from each of their Pokémon. If they do, their turn ends.

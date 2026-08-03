@@ -49,14 +49,17 @@ test('every category in the database is one the UI can render', () => {
   }
 });
 
-test('no imported card comes from a rotated set', () => {
+test('no card cites a set outside the format', () => {
+  // Applies to hand-written cards too, not just imported ones. Curated entries
+  // originally carried SVI printings for staples like Switch and Energy Search —
+  // the cards are legal via reprints, but quoting a rotated set is misleading to
+  // anyone checking a decklist against it.
   const format = JSON.parse(readFileSync(join(here, '../data/format.json'), 'utf8'));
   const legal = new Set(format.legalSets);
   const bad = cards.cards
-    .filter((c) => c.imported)
     .filter((c) => !legal.has((c.set || '').split(' ')[0].toUpperCase()));
   assert.equal(bad.length, 0,
-    `not legal in ${format.format}: ${bad.slice(0, 5).map((c) => `${c.name} (${c.set})`).join(', ')}`);
+    `not legal in ${format.format}: ${bad.slice(0, 6).map((c) => `${c.name} (${c.set})`).join(', ')}`);
 });
 
 test('Stadium cards count as Trainers in the deck stats', () => {

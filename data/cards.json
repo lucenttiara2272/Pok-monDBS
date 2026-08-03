@@ -318,7 +318,7 @@
     {
       "id": "energy-retrieval",
       "name": "Energy Retrieval",
-      "set": "SVI 171",
+      "set": "CRI 108",
       "category": "item",
       "max": 4,
       "text": "Put 2 Basic Energy cards from your discard pile into your hand.",
@@ -330,7 +330,7 @@
     {
       "id": "energy-search",
       "name": "Energy Search",
-      "set": "SVI 172",
+      "set": "POR 72",
       "category": "item",
       "max": 4,
       "text": "Search your deck for a Basic Energy card, reveal it and put it into your hand.",
@@ -349,13 +349,37 @@
     {
       "id": "energy-switch",
       "name": "Energy Switch",
-      "set": "SVI 173",
+      "set": "MEG 115",
       "category": "item",
       "max": 4,
       "text": "Move a Basic Energy from 1 of your Pokémon to another of your Pokémon.",
       "sim": {
         "effect": "moveEnergy"
       }
+    },
+    {
+      "id": "fighting-gong",
+      "name": "Fighting Gong",
+      "set": "MEG 116",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for a Basic [F] Energy card or a Basic [F] Pokémon and put it into your hand."
+    },
+    {
+      "id": "glass-trumpet",
+      "name": "Glass Trumpet",
+      "set": "SCR 135",
+      "category": "item",
+      "max": 4,
+      "text": "Usable only with a Tera Pokémon in play. Attach a Basic Energy from your discard pile to each of up to 2 of your Benched [C] Pokémon."
+    },
+    {
+      "id": "great-haul-net",
+      "name": "Great Haul Net",
+      "set": "CRI 78",
+      "category": "item",
+      "max": 4,
+      "text": "Choose one or both: shuffle up to 3 [W] Pokémon from your discard into your deck; shuffle up to 3 Basic [W] Energy from your discard into your deck."
     },
     {
       "id": "hand-trimmer",
@@ -374,6 +398,30 @@
       "text": "Discard the top 2 cards of your deck."
     },
     {
+      "id": "hop-s-bag",
+      "name": "Hop's Bag",
+      "set": "JTG 147",
+      "category": "item",
+      "max": 4,
+      "text": "Search your deck for up to 2 Basic Hop's Pokémon and put them onto your Bench."
+    },
+    {
+      "id": "iron-defender",
+      "name": "Iron Defender",
+      "set": "MEG 118",
+      "category": "item",
+      "max": 4,
+      "text": "During your opponent's next turn, all of your [M] Pokémon take 30 less damage from attacks."
+    },
+    {
+      "id": "jumbo-ice-cream",
+      "name": "Jumbo Ice Cream",
+      "set": "CRI 109",
+      "category": "item",
+      "max": 4,
+      "text": "Heal 80 damage from your Active Pokémon if it has 3 or more Energy attached."
+    },
+    {
       "id": "lumiose-galette",
       "name": "Lumiose Galette",
       "set": "POR 78",
@@ -390,15 +438,20 @@
       "text": "Search your deck for a Pokémon and put it into your hand."
     },
     {
-      "id": "buddy-buddy-poffin-x",
-      "name": "Nest Ball",
-      "set": "SVI 181",
+      "id": "mega-signal",
+      "name": "Mega Signal",
+      "set": "MEG 121",
       "category": "item",
       "max": 4,
-      "text": "Search your deck for a Basic Pokémon and put it onto your Bench. Then, shuffle your deck.",
-      "sim": {
-        "effect": "searchBasicToBench"
-      }
+      "text": "Search your deck for a Mega Evolution Pokémon ex, reveal it, and put it into your hand."
+    },
+    {
+      "id": "n-s-pp-up",
+      "name": "N's PP Up",
+      "set": "JTG 153",
+      "category": "item",
+      "max": 4,
+      "text": "Attach a Basic Energy card from your discard pile to 1 of your Benched N's Pokémon."
     },
     {
       "id": "night-stretcher",
@@ -444,6 +497,14 @@
       "text": "Heal 30 damage from 1 of your Pokémon."
     },
     {
+      "id": "premium-power-pro",
+      "name": "Premium Power Pro",
+      "set": "MEG 124",
+      "category": "item",
+      "max": 4,
+      "text": "During this turn, attacks by your [F] Pokémon do 30 more damage to your opponent's Active Pokémon."
+    },
+    {
       "id": "prime-catcher",
       "name": "Prime Catcher",
       "set": "TEF 157",
@@ -471,6 +532,22 @@
       "text": "Attach a Basic Energy card from your discard pile to each of your Future Pokémon."
     },
     {
+      "id": "redeemable-ticket",
+      "name": "Redeemable Ticket",
+      "set": "JTG 156",
+      "category": "item",
+      "max": 4,
+      "text": "Shuffle your Prize cards into the bottom of your deck, then set that many new Prize cards from the top."
+    },
+    {
+      "id": "repel",
+      "name": "Repel",
+      "set": "MEG 126",
+      "category": "item",
+      "max": 4,
+      "text": "Your opponent switches their Active Pokémon with 1 of their Benched Pokémon."
+    },
+    {
       "id": "sacred-ash",
       "name": "Sacred Ash",
       "set": "DRI 168",
@@ -479,9 +556,33 @@
       "text": "Shuffle 5 Pokémon from your discard pile into your deck."
     },
     {
+      "id": "special-red-card",
+      "name": "Special Red Card",
+      "set": "CRI 82",
+      "category": "item",
+      "max": 4,
+      "text": "Usable only if your opponent has 3 or fewer Prize cards remaining. They shuffle their hand to the bottom of their deck and draw 3 cards."
+    },
+    {
+      "id": "strange-timepiece",
+      "name": "Strange Timepiece",
+      "set": "MEG 128",
+      "category": "item",
+      "max": 4,
+      "text": "Devolve 1 of your evolved [P] Pokémon by returning any number of Evolution cards on it to your hand. That Pokémon can't evolve this turn."
+    },
+    {
+      "id": "super-potion",
+      "name": "Super Potion",
+      "set": "JTG 158",
+      "category": "item",
+      "max": 4,
+      "text": "Heal 60 damage from 1 of your Pokémon, then discard an Energy attached to it."
+    },
+    {
       "id": "switch",
       "name": "Switch",
-      "set": "SVI 194",
+      "set": "MEG 130",
       "category": "item",
       "max": 4,
       "text": "Switch your Active Pokémon with 1 of your Benched Pokémon.",
@@ -528,6 +629,22 @@
       "category": "item",
       "max": 4,
       "text": "Search your deck for up to 3 Pokémon Tool cards with \"Technical Machine\" in their name and put them into your hand."
+    },
+    {
+      "id": "tool-scrapper",
+      "name": "Tool Scrapper",
+      "set": "CRI 115",
+      "category": "item",
+      "max": 4,
+      "text": "Choose up to 2 Pokémon Tool cards attached to Pokémon in play (either player's) and discard them."
+    },
+    {
+      "id": "transformation-tome",
+      "name": "Transformation Tome",
+      "set": "CRI 83",
+      "category": "item",
+      "max": 4,
+      "text": "Play 2 at once. Swap a Basic Pokémon in your discard pile with 1 of your Basic Pokémon in play, keeping all attached cards, damage and effects."
     },
     {
       "id": "ultra-ball",
@@ -4736,6 +4853,14 @@
       "imported": true
     },
     {
+      "id": "celebratory-fanfare",
+      "name": "Celebratory Fanfare",
+      "set": "MEP 28",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may heal 10 damage from each of their Pokémon. If they do, their turn ends."
+    },
+    {
       "id": "forest-of-vitality",
       "name": "Forest of Vitality",
       "set": "POR 109",
@@ -4758,6 +4883,14 @@
       "category": "stadium",
       "max": 4,
       "text": "[M] Pokémon (both players') take 30 less damage from the opponent's attacks."
+    },
+    {
+      "id": "grand-tree",
+      "name": "Grand Tree",
+      "set": "SCR 136",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may evolve a Basic into a Stage 1 from their deck, and then that Stage 1 into a Stage 2. Not on their first turn or on a Pokémon played this turn."
     },
     {
       "id": "granite-cave",
@@ -4792,6 +4925,22 @@
       "text": "Once during each player's turn, that player may search their deck for a Basic Pokémon and bench it. If they do, their turn ends."
     },
     {
+      "id": "mystery-garden",
+      "name": "Mystery Garden",
+      "set": "MEG 122",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may discard an Energy from hand to draw until they have as many cards in hand as they have [P] Pokémon in play."
+    },
+    {
+      "id": "n-s-castle",
+      "name": "N's Castle",
+      "set": "JTG 152",
+      "category": "stadium",
+      "max": 4,
+      "text": "N's Pokémon in play (both players') have no Retreat Cost."
+    },
+    {
       "id": "perilous-jungle",
       "name": "Perilous Jungle",
       "set": "TEF 156",
@@ -4800,12 +4949,44 @@
       "text": "During Pokémon Checkup, put 2 more damage counters on each Poisoned non-[D] Pokémon."
     },
     {
+      "id": "postwick",
+      "name": "Postwick",
+      "set": "JTG 154",
+      "category": "stadium",
+      "max": 4,
+      "text": "Attacks used by Hop's Pokémon (both players') do 30 more damage to the opponent's Active Pokémon."
+    },
+    {
+      "id": "prism-tower",
+      "name": "Prism Tower",
+      "set": "CRI 80",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may discard 2 cards from hand to draw a card."
+    },
+    {
+      "id": "risky-ruins",
+      "name": "Risky Ruins",
+      "set": "MEG 127",
+      "category": "stadium",
+      "max": 4,
+      "text": "Whenever any player benches a Basic non-[D] Pokémon during their turn, place 2 damage counters on it."
+    },
+    {
       "id": "spikemuth-gym",
       "name": "Spikemuth Gym",
       "set": "DRI 169",
       "category": "stadium",
       "max": 4,
       "text": "Once during each player's turn, that player may search their deck for a Marnie's Pokémon and put it into their hand."
+    },
+    {
+      "id": "surfing-beach",
+      "name": "Surfing Beach",
+      "set": "CRI 114",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may switch their Active [W] Pokémon with a Benched [W] Pokémon."
     },
     {
       "id": "team-rocket-s-factory",
@@ -4913,6 +5094,22 @@
       }
     },
     {
+      "id": "briar",
+      "name": "Briar",
+      "set": "SCR 132",
+      "category": "supporter",
+      "max": 4,
+      "text": "Usable only if your opponent has exactly 2 Prize cards remaining. This turn, if your Tera Pokémon knocks out their Active Pokémon, take 1 more Prize card."
+    },
+    {
+      "id": "brock-s-scouting",
+      "name": "Brock's Scouting",
+      "set": "JTG 146",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for up to 2 Basic Pokémon or 1 Evolution Pokémon and put them into your hand."
+    },
+    {
       "id": "ciphermaniac-s-codebreaking",
       "name": "Ciphermaniac's Codebreaking",
       "set": "TEF 145",
@@ -4921,12 +5118,28 @@
       "text": "Search your deck for 2 cards, shuffle, then put those cards on top of your deck in any order."
     },
     {
+      "id": "crispin",
+      "name": "Crispin",
+      "set": "SCR 133",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for up to 2 Basic Energy of different types; put 1 into your hand and attach the other to 1 of your Pokémon."
+    },
+    {
       "id": "emcee-s-hype",
       "name": "Emcee's Hype",
       "set": "DRI 163",
       "category": "supporter",
       "max": 4,
       "text": "Draw 2 cards. If your opponent has 3 or fewer Prize cards remaining, draw 2 more."
+    },
+    {
+      "id": "emma",
+      "name": "Emma",
+      "set": "CRI 77",
+      "category": "supporter",
+      "max": 4,
+      "text": "Your opponent reveals their hand and you draw a card for each Pokémon you find there."
     },
     {
       "id": "eri",
@@ -4967,6 +5180,14 @@
       "category": "supporter",
       "max": 4,
       "text": "Discard up to 2 Pokémon without a Rule Box from your hand, and draw 3 cards for each card discarded."
+    },
+    {
+      "id": "iris-s-fighting-spirit",
+      "name": "Iris's Fighting Spirit",
+      "set": "JTG 149",
+      "category": "supporter",
+      "max": 4,
+      "text": "Discard a card from your hand, then draw cards until you have 6 in hand."
     },
     {
       "id": "jacinthe",
@@ -5015,6 +5236,22 @@
       }
     },
     {
+      "id": "kofu",
+      "name": "Kofu",
+      "set": "SCR 138",
+      "category": "supporter",
+      "max": 4,
+      "text": "Put 2 cards from your hand on the bottom of your deck, then draw 4 cards."
+    },
+    {
+      "id": "lacey",
+      "name": "Lacey",
+      "set": "SCR 139",
+      "category": "supporter",
+      "max": 4,
+      "text": "Shuffle your hand into your deck, then draw 4 cards, or 8 instead if your opponent has 3 or fewer Prize cards remaining."
+    },
+    {
       "id": "lillies-determination",
       "name": "Lillie's Determination",
       "set": "MEG 119",
@@ -5041,6 +5278,14 @@
       }
     },
     {
+      "id": "lt-surge-s-bargain",
+      "name": "Lt. Surge's Bargain",
+      "set": "MEG 120",
+      "category": "supporter",
+      "max": 4,
+      "text": "Ask your opponent if each player may take a Prize card. If yes, each player takes one. If no, you draw 4 cards."
+    },
+    {
       "id": "misty-s-vitality",
       "name": "Misty's Vitality",
       "set": "PBL 80",
@@ -5065,12 +5310,44 @@
       "text": "Draw cards until you have 5 in hand. Before drawing you may discard any number of cards from your hand."
     },
     {
+      "id": "philippe",
+      "name": "Philippe",
+      "set": "CRI 79",
+      "category": "supporter",
+      "max": 4,
+      "text": "Attach up to 2 Basic [M] Energy from your discard pile to 1 of your [M] Pokémon."
+    },
+    {
+      "id": "pok-mon-center-lady",
+      "name": "Pokémon Center Lady",
+      "set": "MEG 123",
+      "category": "supporter",
+      "max": 4,
+      "text": "Heal 60 damage and remove all Special Conditions from 1 of your Pokémon."
+    },
+    {
       "id": "rosa-s-encouragement",
       "name": "Rosa's Encouragement",
       "set": "POR 84",
       "category": "supporter",
       "max": 4,
       "text": "Usable only if you have more Prize cards remaining than your opponent. Attach up to 2 Basic Energy from your discard pile to 1 of your Stage 2 Pokémon."
+    },
+    {
+      "id": "roxie-s-performance",
+      "name": "Roxie's Performance",
+      "set": "CRI 81",
+      "category": "supporter",
+      "max": 4,
+      "text": "During your opponent's next turn, their Poisoned Pokémon can't retreat."
+    },
+    {
+      "id": "ruffian",
+      "name": "Ruffian",
+      "set": "JTG 157",
+      "category": "supporter",
+      "max": 4,
+      "text": "Discard a Pokémon Tool and a Special Energy from 1 of your opponent's Pokémon."
     },
     {
       "id": "rust-syndicate-grunt",
@@ -5141,6 +5418,14 @@
       "text": "Usable on your first turn if you go first. Search your deck for up to 3 Basic Team Rocket's Pokémon and put them into your hand."
     },
     {
+      "id": "wally-s-compassion",
+      "name": "Wally's Compassion",
+      "set": "MEG 132",
+      "category": "supporter",
+      "max": 4,
+      "text": "Heal all damage from 1 of your Mega Evolution Pokémon ex. If you did, put all Energy attached to it into your hand."
+    },
+    {
       "id": "me4-74",
       "name": "Adversity Policy",
       "set": "CRI 74",
@@ -5152,7 +5437,7 @@
     {
       "id": "air-balloon",
       "name": "Air Balloon",
-      "set": "SVI 156",
+      "set": "MEG 166",
       "category": "tool",
       "max": 4,
       "text": "The Retreat Cost of the Pokémon this card is attached to is [C][C] less.",
@@ -5216,6 +5501,22 @@
       "text": "The Cynthia's Pokémon this card is attached to gets +70 HP."
     },
     {
+      "id": "deluxe-bomb",
+      "name": "Deluxe Bomb",
+      "set": "SCR 134",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this is attached to is Active and is damaged by an attack, put 12 damage counters on the Attacking Pokémon, then discard this card."
+    },
+    {
+      "id": "gravity-gemstone",
+      "name": "Gravity Gemstone",
+      "set": "SCR 137",
+      "category": "tool",
+      "max": 4,
+      "text": "While the Pokémon this is attached to is Active, the Retreat Cost of both Active Pokémon is [C] more."
+    },
+    {
       "id": "heavy-baton",
       "name": "Heavy Baton",
       "set": "TEF 151",
@@ -5232,12 +5533,44 @@
       "text": "The Pokémon this card is attached to gets +100 HP."
     },
     {
+      "id": "hop-s-choice-band",
+      "name": "Hop's Choice Band",
+      "set": "JTG 148",
+      "category": "tool",
+      "max": 4,
+      "text": "Attacks by the Hop's Pokémon this is attached to cost [C] less and do 30 more damage to your opponent's Active Pokémon."
+    },
+    {
+      "id": "lillie-s-pearl",
+      "name": "Lillie's Pearl",
+      "set": "JTG 151",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Lillie's Pokémon this is attached to is Knocked Out by an attack, your opponent takes 1 fewer Prize card."
+    },
+    {
       "id": "maximum-belt",
       "name": "Maximum Belt",
       "set": "TEF 154",
       "category": "tool",
       "max": 4,
       "text": "Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex."
+    },
+    {
+      "id": "occa-berry",
+      "name": "Occa Berry",
+      "set": "SCR 140",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this is attached to is damaged by an opponent's [R] Pokémon, it takes 60 less damage, then discard this card."
+    },
+    {
+      "id": "payapa-berry",
+      "name": "Payapa Berry",
+      "set": "SCR 141",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this is attached to is damaged by an opponent's [P] Pokémon, it takes 60 less damage, then discard this card."
     },
     {
       "id": "powerglass",
@@ -5269,6 +5602,14 @@
       "category": "tool",
       "max": 4,
       "text": "The Retreat Cost of the Pokémon this is attached to is [C] less, or zero if its remaining HP is 30 or less."
+    },
+    {
+      "id": "sparkling-crystal",
+      "name": "Sparkling Crystal",
+      "set": "SCR 142",
+      "category": "tool",
+      "max": 4,
+      "text": "Attacks used by the Tera Pokémon this is attached to cost 1 Energy less, of any type."
     },
     {
       "id": "tremendous-bomb",

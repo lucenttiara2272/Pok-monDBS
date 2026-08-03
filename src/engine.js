@@ -138,14 +138,19 @@ function chooseAttack(S, mon, opp, bonusDamage, rng) {
  */
 export const DRAW_SUPPORTER_INFO = {
   "Lillie's Determination": { draw: 6, shuffle: true, firstTurnDraw: 8 },
+  'Lacey': { draw: 4, shuffle: true },
   'Judge': { draw: 4, shuffle: true },
   "Team Rocket's Archer": { draw: 5, shuffle: true },
+  "Iris's Fighting Spirit": { drawTo: 6 },
   "Team Rocket's Ariana": { drawTo: 5 },
   'Naveen': { drawTo: 5 },
+  'Kofu': { draw: 4 },
   "Emcee's Hype": { draw: 3 },
-  "Explorer's Guidance": { draw: 2 },
   "Morty's Conviction": { draw: 3 },
   'Gwynn': { draw: 3 },
+  'Emma': { draw: 2 },
+  "Billy & O'Nare": { draw: 2 },
+  "Explorer's Guidance": { draw: 2 },
   "Team Rocket's Petrel": { search: true },
   'Jett': { draw: 0 },
 };

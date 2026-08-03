@@ -1,0 +1,46 @@
+# Meta priority batch 2 — Trainer staples from Chaos Rising, Stellar Crown and
+# Journey Together. Alternate-art reprints share a name and dedupe automatically.
+
+# ---- Chaos Rising (CRI) ----
+O|Adversity Policy|CRI 74|If the Pokémon this is attached to has Weakness to your opponent's Active Pokémon's type, is Active and is damaged by an attack, draw 3 cards.
+D|Ange Floette|CRI 75|Playable only by discarding a Prism Tower in play, and on the same turn you play Prism Tower. Each Mega Floette ex in play gets +150 HP.
+S|Emma|CRI 77|Your opponent reveals their hand and you draw a card for each Pokémon you find there.
+I|Great Haul Net|CRI 78|Choose one or both: shuffle up to 3 [W] Pokémon from your discard into your deck; shuffle up to 3 Basic [W] Energy from your discard into your deck.
+S|Philippe|CRI 79|Attach up to 2 Basic [M] Energy from your discard pile to 1 of your [M] Pokémon.
+D|Prism Tower|CRI 80|Once during each player's turn, that player may discard 2 cards from hand to draw a card.
+S|Roxie's Performance|CRI 81|During your opponent's next turn, their Poisoned Pokémon can't retreat.
+I|Special Red Card|CRI 82|Usable only if your opponent has 3 or fewer Prize cards remaining. They shuffle their hand to the bottom of their deck and draw 3 cards.
+I|Transformation Tome|CRI 83|Play 2 at once. Swap a Basic Pokémon in your discard pile with 1 of your Basic Pokémon in play, keeping all attached cards, damage and effects.
+I|Jumbo Ice Cream|CRI 109|Heal 80 damage from your Active Pokémon if it has 3 or more Energy attached.
+D|Surfing Beach|CRI 114|Once during each player's turn, that player may switch their Active [W] Pokémon with a Benched [W] Pokémon.
+I|Tool Scrapper|CRI 115|Choose up to 2 Pokémon Tool cards attached to Pokémon in play (either player's) and discard them.
+
+# ---- Stellar Crown (SCR) ----
+I|Antique Cover Fossil|SCR 129|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Protective Cover: prevent all effects of your opponent's attacks done to this Pokémon.
+I|Antique Root Fossil|SCR 130|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Primal Root: while Active, your opponent's Basic Pokémon's attacks cost [C] more.
+D|Area Zero Underdepths|SCR 131|Each player with any Tera Pokémon in play may have up to 8 Benched Pokémon. Benches shrink back to 5 when this leaves play or the Tera Pokémon are gone.
+S|Briar|SCR 132|Usable only if your opponent has exactly 2 Prize cards remaining. This turn, if your Tera Pokémon knocks out their Active Pokémon, take 1 more Prize card.
+S|Crispin|SCR 133|Search your deck for up to 2 Basic Energy of different types; put 1 into your hand and attach the other to 1 of your Pokémon.
+O|Deluxe Bomb|SCR 134|If the Pokémon this is attached to is Active and is damaged by an attack, put 12 damage counters on the Attacking Pokémon, then discard this card.
+I|Glass Trumpet|SCR 135|Usable only with a Tera Pokémon in play. Attach a Basic Energy from your discard pile to each of up to 2 of your Benched [C] Pokémon.
+D|Grand Tree|SCR 136|Once during each player's turn, that player may evolve a Basic into a Stage 1 from their deck, and then that Stage 1 into a Stage 2. Not on their first turn or on a Pokémon played this turn.
+O|Gravity Gemstone|SCR 137|While the Pokémon this is attached to is Active, the Retreat Cost of both Active Pokémon is [C] more.
+S|Kofu|SCR 138|Put 2 cards from your hand on the bottom of your deck, then draw 4 cards.
+S|Lacey|SCR 139|Shuffle your hand into your deck, then draw 4 cards, or 8 instead if your opponent has 3 or fewer Prize cards remaining.
+O|Occa Berry|SCR 140|If the Pokémon this is attached to is damaged by an opponent's [R] Pokémon, it takes 60 less damage, then discard this card.
+O|Payapa Berry|SCR 141|If the Pokémon this is attached to is damaged by an opponent's [P] Pokémon, it takes 60 less damage, then discard this card.
+O|Sparkling Crystal|SCR 142|Attacks used by the Tera Pokémon this is attached to cost 1 Energy less, of any type.
+
+# ---- Journey Together (JTG) ----
+S|Billy & O'Nare|JTG 142|Draw 2 cards. Then, if you have 10 or more cards in hand, draw 2 more.
+S|Brock's Scouting|JTG 146|Search your deck for up to 2 Basic Pokémon or 1 Evolution Pokémon and put them into your hand.
+I|Hop's Bag|JTG 147|Search your deck for up to 2 Basic Hop's Pokémon and put them onto your Bench.
+O|Hop's Choice Band|JTG 148|Attacks by the Hop's Pokémon this is attached to cost [C] less and do 30 more damage to your opponent's Active Pokémon.
+S|Iris's Fighting Spirit|JTG 149|Discard a card from your hand, then draw cards until you have 6 in hand.
+O|Lillie's Pearl|JTG 151|If the Lillie's Pokémon this is attached to is Knocked Out by an attack, your opponent takes 1 fewer Prize card.
+D|N's Castle|JTG 152|N's Pokémon in play (both players') have no Retreat Cost.
+I|N's PP Up|JTG 153|Attach a Basic Energy card from your discard pile to 1 of your Benched N's Pokémon.
+D|Postwick|JTG 154|Attacks used by Hop's Pokémon (both players') do 30 more damage to the opponent's Active Pokémon.
+I|Redeemable Ticket|JTG 156|Shuffle your Prize cards into the bottom of your deck, then set that many new Prize cards from the top.
+S|Ruffian|JTG 157|Discard a Pokémon Tool and a Special Energy from 1 of your opponent's Pokémon.
+I|Super Potion|JTG 158|Heal 60 damage from 1 of your Pokémon, then discard an Energy attached to it.
