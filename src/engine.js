@@ -213,7 +213,7 @@ export function deckStats(spec) {
     size: deckSize(spec),
     pokemon: by('pokemon'),
     energy: by('energy'),
-    trainers: by('item') + by('tool') + by('supporter'),
+    trainers: by('item') + by('tool') + by('supporter') + by('stadium'),
     drawSupporters: Object.entries(spec)
       .filter(([n]) => DRAW_SUPPORTERS.has(n)).reduce((a, [, d]) => a + d.n, 0),
     mulligan: mulliganRate(spec) * 100,

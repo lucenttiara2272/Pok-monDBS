@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
 import { makeCardIndex, buildSpec, PRESETS } from '../src/decks.js';
-import { deckSize, DRAW_SUPPORTERS } from '../src/engine.js';
+import { deckSize, deckStats, DRAW_SUPPORTERS } from '../src/engine.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cards = JSON.parse(readFileSync(join(here, '../data/cards.json'), 'utf8'));
@@ -25,12 +25,48 @@ test('every card has the fields the UI needs', () => {
     assert.ok(c.name, `missing name on ${c.id}`);
     assert.ok(c.set, `missing set on ${c.name}`);
     assert.ok(
-      ['pokemon', 'item', 'tool', 'supporter', 'energy'].includes(c.category),
+      ['pokemon', 'item', 'tool', 'supporter', 'stadium', 'energy'].includes(c.category),
       `bad category on ${c.name}: ${c.category}`,
     );
     assert.ok(c.text, `missing text on ${c.name}`);
     assert.ok(c.max === null || c.max > 0, `bad max on ${c.name}`);
   }
+});
+
+test('every category in the database is one the UI can render', () => {
+  // The deck editor iterates a fixed CATS list. A category outside it means cards
+  // sit in the deck invisibly and still count toward 60 — which is how the
+  // imported Stadium cards first slipped through.
+  const ui = readFileSync(join(here, '../src/ui.js'), 'utf8');
+  const m = ui.match(/const CATS = \[(.*?)\];/s);
+  assert.ok(m, 'could not find CATS in src/ui.js');
+  const rendered = new Set(m[1].match(/'([a-z]+)'/g).map((s) => s.replace(/'/g, '')));
+
+  for (const c of cards.cards) {
+    assert.ok(rendered.has(c.category),
+      `${c.name} is a "${c.category}" but the deck editor only renders `
+      + `${[...rendered].join(', ')}`);
+  }
+});
+
+test('no imported card comes from a rotated set', () => {
+  const format = JSON.parse(readFileSync(join(here, '../data/format.json'), 'utf8'));
+  const legal = new Set(format.legalSets);
+  const bad = cards.cards
+    .filter((c) => c.imported)
+    .filter((c) => !legal.has((c.set || '').split(' ')[0].toUpperCase()));
+  assert.equal(bad.length, 0,
+    `not legal in ${format.format}: ${bad.slice(0, 5).map((c) => `${c.name} (${c.set})`).join(', ')}`);
+});
+
+test('Stadium cards count as Trainers in the deck stats', () => {
+  const stadium = cards.cards.find((c) => c.category === 'stadium');
+  if (!stadium) return;                       // none imported yet, nothing to check
+  const spec = buildSpec({ [stadium.name]: 2, 'Munkidori': 4 }, INDEX);
+  const s = deckStats(spec);
+  assert.equal(s.trainers, 2, 'a Stadium is a Trainer card');
+  assert.equal(s.pokemon, 4);
+  assert.equal(s.size, 6);
 });
 
 test('card ids and names are unique', () => {

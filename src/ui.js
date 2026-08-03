@@ -15,10 +15,10 @@ const $ = (id) => document.getElementById(id);
 // Stamped by the deploy workflow with the commit SHA so a new release can never be
 // served from a stale browser cache. Stays 'dev' when running locally.
 const APP_VERSION = 'dev';
-const CATS = ['pokemon', 'item', 'tool', 'supporter', 'energy'];
+const CATS = ['pokemon', 'item', 'tool', 'supporter', 'stadium', 'energy'];
 const CAT_LABEL = {
   pokemon: 'Pokémon', item: 'Item', tool: 'Tool',
-  supporter: 'Supporter', energy: 'Energy',
+  supporter: 'Supporter', stadium: 'Stadium', energy: 'Energy',
 };
 
 let CARDS = [];

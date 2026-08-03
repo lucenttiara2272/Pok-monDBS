@@ -37,6 +37,7 @@ import { dirname, join } from 'node:path';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const CARDS_PATH = join(here, '../data/cards.json');
+const FORMAT_PATH = join(here, '../data/format.json');
 
 const args = process.argv.slice(2);
 const DRY = args.includes('--dry-run');
@@ -171,6 +172,9 @@ async function fetchPage(page) {
 
 async function main() {
   const existing = JSON.parse(readFileSync(CARDS_PATH, 'utf8'));
+  const format = JSON.parse(readFileSync(FORMAT_PATH, 'utf8'));
+  const legalSets = new Set(format.legalSets);
+  console.log(`Format: ${format.format} — ${legalSets.size} legal sets`);
   const curated = new Set(existing.cards.filter((c) => !c.imported).map((c) => c.name));
   console.log(`Curated cards to preserve: ${curated.size}`);
 
@@ -178,6 +182,7 @@ async function main() {
   let page = 1;
   let total = Infinity;
   let pagesOk = 0;
+  let skipped = 0;
 
   while ((page - 1) * PAGE_SIZE < total && seen.size < LIMIT) {
     process.stdout.write(`\rFetching page ${page}… (${seen.size} unique so far)`);
@@ -193,6 +198,10 @@ async function main() {
     for (const raw of data.data || []) {
       if (seen.has(raw.name)) continue;      // one entry per card name
       if (curated.has(raw.name)) continue;   // never clobber a hand-written card
+      // The API's legalities.standard flag lags the real rotation, so trust the
+      // set code instead. Without this, rotated Sword & Shield cards come in.
+      const code = ((raw.set && (raw.set.ptcgoCode || raw.set.id)) || '').toUpperCase();
+      if (!legalSets.has(code)) { skipped++; continue; }
       try {
         seen.set(raw.name, toCard(raw));
       } catch { /* skip anything malformed */ }
@@ -200,7 +209,8 @@ async function main() {
     if (!data.data || !data.data.length) break;
     page++;
   }
-  console.log(`\nImported ${seen.size} new cards (API reported ${total} legal prints).`);
+  console.log(`\nImported ${seen.size} new cards `
+    + `(${skipped} skipped as not in a ${format.format} set).`);
 
   // Never rewrite the database off a failed run — an offline or rate-limited
   // attempt should leave the curated file exactly as it was.

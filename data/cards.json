@@ -7,6 +7,20 @@
   },
   "cards": [
     {
+      "id": "sv6pt5-99",
+      "name": "Basic Metal Energy",
+      "set": "SFA 99",
+      "category": "energy",
+      "max": null,
+      "text": "Basic Metal Energy",
+      "imported": true,
+      "type": "M",
+      "sim": {
+        "basicEnergy": true,
+        "provides": "M"
+      }
+    },
+    {
       "id": "darkness-energy",
       "name": "Darkness Energy",
       "set": "MEE 7",
@@ -130,6 +144,96 @@
         "basicEnergy": true,
         "provides": "W"
       }
+    },
+    {
+      "id": "sv6-142",
+      "name": "Accompanying Flute",
+      "set": "TWM 142",
+      "category": "item",
+      "max": 4,
+      "text": "Reveal the top 5 cards of your opponent's deck. You may choose any number of Basic Pokémon you find there and put those Pokémon onto their Bench. Your opponent shuffles the other cards back into their deck. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "me5-72",
+      "name": "Antique Armor Fossil",
+      "set": "PBL 72",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Protective Armor — As long as this Pokémon is in the Active Spot, all of your Pokémon take 10 less damage from attacks from your opponent's Pokémon (after applying Weakness and Resistance). Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.\n \nAt any time during your turn, you may discard this card from play.",
+      "imported": true
+    },
+    {
+      "id": "sv7-129",
+      "name": "Antique Cover Fossil",
+      "set": "SCR 129",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Protective Cover — Prevent all effects of attacks used by your opponent's Pokémon done to this Pokémon. (Damage is not an effect.) Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.    At any time during your turn, you may discard this card from play. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "me3-68",
+      "name": "Antique Jaw Fossil",
+      "set": "POR 68",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Intimidating Jaw — As long as this Pokémon is in the Active Spot, attacks used by your opponent's Active Pokémon do 30 less damage (before applying Weakness and Resistance). Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.  At any time during your turn, you may discard this card from play. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "rsv10pt5-79",
+      "name": "Antique Plume Fossil",
+      "set": "WHT 79",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Plume Protection — As long as this Pokémon is on your Bench, prevent all damage done to this Pokémon by attacks from your opponent's Pokémon. Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.  At any time during your turn, you may discard this card from play. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "sv7-130",
+      "name": "Antique Root Fossil",
+      "set": "SCR 130",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Primal Root — As long as this Pokémon is in the Active Spot, attacks used by your opponent's Basic Pokémon cost Colorless more. Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.  At any time during your turn, you may discard this card from play. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "me3-69",
+      "name": "Antique Sail Fossil",
+      "set": "POR 69",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Protective Sail — Whenever your opponent plays a Supporter card from their hand, prevent all effects of that card done to this Pokémon. Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.  At any time during your turn, you may discard this card from play. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "me5-73",
+      "name": "Antique Skull Fossil",
+      "set": "PBL 73",
+      "category": "item",
+      "max": 4,
+      "text": "Ability: Spiny Skull — If this Pokémon is in the Active Spot and is damaged by an attack from your opponent's Pokémon (even if this Pokémon is Knocked Out), place 3 damage counters on the Attacking Pokémon. Play this card as if it were a 60-HP Basic Colorless Pokémon. This card can't be affected by any Special Conditions and can't retreat.\n \nAt any time during your turn, you may discard this card from play.",
+      "imported": true
+    },
+    {
+      "id": "sv10-161",
+      "name": "Arven's Sandwich",
+      "set": "DRI 161",
+      "category": "item",
+      "max": 4,
+      "text": "Heal 30 damage from your Active Pokémon. If that Pokémon is an Arven's Pokémon, heal 100 damage from it instead. You may play any number of Item cards during your turn.",
+      "imported": true
+    },
+    {
+      "id": "sv5-141",
+      "name": "Awakening Drum",
+      "set": "TEF 141",
+      "category": "item",
+      "max": 4,
+      "text": "Draw a card for each of your Ancient Pokémon in play. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
+      "imported": true
     },
     {
       "id": "buddy-buddy-poffin",
@@ -257,6 +361,1911 @@
       "sim": {
         "effect": "searchPokemon",
         "discardCost": 2
+      }
+    },
+    {
+      "id": "sv6-80",
+      "name": "Abra",
+      "set": "TWM 80",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Teleporter — Once during your turn, if this Pokémon is in the Active Spot, you may shuffle it and all attached cards into your deck. Beam [P] 10",
+      "imported": true,
+      "type": "P",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 40,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Beam",
+            "cost": {
+              "P": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "rsv10pt5-94",
+      "name": "Accelgor",
+      "set": "WHT 94",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Acid Spray [G] 50 — Flip a coin. If heads, discard an Energy from your opponent's Active Pokémon.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Shelmet",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Acid Spray",
+            "cost": {
+              "G": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv6-82",
+      "name": "Alakazam",
+      "set": "TWM 82",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Strange Hacking [P] — Your opponent's Active Pokémon is now Confused. You may move any number of damage counters from your opponent's Pokémon to their other Pokémon in any way you like. Psychic [P] 10+ — This attack does 50 more damage for each Energy attached to your opponent's Active Pokémon.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Kadabra",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Strange Hacking",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Psychic",
+            "cost": {
+              "P": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "me2-44",
+      "name": "Alcremie",
+      "set": "PFL 44",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Sweet Circle [P] 20× — This attack does 20 damage for each of your Pokémon in play.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Milcery",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Sweet Circle",
+            "cost": {
+              "P": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-75",
+      "name": "Alcremie ex",
+      "set": "JTG 75",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Confectionary Gift — Once during your turn, you may heal 30 damage from 1 of your Pokémon. Whipped Shot [P][C][C] 160 Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 250,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Milcery",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Whipped Shot",
+            "cost": {
+              "P": 1,
+              "C": 2
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-122",
+      "name": "Alolan Diglett",
+      "set": "SSP 122",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Surprise Attack [C] 30 — Flip a coin. If tails, this attack does nothing.",
+      "imported": true,
+      "type": "M",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 50,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Surprise Attack",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-208",
+      "name": "Alolan Dugtrio",
+      "set": "SSP 208",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Trio-Cheehoo [C] 120 — If you don't have exactly 3 cards in your hand, this attack does nothing.",
+      "imported": true,
+      "type": "M",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Alolan Diglett",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Trio-Cheehoo",
+            "cost": {
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-133",
+      "name": "Alolan Exeggutor ex",
+      "set": "SSP 133",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Tropical Frenzy [G][W] 150 — You may attach any number of Basic Energy cards from your hand to your Pokémon in any way you like. Swinging Sphene [G][W][F] — Flip a coin. If heads, Knock Out your opponent's Active Basic Pokémon. If tails, Knock Out 1 of your opponent's Benched Basic Pokémon. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards. Tera: As long as this Pokémon is on your Bench, prevent all damage done to this Pokémon by attacks (both yours and your opponent's).",
+      "imported": true,
+      "type": "N",
+      "subtype": "Stage 1 · Tera · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 300,
+        "prizes": 2,
+        "retreat": 3,
+        "evolvesFrom": "Exeggcute",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Tropical Frenzy",
+            "cost": {
+              "G": 1,
+              "W": 1
+            },
+            "damage": 150
+          },
+          {
+            "name": "Swinging Sphene",
+            "cost": {
+              "G": 1,
+              "W": 1,
+              "F": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-44",
+      "name": "Alolan Geodude",
+      "set": "JTG 44",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Knuckle Punch [C] 10 Tiny Charge [L][C] 30",
+      "imported": true,
+      "type": "L",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Knuckle Punch",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Tiny Charge",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-46",
+      "name": "Alolan Golem",
+      "set": "JTG 46",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Electromagnetic Catapult [L] 70× — Flip a coin until you get tails. This attack does 70 damage for each heads. Megaton Fall [L][C] 160 — This Pokémon also does 40 damage to itself.",
+      "imported": true,
+      "type": "L",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 180,
+        "prizes": 1,
+        "retreat": 4,
+        "evolvesFrom": "Alolan Graveler",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Electromagnetic Catapult",
+            "cost": {
+              "L": 1
+            },
+            "damage": 70
+          },
+          {
+            "name": "Megaton Fall",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-45",
+      "name": "Alolan Graveler",
+      "set": "JTG 45",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Rolling Tackle [C] 30 Electric Punch [L][C] 50",
+      "imported": true,
+      "type": "L",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Alolan Geodude",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rolling Tackle",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Electric Punch",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-57",
+      "name": "Alolan Marowak",
+      "set": "JTG 57",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Retaliate [P] 30+ — If any of your Pokémon were Knocked Out by damage from an attack during your opponent's last turn, this attack does 90 more damage. Will-O-Wisp [P][C][C] 90",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Cubone",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Retaliate",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Will-O-Wisp",
+            "cost": {
+              "P": 1,
+              "C": 2
+            },
+            "damage": 90
+          }
+        ]
+      }
+    },
+    {
+      "id": "zsv10pt5-24",
+      "name": "Alomomola",
+      "set": "BLK 24",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Gentle Fin — Once during your turn, if this Pokémon is in the Active Spot, you may put a Basic Pokémon with 70 HP or less from your discard pile onto your Bench. Waterfall [W][C][C] 70",
+      "imported": true,
+      "type": "W",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Waterfall",
+            "cost": {
+              "W": 1,
+              "C": 2
+            },
+            "damage": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-134",
+      "name": "Altaria",
+      "set": "SSP 134",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Humming Charge [W] — Search your deck for up to 2 Basic Energy cards and attach them to your Pokémon in any way you like. Then, shuffle your deck. Cotton Wings [W][M] 100 — Flip a coin. If heads, during your opponent's next turn, prevent all damage done to this Pokémon by attacks.",
+      "imported": true,
+      "type": "N",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Swablu",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Humming Charge",
+            "cost": {
+              "W": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Cotton Wings",
+            "cost": {
+              "W": 1,
+              "M": 1
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "me3-23",
+      "name": "Amaura",
+      "set": "POR 23",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Icy Wind [W][C] 50 — Your opponent's Active Pokémon is now Asleep.",
+      "imported": true,
+      "type": "W",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Antique Sail Fossil",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Icy Wind",
+            "cost": {
+              "W": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-11",
+      "name": "Amoonguss ex",
+      "set": "JTG 11",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Spore Ball [G] 30 — Your opponent's Active Pokémon is now Asleep. Champignon's Swing [G][C] 100+ — Flip a coin. If heads, this attack does 80 more damage. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 260,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Foongus",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Spore Ball",
+            "cost": {
+              "G": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Champignon's Swing",
+            "cost": {
+              "G": 1,
+              "C": 1
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "me4-90",
+      "name": "Ampharos",
+      "set": "CRI 90",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Synchro Pulse — If you have the same number of cards in your hand as your opponent, attacks used by this Pokémon do 80 more damage to your opponent's Active Pokémon (before applying Weakness and Resistance). Flashing Bolt [L][C] 140 — During your next turn, this Pokémon can't use Flashing Bolt.",
+      "imported": true,
+      "type": "L",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 160,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Flaaffy",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Flashing Bolt",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 140
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-92",
+      "name": "Annihilape",
+      "set": "DRI 92",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Lose Cool — If this Pokémon has 2 or more damage counters on it, attacks used by this Pokémon do 120 more damage to your opponent's Active Pokémon (before applying Weakness and Resistance). Impact Blow [F][F] 160 — During your next turn, this Pokémon can't use Impact Blow.",
+      "imported": true,
+      "type": "F",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Primeape",
+        "weak": "P",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Impact Blow",
+            "cost": {
+              "F": 2
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-211",
+      "name": "Appletun",
+      "set": "SSP 211",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Melting Sweetness [C][C] 50 — During your opponent's next turn, the Defending Pokémon can't attack. Wild Tackle [G][R] 130 — This Pokémon also does 20 damage to itself.",
+      "imported": true,
+      "type": "N",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Applin",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Melting Sweetness",
+            "cost": {
+              "C": 2
+            },
+            "damage": 50
+          },
+          {
+            "name": "Wild Tackle",
+            "cost": {
+              "G": 1,
+              "R": 1
+            },
+            "damage": 130
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-138",
+      "name": "Applin",
+      "set": "SSP 138",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Nutrients [C] — Heal 30 damage from 1 of your Pokémon. Trip Over [G][R] 20+ — Flip a coin. If heads, this attack does 30 more damage.",
+      "imported": true,
+      "type": "N",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 40,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Nutrients",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Trip Over",
+            "cost": {
+              "G": 1,
+              "R": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv5-101",
+      "name": "Arbok",
+      "set": "TEF 101",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Panic Poison [D] — Your opponent's Active Pokémon is now Burned, Confused, and Poisoned. Darkness Fang [D][D] 70",
+      "imported": true,
+      "type": "D",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Ekans",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Panic Poison",
+            "cost": {
+              "D": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Darkness Fang",
+            "cost": {
+              "D": 2
+            },
+            "damage": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-23",
+      "name": "Arboliva ex",
+      "set": "DRI 23",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Oil Salvo [G] — Choose 1 of your opponent's Pokémon 6 times. (You can choose the same Pokémon more than once.) For each time you chose a Pokémon, do 20 damage to it. This damage isn't affected by Weakness or Resistance. Aroma Shot [C][C][C] 160 — This Pokémon recovers from all Special Conditions. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 2 · ex",
+      "sim": {
+        "stage": 2,
+        "hp": 310,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Dolliv",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Oil Salvo",
+            "cost": {
+              "G": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Aroma Shot",
+            "cost": {
+              "C": 3
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "me2-75",
+      "name": "Archaludon",
+      "set": "PFL 75",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Coated Attack [M][M][M] 120 — During your opponent's next turn, prevent all damage done to this Pokémon by attacks from Basic Pokémon.",
+      "imported": true,
+      "type": "M",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 180,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Duraludon",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Coated Attack",
+            "cost": {
+              "M": 3
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-130",
+      "name": "Archaludon ex",
+      "set": "SSP 130",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Assemble Alloy — When you play this Pokémon from your hand to evolve 1 of your Pokémon during your turn, you may attach up to 2 Basic Metal Energy cards from your discard pile to your Metal Pokémon in any way you like. Metal Defender [M][M][M] 220 — During your opponent's next turn, this Pokémon has no Weakness. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "M",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 300,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Duraludon",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Metal Defender",
+            "cost": {
+              "M": 3
+            },
+            "damage": 220
+          }
+        ]
+      }
+    },
+    {
+      "id": "rsv10pt5-50",
+      "name": "Archen",
+      "set": "WHT 50",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Acrobatics [F][C] 30+ — Flip 2 coins. This attack does 30 more damage for each heads.",
+      "imported": true,
+      "type": "F",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Antiuqe Plume Fossil",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Acrobatics",
+            "cost": {
+              "F": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "rsv10pt5-132",
+      "name": "Archeops",
+      "set": "WHT 132",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Ancient Wing — Once during your turn, if this Pokémon is in the Active Spot, you may devolve 1 of your opponent's evolved Pokémon by putting the highest Stage Evolution card on it into your opponent's hand. Rock Throw [F][C] 100",
+      "imported": true,
+      "type": "F",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Archen",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rock Throw",
+            "cost": {
+              "F": 1,
+              "C": 1
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv6-5",
+      "name": "Ariados",
+      "set": "TWM 5",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Big Net — Your opponent's Active Evolution Pokémon's Retreat Cost is Colorless more. String Bind [G] 10+ — This attack does 30 more damage for each Colorless in your opponent's Active Pokémon's Retreat Cost.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Spinarak",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "String Bind",
+            "cost": {
+              "G": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "me3-36",
+      "name": "Aromatisse",
+      "set": "POR 36",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Scent Collection — Once during your turn, you may use this Ability. Search your deck for up to 2 Basic Psychic Energy cards, reveal them, and put them into your hand. Then, shuffle your deck. Draining Kiss [P][C] 50 — Heal 30 damage from this Pokémon.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Spritzee",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Draining Kiss",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-62",
+      "name": "Arrokuda",
+      "set": "DRI 62",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Reckless Charge [W] 30 — This Pokémon also does 10 damage to itself.",
+      "imported": true,
+      "type": "W",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Reckless Charge",
+            "cost": {
+              "W": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-161",
+      "name": "Articuno",
+      "set": "JTG 161",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Frigid Fluttering [C] — Search your deck for up to 2 Basic Water Energy cards and attach them to this Pokémon. Then, shuffle your deck. Ice Blast [W][W][C] 110",
+      "imported": true,
+      "type": "W",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Frigid Fluttering",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Ice Blast",
+            "cost": {
+              "W": 2,
+              "C": 1
+            },
+            "damage": 110
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-159",
+      "name": "Arven's Greedent",
+      "set": "DRI 159",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Greedy Order — When you play this Pokémon from your hand to evolve 1 of your Pokémon during your turn, you may put up to 2 Arven's Sandwich cards from your discard pile into your hand. Rolling Tackle [C][C] 50",
+      "imported": true,
+      "type": "C",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Arven's Skwovet",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rolling Tackle",
+            "cost": {
+              "C": 2
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-218",
+      "name": "Arven's Mabosstiff ex",
+      "set": "DRI 218",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Vigorous Tackle [C] 30+ — If this Pokémon has no damage counters on it, this attack does 120 more damage. Boss Headbutt [C][C][C] 210 — During your next turn, this Pokémon can't use Boss Headbutt. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "D",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 270,
+        "prizes": 2,
+        "retreat": 3,
+        "evolvesFrom": "Arven's Maschiff",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Vigorous Tackle",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Boss Headbutt",
+            "cost": {
+              "C": 3
+            },
+            "damage": 210
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-138",
+      "name": "Arven's Maschiff",
+      "set": "DRI 138",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Stampede [C] 10 Confront [C][C][C] 50",
+      "imported": true,
+      "type": "D",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Stampede",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Confront",
+            "cost": {
+              "C": 3
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-158",
+      "name": "Arven's Skwovet",
+      "set": "DRI 158",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Gnaw Through [C] 10 — Before doing damage, discard all Pokémon Tools from your opponent's Active Pokémon.",
+      "imported": true,
+      "type": "C",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Gnaw Through",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-109",
+      "name": "Arven's Toedscool",
+      "set": "DRI 109",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Slight Intrusion [C] 30 — This Pokémon also does 10 damage to itself.",
+      "imported": true,
+      "type": "F",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Slight Intrusion",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-110",
+      "name": "Arven's Toedscruel",
+      "set": "DRI 110",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Pull [C] — Switch in 1 of your opponent's Benched Pokémon to the Active Spot. Reckless Charge [C][C][C] 120 — This Pokémon also does 30 damage to itself.",
+      "imported": true,
+      "type": "F",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Arven's Toedscool",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Pull",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Reckless Charge",
+            "cost": {
+              "C": 3
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "zsv10pt5-151",
+      "name": "Audino",
+      "set": "BLK 151",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Return [C] 30 — You may draw cards until you have 6 cards in your hand.",
+      "imported": true,
+      "type": "C",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Return",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "me3-92",
+      "name": "Aurorus",
+      "set": "POR 92",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Tundra Wall — All of your Pokémon that have any Water Energy attached take 50 less damage from attacks from your opponent's Pokémon (after applying Weakness and Resistance). The effect of Tundra Wall doesn't stack. Freezing Chill [W][W][C] 150 — During your opponent's next turn, the Defending Pokémon can't use attacks.",
+      "imported": true,
+      "type": "W",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 170,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Amaura",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Freezing Chill",
+            "cost": {
+              "W": 2,
+              "C": 1
+            },
+            "damage": 150
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv6pt5-44",
+      "name": "Axew",
+      "set": "SFA 44",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Scratch [F] 10 Sharp Fang [F][M] 30",
+      "imported": true,
+      "type": "N",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Scratch",
+            "cost": {
+              "F": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Sharp Fang",
+            "cost": {
+              "F": 1,
+              "M": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-80",
+      "name": "Azelf",
+      "set": "SSP 80",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Neurokinesis [P][C] 10+ — This attack does 10 more damage for each damage counter on all of your opponent's Pokémon.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Neurokinesis",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv5-65",
+      "name": "Azumarill",
+      "set": "TEF 65",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Play Rough [C] 30+ — Flip a coin. If heads, this attack does 30 more damage. Power Tackle [P][C][C] 140 — During your next turn, this Pokémon can't attack.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Marill",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Play Rough",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Power Tackle",
+            "cost": {
+              "P": 1,
+              "C": 2
+            },
+            "damage": 140
+          }
+        ]
+      }
+    },
+    {
+      "id": "me2pt5-84",
+      "name": "Azumarill ex",
+      "set": "ASC 84",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Bubble Gathering — As often as you like during your turn, you may use this Ability. Move an Energy from 1 of your other Pokémon to this Pokémon. Energized Balloon [C][C][C] 60+ — This attack does 40 more damage for each Psychic Energy attached to this Pokémon. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 270,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Marill",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Energized Balloon",
+            "cost": {
+              "C": 3
+            },
+            "damage": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-112",
+      "name": "Bagon",
+      "set": "JTG 112",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Bite [C] 10 Reckless Charge [R][W] 50 — This Pokémon also does 10 damage to itself.",
+      "imported": true,
+      "type": "N",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Bite",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Reckless Charge",
+            "cost": {
+              "R": 1,
+              "W": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-60",
+      "name": "Banette",
+      "set": "JTG 60",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Cursed Words [P] — Your opponent chooses 3 cards from their hand and shuffles those cards into their deck. Spooky Shot [P][C] 70",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Shuppet",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Cursed Words",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Spooky Shot",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "me5-93",
+      "name": "Bastiodon",
+      "set": "PBL 93",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Ancient Bulwark — As long as this Pokémon is on your Bench, prevent all damage done to each of your Pokémon by attacks from your opponent's Pokémon that have 2 or less Energy attached. Hammer In [M][M][C] 160",
+      "imported": true,
+      "type": "M",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 160,
+        "prizes": 1,
+        "retreat": 4,
+        "evolvesFrom": "Shieldon",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Hammer In",
+            "cost": {
+              "M": 2,
+              "C": 1
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "me1-9",
+      "name": "Bayleef",
+      "set": "MEG 9",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Push Down [G][C] 50 — Switch out your opponent's Active Pokémon to the Bench. (Your opponent chooses the new Active Pokémon.)",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Chikorita",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Push Down",
+            "cost": {
+              "G": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "zsv10pt5-26",
+      "name": "Beartic",
+      "set": "BLK 26",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Continuous Headbutt [C] 50× — Flip a coin until you get tails. This attack does 50 damage for each heads. Sheer Cold [W][W][W][C] 150 — During your opponent's next turn, the Defending Pokémon can't use attacks.",
+      "imported": true,
+      "type": "W",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Cubchoo",
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Continuous Headbutt",
+            "cost": {
+              "C": 1
+            },
+            "damage": 50
+          },
+          {
+            "name": "Sheer Cold",
+            "cost": {
+              "W": 3,
+              "C": 1
+            },
+            "damage": 150
+          }
+        ]
+      }
+    },
+    {
+      "id": "me2pt5-13",
+      "name": "Beautifly",
+      "set": "ASC 13",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Stun Spore [G] 40 — Flip a coin. If heads, your opponent's Active Pokémon is now Paralyzed. Energy Straw [G] 80× — Your opponent reveals their hand, and this attack does 80 damage for each Energy card you find there.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Silcoon",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Stun Spore",
+            "cost": {
+              "G": 1
+            },
+            "damage": 40
+          },
+          {
+            "name": "Energy Straw",
+            "cost": {
+              "G": 1
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "me4-98",
+      "name": "Beedrill ex",
+      "set": "CRI 98",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Rumbling Bees [G] 110× — This attack does 110 damage for each of your Beedrill and Beedrill ex in play. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "G",
+      "subtype": "Stage 2 · ex",
+      "sim": {
+        "stage": 2,
+        "hp": 310,
+        "prizes": 2,
+        "retreat": 1,
+        "evolvesFrom": "Kakuna",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rumbling Bees",
+            "cost": {
+              "G": 1
+            },
+            "damage": 110
+          }
+        ]
+      }
+    },
+    {
+      "id": "zsv10pt5-41",
+      "name": "Beheeyem",
+      "set": "BLK 41",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Calm Mind [P] — Heal 40 damage from this Pokémon. Psychic [C][C][C] 80+ — This attack does 30 more damage for each Energy attached to your opponent's Active Pokémon.",
+      "imported": true,
+      "type": "P",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Elgyem",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Calm Mind",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Psychic",
+            "cost": {
+              "C": 3
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-61",
+      "name": "Beldum",
+      "set": "JTG 61",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Spinning Attack [P] 10 Beam [P][P] 30",
+      "imported": true,
+      "type": "P",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Spinning Attack",
+            "cost": {
+              "P": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Beam",
+            "cost": {
+              "P": 2
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "me1-112",
+      "name": "Bewear",
+      "set": "MEG 112",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Knuckle Punch [C][C] 50 Hyper Lariat [C][C][C] 100+ — Flip 2 coins. If both of them are heads, this attack does 100 more damage.",
+      "imported": true,
+      "type": "C",
+      "subtype": "Stage 1",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Stufful",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Knuckle Punch",
+            "cost": {
+              "C": 2
+            },
+            "damage": 50
+          },
+          {
+            "name": "Hyper Lariat",
+            "cost": {
+              "C": 3
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8-48",
+      "name": "Black Kyurem ex",
+      "set": "SSP 48",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ice Age [C][C][C] 90 — If your opponent's Active Pokémon is a Dragon Pokémon, it is now Paralyzed. Black Frost [W][W][C][C] 250 — This Pokémon also does 30 damage to itself. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "W",
+      "subtype": "Basic · ex",
+      "sim": {
+        "stage": 0,
+        "hp": 230,
+        "prizes": 2,
+        "retreat": 3,
+        "basic": true,
+        "weak": "M",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Ice Age",
+            "cost": {
+              "C": 3
+            },
+            "damage": 90
+          },
+          {
+            "name": "Black Frost",
+            "cost": {
+              "W": 2,
+              "C": 2
+            },
+            "damage": 250
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv10-42",
+      "name": "Blaziken",
+      "set": "DRI 42",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Heat Blast [C][C] 70 Inferno Kick Flurry [R][R][C] 120 — Discard 2 Energy from this Pokémon. This attack also does 120 damage to 1 of your opponent's Benched Pokémon. (Don't apply Weakness and Resistance for Benched Pokémon.)",
+      "imported": true,
+      "type": "R",
+      "subtype": "Stage 2",
+      "sim": {
+        "stage": 2,
+        "hp": 170,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Combusken",
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Heat Blast",
+            "cost": {
+              "C": 2
+            },
+            "damage": 70
+          },
+          {
+            "name": "Inferno Kick Flurry",
+            "cost": {
+              "R": 2,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv9-24",
+      "name": "Blaziken ex",
+      "set": "JTG 24",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Seething Spirit — Once during your turn, you may attach a Basic Energy card from your discard pile to 1 of your Pokémon. Smolder-sault [R][C] 200 — During your next turn, this Pokémon can't attack. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "R",
+      "subtype": "Stage 2 · ex",
+      "sim": {
+        "stage": 2,
+        "hp": 320,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Combusken",
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Smolder-sault",
+            "cost": {
+              "R": 1,
+              "C": 1
+            },
+            "damage": 200
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv6-201",
+      "name": "Blissey ex",
+      "set": "TWM 201",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Happy Switch — Once during your turn, you may move a Basic Energy from 1 of your Pokémon to another of your Pokémon. Return [C][C][C] 180 — You may draw cards until you have 6 cards in your hand. Pokémon ex rule: When your Pokémon ex is Knocked Out, your opponent takes 2 Prize cards.",
+      "imported": true,
+      "type": "C",
+      "subtype": "Stage 1 · ex",
+      "sim": {
+        "stage": 1,
+        "hp": 300,
+        "prizes": 2,
+        "retreat": 4,
+        "evolvesFrom": "Chansey",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Return",
+            "cost": {
+              "C": 3
+            },
+            "damage": 180
+          }
+        ]
+      }
+    },
+    {
+      "id": "rsv10pt5-114",
+      "name": "Blitzle",
+      "set": "WHT 114",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Smash Kick [C] 10 Zap Kick [L][C] 30",
+      "imported": true,
+      "type": "L",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Smash Kick",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Zap Kick",
+            "cost": {
+              "L": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "sv8pt5-54",
+      "name": "Bloodmoon Ursaluna",
+      "set": "PRE 54",
+      "category": "pokemon",
+      "max": 4,
+      "text": "Ability: Battle-Hardened — When you play this Pokémon from your hand onto your Bench during your turn, you may attach up to 2 Basic Fighting Energy cards from your hand to this Pokémon. Mad Bite [F][F][C] 100+ — This attack does 30 more damage for each damage counter on your opponent's Active Pokémon.",
+      "imported": true,
+      "type": "F",
+      "subtype": "Basic",
+      "sim": {
+        "stage": 0,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 4,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mad Bite",
+            "cost": {
+              "F": 2,
+              "C": 1
+            },
+            "damage": 100
+          }
+        ]
       }
     },
     {
@@ -472,6 +2481,78 @@
       }
     },
     {
+      "id": "sv6pt5-54",
+      "name": "Academy at Night",
+      "set": "SFA 54",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may put a card from their hand on top of their deck. You may play only 1 Stadium card during your turn. Put it next to the Active Spot, and discard it if another Stadium comes into play. A Stadium with the same name can't be played.",
+      "imported": true
+    },
+    {
+      "id": "me4-75",
+      "name": "Ange Floette",
+      "set": "CRI 75",
+      "category": "stadium",
+      "max": 4,
+      "text": "You can put this card into play only if you discard a Prism Tower in play, and you can put this card into play during the same turn you play Prism Tower.\nEach Mega Floette ex in play (both yours and your opponent's) gets +150 HP.",
+      "imported": true
+    },
+    {
+      "id": "sv8pt5-94",
+      "name": "Area Zero Underdepths",
+      "set": "PRE 94",
+      "category": "stadium",
+      "max": 4,
+      "text": "Each player who has any Tera Pokémon in play can have up to 8 Pokémon on their Bench.  If a player no longer has any Tera Pokémon in play, that player discards Pokémon from their Bench until they have 5. When this card leaves play, both players discard Pokémon from their Bench until they have 5, and the player who played this card discards first. You may play only 1 Stadium card during your turn. Put it next to the Active Spot, and discard it if another Stadium comes into play. A Stadium with the same name can't be played.",
+      "imported": true
+    },
+    {
+      "id": "me2-116",
+      "name": "Battle Cage",
+      "set": "PFL 116",
+      "category": "stadium",
+      "max": 4,
+      "text": "Prevent all damage counters from being placed on Benched Pokémon (both yours and your opponent's) by effects of attacks and Abilities from the opponent's Pokémon. (Damage from attacks is still taken.) You may play only 1 Stadium card during your turn. Put it next to the Active Spot, and discard it if another Stadium comes into play. A Stadium with the same name can't be played.",
+      "imported": true
+    },
+    {
+      "id": "me1-183",
+      "name": "Acerola's Mischief",
+      "set": "MEG 183",
+      "category": "supporter",
+      "max": 4,
+      "text": "You can use this card only if your opponent has 2 or fewer Prize cards remaining.  Choose 1 of your Pokémon in play. During your opponent's next turn, prevent all damage from and effects of attacks done to that Pokémon by your opponent's Pokémon ex. You may play only 1 Supporter card during your turn.",
+      "imported": true
+    },
+    {
+      "id": "sv8pt5-132",
+      "name": "Amarys",
+      "set": "PRE 132",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw 4 cards. At the end of this turn, if you have 5 or more cards in your hand, discard your hand. You may play only 1 Supporter card during your turn.",
+      "imported": true
+    },
+    {
+      "id": "me2pt5-182",
+      "name": "Anthea & Concordia",
+      "set": "ASC 182",
+      "category": "supporter",
+      "max": 4,
+      "text": "You can use this card only if you have N's Darmanitan, N's Zoroark ex, N's Vanilluxe, N's Klinklang, N's Reshiram, and N's Zekrom in play.  During this turn, if your opponent's Active Pokémon is Knocked Out by damage from an attack used by your N's Pokémon, take 3 more Prize cards. You may play only 1 Supporter card during your turn.",
+      "imported": true
+    },
+    {
+      "id": "sv8pt5-133",
+      "name": "Atticus",
+      "set": "PRE 133",
+      "category": "supporter",
+      "max": 4,
+      "text": "You can use this card only if your opponent's Active Pokémon is Poisoned.  Shuffle your hand into your deck. Then, draw 7 cards. You may play only 1 Supporter card during your turn.",
+      "imported": true
+    },
+    {
       "id": "az-tranquility",
       "name": "AZ's Tranquility",
       "set": "CRI 76",
@@ -482,6 +2563,24 @@
         "effect": "switchAndHeal",
         "heal": 80
       }
+    },
+    {
+      "id": "sv5-209",
+      "name": "Bianca's Devotion",
+      "set": "TEF 209",
+      "category": "supporter",
+      "max": 4,
+      "text": "Heal all damage from 1 of your Pokémon that has 30 HP or less remaining. You may play only 1 Supporter card during your turn.",
+      "imported": true
+    },
+    {
+      "id": "sv9-142",
+      "name": "Billy & O'Nare",
+      "set": "JTG 142",
+      "category": "supporter",
+      "max": 4,
+      "text": "Draw 2 cards. Then, if you have 10 or more cards in your hand, draw 2 more cards. You may play only 1 Supporter card during your turn.",
+      "imported": true
     },
     {
       "id": "black-belts-training",
@@ -583,6 +2682,15 @@
       }
     },
     {
+      "id": "me4-74",
+      "name": "Adversity Policy",
+      "set": "CRI 74",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this card is attached to has Weakness to your opponent's Active Pokémon's type, is in the Active Spot, and is damaged by an attack from your opponent's Pokémon (even if this Pokémon is Knocked Out), draw 3 cards.",
+      "imported": true
+    },
+    {
       "id": "air-balloon",
       "name": "Air Balloon",
       "set": "SVI 156",
@@ -604,6 +2712,33 @@
         "effect": "searchOnKnockout",
         "count": 3
       }
+    },
+    {
+      "id": "sv8-163",
+      "name": "Babiri Berry",
+      "set": "SSP 163",
+      "category": "tool",
+      "max": 4,
+      "text": "If the Pokémon this card is attached to is damaged by an attack from your opponent's Metal Pokémon, it takes 60 less damage (after applying Weakness and Resistance), and discard this card. You may attach any number of Pokémon Tools to your Pokémon during your turn. You may attach only 1 Pokémon Tool to each Pokémon, and it stays attached. Attach a Pokémon Tool to 1 of your Pokémon that doesn't already have a Pokémon Tool attached.",
+      "imported": true
+    },
+    {
+      "id": "me5-74",
+      "name": "Backtrack Badge",
+      "set": "PBL 74",
+      "category": "tool",
+      "max": 4,
+      "text": "Once during your turn, after you flip any coins for an attack of the Colorless Pokémon this card is attached to, you may ignore all results of those coin flips and begin flipping those coins again.",
+      "imported": true
+    },
+    {
+      "id": "sv8pt5-95",
+      "name": "Binding Mochi",
+      "set": "PRE 95",
+      "category": "tool",
+      "max": 4,
+      "text": "Attacks used by the Poisoned Pokémon this card is attached to do 40 more damage to your opponent's Active Pokémon (before applying Weakness and Resistance). You may attach any number of Pokémon Tools to your Pokémon during your turn. You may attach only 1 Pokémon Tool to each Pokémon, and it stays attached.",
+      "imported": true
     },
     {
       "id": "powerglass",
@@ -630,7 +2765,7 @@
     }
   ],
   "_imported": {
-    "at": "2026-08-03T14:38:30.569Z",
+    "at": "2026-08-03T14:44:10.552Z",
     "source": "pokemontcg.io",
     "note": "Imported cards carry \"imported\": true. Their attack costs and damage are modelled; ability and Trainer effect text is NOT converted into game logic."
   }

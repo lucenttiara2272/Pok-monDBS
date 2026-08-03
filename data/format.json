@@ -1,0 +1,35 @@
+{
+  "_comment": "Which sets are legal in the current Standard format. The importer filters on this, because card APIs disagree about what 'standard legal' means and several still report rotated Sword & Shield sets as legal.",
+  "format": "Standard (Regulation H/I/J)",
+  "asOf": "2026-08",
+  "source": "https://limitlesstcg.com/cards?q=format:standard",
+  "legalSets": [
+    "TEF", "TWM", "SFA", "SCR", "SSP", "PRE",
+    "JTG", "DRI", "BLK", "WHT",
+    "MEG", "MEE", "MEP", "PFL", "POR", "ASC", "CRI", "PBL"
+  ],
+  "legalSetNames": {
+    "TEF": "Temporal Forces",
+    "TWM": "Twilight Masquerade",
+    "SFA": "Shrouded Fable",
+    "SCR": "Stellar Crown",
+    "SSP": "Surging Sparks",
+    "PRE": "Prismatic Evolutions",
+    "JTG": "Journey Together",
+    "DRI": "Destined Rivals",
+    "BLK": "Black Bolt",
+    "WHT": "White Flare",
+    "MEG": "Mega Evolution",
+    "MEE": "Mega Evolution Energies",
+    "MEP": "Mega Evolution promos",
+    "PFL": "Phantasmal Flames",
+    "POR": "Perfect Order",
+    "ASC": "Ascended Heroes",
+    "CRI": "Chaos Rising",
+    "PBL": "Pitch Black"
+  },
+  "rotatedExamples": [
+    "SVI", "SV1", "SV2", "SV3", "SV3PT5", "SV4", "SV4PT5",
+    "FST", "CRE", "BRS", "EVS", "SIT", "LOR", "CRZ", "ASR", "BST", "PGO", "PR-SW"
+  ]
+}
