@@ -118,6 +118,19 @@
       }
     },
     {
+      "id": "shadowy-darkness-energy",
+      "name": "Shadowy Darkness Energy",
+      "set": "PBL 83",
+      "category": "energy",
+      "type": "D",
+      "max": 4,
+      "text": "Provides [D] Energy. While the [D] Pokémon this is attached to is on your Bench, prevent all damage done to it by attacks.",
+      "sim": {
+        "basicEnergy": false,
+        "provides": "D"
+      }
+    },
+    {
       "id": "spiky-energy",
       "name": "Spiky Energy",
       "set": "JTG 159",
@@ -129,6 +142,19 @@
         "basicEnergy": false,
         "provides": "C",
         "retaliate": 20
+      }
+    },
+    {
+      "id": "voltaic-lightning-energy",
+      "name": "Voltaic Lightning Energy",
+      "set": "PBL 84",
+      "category": "energy",
+      "type": "L",
+      "max": 4,
+      "text": "Provides [L] Energy. Attacks by the [L] Pokémon this is attached to do 20 more damage to your opponent's Active Pokémon.",
+      "sim": {
+        "basicEnergy": false,
+        "provides": "L"
       }
     },
     {
@@ -1244,6 +1270,33 @@
       }
     },
     {
+      "id": "armarouge",
+      "name": "Armarouge",
+      "set": "PBL 12",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Flame Legion [R] 40. Flame Legion does 40 more for each Benched Pokémon with [R] Energy attached.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Charcadet",
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Flame Legion",
+            "cost": {
+              "R": 1
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
       "id": "me3-36",
       "name": "Aromatisse",
       "set": "POR 36",
@@ -2269,6 +2322,306 @@
       }
     },
     {
+      "id": "bombirdier",
+      "name": "Bombirdier",
+      "set": "PBL 71",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Challenging Delivery [C][C]. Speed Wing [C][C][C] 100. Challenging Delivery: flip 2 coins; on double heads search your deck for a Pokémon and bench it.",
+      "sim": {
+        "stage": 0,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Challenging Delivery",
+            "cost": {
+              "C": 2
+            },
+            "damage": 0
+          },
+          {
+            "name": "Speed Wing",
+            "cost": {
+              "C": 3
+            },
+            "damage": 100
+          }
+        ]
+      }
+    },
+    {
+      "id": "brionne",
+      "name": "Brionne",
+      "set": "PBL 19",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Hyper Voice [W] 40",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Popplio",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Hyper Voice",
+            "cost": {
+              "W": 1
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "bronzong",
+      "name": "Bronzong",
+      "set": "PBL 64",
+      "category": "pokemon",
+      "type": "M",
+      "max": 4,
+      "text": "Gentle Slap [M] 40. Metal Block [M][M][C] 120. Metal Block: takes 100 less damage from Evolution Pokémon next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Bronzor",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Gentle Slap",
+            "cost": {
+              "M": 1
+            },
+            "damage": 40
+          },
+          {
+            "name": "Metal Block",
+            "cost": {
+              "M": 2,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "bronzor",
+      "name": "Bronzor",
+      "set": "PBL 63",
+      "category": "pokemon",
+      "type": "M",
+      "max": 4,
+      "text": "Mirror Attack [M] 10. Mirror Attack does 30 more against [M] Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 3,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Mirror Attack",
+            "cost": {
+              "M": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "centiskorch",
+      "name": "Centiskorch",
+      "set": "PBL 10",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Controlled Burn [R]. Heat Tackle [R][C][C][C] 160. Heat Tackle also does 30 damage to itself.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Sizzlipede",
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Controlled Burn",
+            "cost": {
+              "R": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Heat Tackle",
+            "cost": {
+              "R": 1,
+              "C": 3
+            },
+            "damage": 160
+          }
+        ]
+      }
+    },
+    {
+      "id": "charcadet",
+      "name": "Charcadet",
+      "set": "PBL 11",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Best Punch [R] 40. Best Punch: flip a coin. If tails, this attack does nothing.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Best Punch",
+            "cost": {
+              "R": 1
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "charjabug",
+      "name": "Charjabug",
+      "set": "PBL 25",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Vise Grip [L] 30. Ram [L][L] 50",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Grubbin",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Vise Grip",
+            "cost": {
+              "L": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Ram",
+            "cost": {
+              "L": 2
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "chi-yu",
+      "name": "Chi-Yu",
+      "set": "PBL 59",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Whirling Envy [D] 20. Whirling Envy does 90 more with 2+ damage counters on this Pokémon, and ignores Weakness.",
+      "sim": {
+        "stage": 0,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Whirling Envy",
+            "cost": {
+              "D": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "cranidos",
+      "name": "Cranidos",
+      "set": "PBL 44",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Push Down [F][F] 70. Push Down switches out your opponent's Active Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Antique Skull Fossil",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Push Down",
+            "cost": {
+              "F": 2
+            },
+            "damage": 70
+          }
+        ]
+      }
+    },
+    {
+      "id": "dhelmise",
+      "name": "Dhelmise",
+      "set": "PBL 39",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Vengeful Anchor [P] 30. Vengeful Anchor does 140 more if 4+ Hide 'n' Sneak Pokémon are in your discard.",
+      "sim": {
+        "stage": 0,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 3,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Vengeful Anchor",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
       "id": "dragapult-ex",
       "name": "Dragapult ex",
       "set": "TWM 130",
@@ -2340,6 +2693,74 @@
       }
     },
     {
+      "id": "drilbur",
+      "name": "Drilbur",
+      "set": "PBL 46",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Call for Family [C]. Dig Claws [C][C][C] 50. Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Call for Family",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Dig Claws",
+            "cost": {
+              "C": 3
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "electrike",
+      "name": "Electrike",
+      "set": "PBL 23",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Collect [L]. Tackle [L][L] 30. Collect draws a card.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Collect",
+            "cost": {
+              "L": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Tackle",
+            "cost": {
+              "L": 2
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
       "id": "fezandipiti-ex",
       "name": "Fezandipiti ex",
       "set": "ASC 142",
@@ -2356,6 +2777,560 @@
         "retreat": 1,
         "role": "support",
         "stage": 0
+      }
+    },
+    {
+      "id": "finizen",
+      "name": "Finizen",
+      "set": "PBL 21",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Draining Fin [W][W] 20. Draining Fin heals 20 damage from this Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Draining Fin",
+            "cost": {
+              "W": 2
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "fomantis",
+      "name": "Fomantis",
+      "set": "PBL 3",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "Reckless Charge [G] 30. Reckless Charge also does 10 damage to itself.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Reckless Charge",
+            "cost": {
+              "G": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "goldeen",
+      "name": "Goldeen",
+      "set": "PBL 13",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Pierce [C][C] 30",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Pierce",
+            "cost": {
+              "C": 2
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "grubbin",
+      "name": "Grubbin",
+      "set": "PBL 2",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "String Shot [C] 10. String Shot: flip a coin. If heads, the Defending Pokémon is Paralyzed.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "String Shot",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "heatran",
+      "name": "Heatran",
+      "set": "PBL 7",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Singe [R]. Lava Wall [R][R][C] 120. Singe Burns the Defending Pokémon. Lava Wall prevents damage from Burned Pokémon next turn.",
+      "sim": {
+        "stage": 0,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 4,
+        "basic": true,
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Singe",
+            "cost": {
+              "R": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Lava Wall",
+            "cost": {
+              "R": 2,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "inkay",
+      "name": "Inkay",
+      "set": "PBL 51",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Procurement [D]. Spinning Attack [D][D] 30. Procurement: search your deck for an Item card and put it into your hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Procurement",
+            "cost": {
+              "D": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Spinning Attack",
+            "cost": {
+              "D": 2
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "jynx",
+      "name": "Jynx",
+      "set": "PBL 32",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Intense Kiss [P]. Psy Bolt [P][C] 50. Intense Kiss discards the Defending Pokémon and all attached cards at the end of your opponent's next turn.",
+      "sim": {
+        "stage": 0,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Intense Kiss",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Psy Bolt",
+            "cost": {
+              "P": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "koraidon",
+      "name": "Koraidon",
+      "set": "PBL 47",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Battle Claw [F] 30. Gaia Impact [F][F][C] 190. Battle Claw does 30 more against Evolution Pokémon. Gaia Impact discards all Energy from this Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "P",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Battle Claw",
+            "cost": {
+              "F": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Gaia Impact",
+            "cost": {
+              "F": 2,
+              "C": 1
+            },
+            "damage": 190
+          }
+        ]
+      }
+    },
+    {
+      "id": "lampent",
+      "name": "Lampent",
+      "set": "PBL 37",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Spreading Light [P]. Spreading Light: search your deck for up to 3 Lampent and put them onto your Bench.",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Litwick",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Spreading Light",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "litwick",
+      "name": "Litwick",
+      "set": "PBL 36",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Will-O-Wisp [P] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Will-O-Wisp",
+            "cost": {
+              "P": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "lurantis-ex",
+      "name": "Lurantis ex",
+      "set": "PBL 4",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "Lively Cutter [G] 60. Leaf Guard [G][C] 140. Lively Cutter does 200 more if this Pokémon was healed this turn. Leaf Guard: takes 50 less damage next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 260,
+        "prizes": 2,
+        "retreat": 1,
+        "evolvesFrom": "Fomantis",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Lively Cutter",
+            "cost": {
+              "G": 1
+            },
+            "damage": 60
+          },
+          {
+            "name": "Leaf Guard",
+            "cost": {
+              "G": 1,
+              "C": 1
+            },
+            "damage": 140
+          }
+        ]
+      }
+    },
+    {
+      "id": "mabosstiff",
+      "name": "Mabosstiff",
+      "set": "PBL 58",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Bite [D][D] 60. Plunging Headbutt [D][D][D] 210. Plunging Headbutt: this Pokémon takes 100 more damage during your opponent's next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Maschiff",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Bite",
+            "cost": {
+              "D": 2
+            },
+            "damage": 60
+          },
+          {
+            "name": "Plunging Headbutt",
+            "cost": {
+              "D": 3
+            },
+            "damage": 210
+          }
+        ]
+      }
+    },
+    {
+      "id": "malamar",
+      "name": "Malamar",
+      "set": "PBL 52",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Perplex [D]. Brain Crush [D] 130. Perplex Confuses the Defending Pokémon. Brain Crush does nothing unless the Defending Pokémon is Confused.",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Inkay",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Perplex",
+            "cost": {
+              "D": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Brain Crush",
+            "cost": {
+              "D": 1
+            },
+            "damage": 130
+          }
+        ]
+      }
+    },
+    {
+      "id": "mandibuzz",
+      "name": "Mandibuzz",
+      "set": "PBL 50",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Bone Sniper [D]. Blasting Wind [D][D][C] 120. Bone Sniper does 70 damage to 1 of your opponent's Pokémon that has a Special Energy attached.",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Vullaby",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Bone Sniper",
+            "cost": {
+              "D": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Blasting Wind",
+            "cost": {
+              "D": 2,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "manectric",
+      "name": "Manectric",
+      "set": "PBL 24",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Flashing Barrier [L][L] 50. Sonic Edge [L][L][L] 110. Flashing Barrier prevents damage from Evolution Pokémon next turn. Sonic Edge ignores effects on the Defending Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Electrike",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Flashing Barrier",
+            "cost": {
+              "L": 2
+            },
+            "damage": 50
+          },
+          {
+            "name": "Sonic Edge",
+            "cost": {
+              "L": 3
+            },
+            "damage": 110
+          }
+        ]
+      }
+    },
+    {
+      "id": "mankey",
+      "name": "Mankey",
+      "set": "PBL 42",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Low Kick [C] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 50,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "P",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Low Kick",
+            "cost": {
+              "C": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "marshadow",
+      "name": "Marshadow",
+      "set": "PBL 40",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Shadowy Knot [P] 30. Shadowy Knot does 30 damage for each [C] in your opponent's Active Pokémon's Retreat Cost.",
+      "sim": {
+        "stage": 0,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Shadowy Knot",
+            "cost": {
+              "P": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "maschiff",
+      "name": "Maschiff",
+      "set": "PBL 57",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Bite [D][D] 40",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Bite",
+            "cost": {
+              "D": 2
+            },
+            "damage": 40
+          }
+        ]
       }
     },
     {
@@ -2396,6 +3371,33 @@
       }
     },
     {
+      "id": "mega-chandelure-ex",
+      "name": "Mega Chandelure ex",
+      "set": "PBL 38",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Phantom Maze [P][P] 130. Ability Binding Flame: your opponent's Active Pokémon's Retreat Cost is [C] more. Phantom Maze does 50 more for each [C] in that Retreat Cost.",
+      "sim": {
+        "stage": 2,
+        "hp": 350,
+        "prizes": 3,
+        "retreat": 2,
+        "evolvesFrom": "Lampent",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Phantom Maze",
+            "cost": {
+              "P": 2
+            },
+            "damage": 130
+          }
+        ]
+      }
+    },
+    {
       "id": "mega-darkrai-ex",
       "name": "Mega Darkrai ex",
       "set": "PBL 48",
@@ -2432,6 +3434,75 @@
       }
     },
     {
+      "id": "mega-delphox-ex",
+      "name": "Mega Delphox ex",
+      "set": "PBL 8",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Trick Portal [R]. Eerie Glow [R][C][C] 200. Trick Portal: look at the top 9 cards and bench any Pokémon found. Eerie Glow Burns and Confuses the Defending Pokémon.",
+      "sim": {
+        "stage": 2,
+        "hp": 350,
+        "prizes": 3,
+        "retreat": 2,
+        "evolvesFrom": "Braixen",
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Trick Portal",
+            "cost": {
+              "R": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Eerie Glow",
+            "cost": {
+              "R": 1,
+              "C": 2
+            },
+            "damage": 200
+          }
+        ]
+      }
+    },
+    {
+      "id": "mega-excadrill-ex",
+      "name": "Mega Excadrill ex",
+      "set": "PBL 65",
+      "category": "pokemon",
+      "type": "M",
+      "max": 4,
+      "text": "Undermine [M][M] 90. Maximum Drilling [M][M][M] 200. Undermine discards the top 2 cards of your opponent's deck. Maximum Drilling does 130 more with 2+ extra Energy attached.",
+      "sim": {
+        "stage": 1,
+        "hp": 340,
+        "prizes": 3,
+        "retreat": 4,
+        "evolvesFrom": "Drilbur",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Undermine",
+            "cost": {
+              "M": 2
+            },
+            "damage": 90
+          },
+          {
+            "name": "Maximum Drilling",
+            "cost": {
+              "M": 3
+            },
+            "damage": 200
+          }
+        ]
+      }
+    },
+    {
       "id": "mega-kangaskhan-ex",
       "name": "Mega Kangaskhan ex",
       "set": "MEG 104",
@@ -2462,6 +3533,128 @@
       }
     },
     {
+      "id": "mega-slowbro-ex",
+      "name": "Mega Slowbro ex",
+      "set": "PBL 31",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Shellnado Spin [P][P][P] 180. Shellnado Spin places 12 damage counters on the Attacking Pokémon if this is damaged next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 330,
+        "prizes": 3,
+        "retreat": 3,
+        "evolvesFrom": "Slowpoke",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Shellnado Spin",
+            "cost": {
+              "P": 3
+            },
+            "damage": 180
+          }
+        ]
+      }
+    },
+    {
+      "id": "mega-zeraora-ex",
+      "name": "Mega Zeraora ex",
+      "set": "PBL 27",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Thunderous Fist [L] 60. Zepto Turn [L][L][L] 150. Thunderous Fist does 60 damage for each [L] Energy attached. Zepto Turn switches this Pokémon with a Benched Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 270,
+        "prizes": 3,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Thunderous Fist",
+            "cost": {
+              "L": 1
+            },
+            "damage": 60
+          },
+          {
+            "name": "Zepto Turn",
+            "cost": {
+              "L": 3
+            },
+            "damage": 150
+          }
+        ]
+      }
+    },
+    {
+      "id": "miraidon",
+      "name": "Miraidon",
+      "set": "PBL 28",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Thunder [L][L] 90. Ability Photon Cord: if Knocked Out while Active, move up to 2 Basic [L] Energy to a Benched Pokémon. Thunder also does 30 damage to itself.",
+      "sim": {
+        "stage": 0,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Thunder",
+            "cost": {
+              "L": 2
+            },
+            "damage": 90
+          }
+        ]
+      }
+    },
+    {
+      "id": "morpeko-ex",
+      "name": "Morpeko ex",
+      "set": "PBL 55",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Wheely Draw [D]. Hangry Blaster [D][D] 40. Wheely Draw shuffles your hand into your deck and draws 6. Hangry Blaster does 40 more for each damage counter on this Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 180,
+        "prizes": 2,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Wheely Draw",
+            "cost": {
+              "D": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Hangry Blaster",
+            "cost": {
+              "D": 2
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
       "id": "munkidori",
       "name": "Munkidori",
       "set": "TWM 95",
@@ -2478,6 +3671,872 @@
         "retreat": 1,
         "role": "support",
         "stage": 0
+      }
+    },
+    {
+      "id": "nickit",
+      "name": "Nickit",
+      "set": "PBL 53",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Gnaw [D] 10. Rear Kick [D][C] 30",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Gnaw",
+            "cost": {
+              "D": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Rear Kick",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "palafin",
+      "name": "Palafin",
+      "set": "PBL 22",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Knuckle Justice [W][W] 80. Knuckle Justice does 200 more if your opponent has exactly 1 Prize card remaining.",
+      "sim": {
+        "stage": 1,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Finizen",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Knuckle Justice",
+            "cost": {
+              "W": 2
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "pikipek",
+      "name": "Pikipek",
+      "set": "PBL 66",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Double Stab [C] 10. Double Stab: flip 2 coins, 10 damage for each heads.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Double Stab",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "poltchageist",
+      "name": "Poltchageist",
+      "set": "PBL 5",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "Furtive Drop [C]. Ability Hide 'n' Sneak: prevent all effects of opponent's attacks and Abilities done to this Pokémon. Furtive Drop places 1 damage counter.",
+      "sim": {
+        "stage": 0,
+        "hp": 30,
+        "prizes": 1,
+        "retreat": 0,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Furtive Drop",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "popplio",
+      "name": "Popplio",
+      "set": "PBL 18",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Pound [W] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Pound",
+            "cost": {
+              "W": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "primarina",
+      "name": "Primarina",
+      "set": "PBL 20",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Aqua Return [W][C] 120. Ability Enriching Melody: when you play this to evolve, heal all damage from 1 of your Pokémon. Aqua Return shuffles this Pokémon back into your deck.",
+      "sim": {
+        "stage": 2,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Brionne",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Aqua Return",
+            "cost": {
+              "W": 1,
+              "C": 1
+            },
+            "damage": 120
+          }
+        ]
+      }
+    },
+    {
+      "id": "primeape",
+      "name": "Primeape",
+      "set": "PBL 43",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Corkscrew Punch [C][C] 50",
+      "sim": {
+        "stage": 1,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Mankey",
+        "weak": "P",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Corkscrew Punch",
+            "cost": {
+              "C": 2
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "rampardos-ex",
+      "name": "Rampardos ex",
+      "set": "PBL 45",
+      "category": "pokemon",
+      "type": "F",
+      "max": 4,
+      "text": "Rowdy Hammer [F][F] 150. Ability Destructive Headbutting: once per turn while Active, flip a coin; on heads discard an Energy from your opponent's Active Pokémon. Rowdy Hammer does 150 more next turn.",
+      "sim": {
+        "stage": 2,
+        "hp": 330,
+        "prizes": 2,
+        "retreat": 2,
+        "evolvesFrom": "Cranidos",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Rowdy Hammer",
+            "cost": {
+              "F": 2
+            },
+            "damage": 150
+          }
+        ]
+      }
+    },
+    {
+      "id": "relicanth",
+      "name": "Relicanth",
+      "set": "PBL 17",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Fossil Beatdown [C] 10. Fossil Beatdown does 30 more for each Benched Pokémon with \"Antique\" in its name.",
+      "sim": {
+        "stage": 0,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Fossil Beatdown",
+            "cost": {
+              "C": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "seaking",
+      "name": "Seaking",
+      "set": "PBL 14",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Hydro Jet [C][C][C]. Hydro Jet does 30 damage to 1 of your opponent's Pokémon for each [W] Energy attached to this Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Goldeen",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Hydro Jet",
+            "cost": {
+              "C": 3
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "shieldon",
+      "name": "Shieldon",
+      "set": "PBL 61",
+      "category": "pokemon",
+      "type": "M",
+      "max": 4,
+      "text": "Smithereen Smash [M][C] 50. Smithereen Smash discards an Energy from your opponent's Active Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Antique Armor Fossil",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Smithereen Smash",
+            "cost": {
+              "M": 1,
+              "C": 1
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "shuppet",
+      "name": "Shuppet",
+      "set": "PBL 33",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Hang Down [P] 10. Ability Hide 'n' Sneak: prevent all effects of your opponent's attacks and Abilities done to this Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 50,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Hang Down",
+            "cost": {
+              "P": 1
+            },
+            "damage": 10
+          }
+        ]
+      }
+    },
+    {
+      "id": "silvally",
+      "name": "Silvally",
+      "set": "PBL 70",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Air Slash [C][C][C] 130. Ability Call a Buddy: once per turn with an empty hand, search your deck for a Supporter. Air Slash discards an Energy from this Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 140,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Type: Null",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Air Slash",
+            "cost": {
+              "C": 3
+            },
+            "damage": 130
+          }
+        ]
+      }
+    },
+    {
+      "id": "sinistcha",
+      "name": "Sinistcha",
+      "set": "PBL 6",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "Matcha Spin [C]. Ability Hide 'n' Sneak. Matcha Spin: if 6+ Hide 'n' Sneak Pokémon are in your discard, place 4 damage counters on each of your opponent's Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Poltchageist",
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Matcha Spin",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "sizzlipede",
+      "name": "Sizzlipede",
+      "set": "PBL 9",
+      "category": "pokemon",
+      "type": "R",
+      "max": 4,
+      "text": "Controlled Burn [R]. Bug Out [C][C][C] 50. Controlled Burn discards the top card of your opponent's deck.",
+      "sim": {
+        "stage": 0,
+        "hp": 80,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "W",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Controlled Burn",
+            "cost": {
+              "R": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Bug Out",
+            "cost": {
+              "C": 3
+            },
+            "damage": 50
+          }
+        ]
+      }
+    },
+    {
+      "id": "skarmory",
+      "name": "Skarmory",
+      "set": "PBL 60",
+      "category": "pokemon",
+      "type": "M",
+      "max": 4,
+      "text": "Steel Cutter [M] 40. Steel Cutter: discard up to 2 Basic [M] Energy from hand; 40 damage for each discarded.",
+      "sim": {
+        "stage": 0,
+        "hp": 120,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Steel Cutter",
+            "cost": {
+              "M": 1
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "slowbro",
+      "name": "Slowbro",
+      "set": "PBL 30",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "All Out [P] 50. Zen Headbutt [C][C][C] 110. All Out does 160 more if you have no cards in hand.",
+      "sim": {
+        "stage": 1,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 3,
+        "evolvesFrom": "Slowpoke",
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "All Out",
+            "cost": {
+              "P": 1
+            },
+            "damage": 50
+          },
+          {
+            "name": "Zen Headbutt",
+            "cost": {
+              "C": 3
+            },
+            "damage": 110
+          }
+        ]
+      }
+    },
+    {
+      "id": "slowpoke",
+      "name": "Slowpoke",
+      "set": "PBL 29",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "All-You-Can-Yeet [P]. Headbutt [C][C] 20. All-You-Can-Yeet: discard any number of cards from your hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "All-You-Can-Yeet",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Headbutt",
+            "cost": {
+              "C": 2
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "spiritomb",
+      "name": "Spiritomb",
+      "set": "PBL 35",
+      "category": "pokemon",
+      "type": "P",
+      "max": 4,
+      "text": "Spiritual End [P]. Spiritual End: if 13+ Hide 'n' Sneak Pokémon are in your discard, quadruple the damage counters on 2 of your opponent's Pokémon.",
+      "sim": {
+        "stage": 0,
+        "hp": 60,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "D",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Spiritual End",
+            "cost": {
+              "P": 1
+            },
+            "damage": 0
+          }
+        ]
+      }
+    },
+    {
+      "id": "thievul",
+      "name": "Thievul",
+      "set": "PBL 54",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Skill Thief [C][C]. Sharp Fang [D][C][C] 80. Skill Thief: if you have no cards in hand, use an attack from one of your opponent's Pokémon.",
+      "sim": {
+        "stage": 1,
+        "hp": 100,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Nickit",
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Skill Thief",
+            "cost": {
+              "C": 2
+            },
+            "damage": 0
+          },
+          {
+            "name": "Sharp Fang",
+            "cost": {
+              "D": 1,
+              "C": 2
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "toucannon",
+      "name": "Toucannon",
+      "set": "PBL 68",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Feather Rondo [C] 60. Ability Aerial Draw: once per turn, draw a card. Feather Rondo does 20 more for each Benched Pokémon in play.",
+      "sim": {
+        "stage": 2,
+        "hp": 150,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Trumbeak",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Feather Rondo",
+            "cost": {
+              "C": 1
+            },
+            "damage": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": "tropius",
+      "name": "Tropius",
+      "set": "PBL 1",
+      "category": "pokemon",
+      "type": "G",
+      "max": 4,
+      "text": "Fruity Aroma [C]. Solar Beam [G][C] 60. Fruity Aroma: look at the top 6 cards of your deck and put any Pokémon found there into your hand.",
+      "sim": {
+        "stage": 0,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "R",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Fruity Aroma",
+            "cost": {
+              "C": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Solar Beam",
+            "cost": {
+              "G": 1,
+              "C": 1
+            },
+            "damage": 60
+          }
+        ]
+      }
+    },
+    {
+      "id": "trumbeak",
+      "name": "Trumbeak",
+      "set": "PBL 67",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Fly [C] 30. Fly: flip a coin. Tails does nothing; heads prevents all damage and effects next turn.",
+      "sim": {
+        "stage": 1,
+        "hp": 90,
+        "prizes": 1,
+        "retreat": 1,
+        "evolvesFrom": "Pikipek",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Fly",
+            "cost": {
+              "C": 1
+            },
+            "damage": 30
+          }
+        ]
+      }
+    },
+    {
+      "id": "type-null",
+      "name": "Type: Null",
+      "set": "PBL 69",
+      "category": "pokemon",
+      "type": "C",
+      "max": 4,
+      "text": "Power Edge [C][C] 40",
+      "sim": {
+        "stage": 0,
+        "hp": 110,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Power Edge",
+            "cost": {
+              "C": 2
+            },
+            "damage": 40
+          }
+        ]
+      }
+    },
+    {
+      "id": "vikavolt",
+      "name": "Vikavolt",
+      "set": "PBL 26",
+      "category": "pokemon",
+      "type": "L",
+      "max": 4,
+      "text": "Quick Dive [L]. Giga Railgun [L][L] 260. Quick Dive does 50 damage to 1 of your opponent's Pokémon. Giga Railgun does nothing without Voltaic [L] Energy attached.",
+      "sim": {
+        "stage": 2,
+        "hp": 160,
+        "prizes": 1,
+        "retreat": 2,
+        "evolvesFrom": "Charjabug",
+        "weak": "F",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Quick Dive",
+            "cost": {
+              "L": 1
+            },
+            "damage": 0
+          },
+          {
+            "name": "Giga Railgun",
+            "cost": {
+              "L": 2
+            },
+            "damage": 260
+          }
+        ]
+      }
+    },
+    {
+      "id": "vullaby",
+      "name": "Vullaby",
+      "set": "PBL 49",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Flap [D] 10. Gust [D][C] 20",
+      "sim": {
+        "stage": 0,
+        "hp": 70,
+        "prizes": 1,
+        "retreat": 1,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Flap",
+            "cost": {
+              "D": 1
+            },
+            "damage": 10
+          },
+          {
+            "name": "Gust",
+            "cost": {
+              "D": 1,
+              "C": 1
+            },
+            "damage": 20
+          }
+        ]
+      }
+    },
+    {
+      "id": "wailmer",
+      "name": "Wailmer",
+      "set": "PBL 15",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Water Gun [W][W] 40. Wave Splash [W][W][W] 80",
+      "sim": {
+        "stage": 0,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 4,
+        "basic": true,
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Water Gun",
+            "cost": {
+              "W": 2
+            },
+            "damage": 40
+          },
+          {
+            "name": "Wave Splash",
+            "cost": {
+              "W": 3
+            },
+            "damage": 80
+          }
+        ]
+      }
+    },
+    {
+      "id": "wailord-ex",
+      "name": "Wailord ex",
+      "set": "PBL 16",
+      "category": "pokemon",
+      "type": "W",
+      "max": 4,
+      "text": "Surf [W][W][W] 120. Falling Down [W][W][W][W][W] 270. Falling Down leaves this Pokémon Asleep.",
+      "sim": {
+        "stage": 1,
+        "hp": 380,
+        "prizes": 2,
+        "retreat": 4,
+        "evolvesFrom": "Wailmer",
+        "weak": "L",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Surf",
+            "cost": {
+              "W": 3
+            },
+            "damage": 120
+          },
+          {
+            "name": "Falling Down",
+            "cost": {
+              "W": 5
+            },
+            "damage": 270
+          }
+        ]
+      }
+    },
+    {
+      "id": "zarude",
+      "name": "Zarude",
+      "set": "PBL 56",
+      "category": "pokemon",
+      "type": "D",
+      "max": 4,
+      "text": "Overhead Throw [D] 30. Shadowy Whip [D][D][D] 100. Overhead Throw also does 30 to one of your Benched Pokémon. Shadowy Whip does 70 more if your Benched Pokémon have Shadowy [D] Energy attached.",
+      "sim": {
+        "stage": 0,
+        "hp": 130,
+        "prizes": 1,
+        "retreat": 2,
+        "basic": true,
+        "weak": "G",
+        "role": "attacker",
+        "attacks": [
+          {
+            "name": "Overhead Throw",
+            "cost": {
+              "D": 1
+            },
+            "damage": 30
+          },
+          {
+            "name": "Shadowy Whip",
+            "cost": {
+              "D": 3
+            },
+            "damage": 100
+          }
+        ]
       }
     },
     {
@@ -2515,6 +4574,14 @@
       "max": 4,
       "text": "Prevent all damage counters from being placed on Benched Pokémon (both yours and your opponent's) by effects of attacks and Abilities from the opponent's Pokémon. (Damage from attacks is still taken.) You may play only 1 Stadium card during your turn. Put it next to the Active Spot, and discard it if another Stadium comes into play. A Stadium with the same name can't be played.",
       "imported": true
+    },
+    {
+      "id": "fossil-quarry",
+      "name": "Fossil Quarry",
+      "set": "PBL 76",
+      "category": "stadium",
+      "max": 4,
+      "text": "Once during each player's turn, that player may search their deck for up to 2 Item cards with \"Antique\" in their name and put them onto their Bench."
     },
     {
       "id": "me1-183",
@@ -2606,6 +4673,22 @@
       }
     },
     {
+      "id": "gladion-s-final-battle",
+      "name": "Gladion's Final Battle",
+      "set": "PBL 77",
+      "category": "supporter",
+      "max": 4,
+      "text": "Playable only as the last card in your hand. This turn, your Pokémon without a Rule Box do 80 more damage to your opponent's Active Pokémon."
+    },
+    {
+      "id": "gwynn",
+      "name": "Gwynn",
+      "set": "PBL 78",
+      "category": "supporter",
+      "max": 4,
+      "text": "Discard up to 2 Pokémon without a Rule Box from your hand, and draw 3 cards for each card discarded."
+    },
+    {
       "id": "janines-secret-art",
       "name": "Janine's Secret Art",
       "set": "SFA 59",
@@ -2668,6 +4751,22 @@
         "effect": "gustAndConfuse",
         "basicsOnly": true
       }
+    },
+    {
+      "id": "misty-s-vitality",
+      "name": "Misty's Vitality",
+      "set": "PBL 80",
+      "category": "supporter",
+      "max": 4,
+      "text": "Search your deck for up to 4 Basic [W] Energy and attach them to 1 of your Pokémon. Your turn ends."
+    },
+    {
+      "id": "rust-syndicate-grunt",
+      "name": "Rust Syndicate Grunt",
+      "set": "PBL 81",
+      "category": "supporter",
+      "max": 4,
+      "text": "Usable only if any of your Pokémon were Knocked Out during your opponent's last turn. Discard an Energy from 1 of your opponent's Pokémon."
     },
     {
       "id": "team-rockets-petrel",
@@ -2762,6 +4861,14 @@
         "retaliate": 40,
         "requiresDark": true
       }
+    },
+    {
+      "id": "tremendous-bomb",
+      "name": "Tremendous Bomb",
+      "set": "PBL 82",
+      "category": "tool",
+      "max": 4,
+      "text": "If the non-Mega Pokémon this is attached to is Active and takes 240+ damage from a Mega Evolution Pokémon ex, place 12 damage counters on the Attacking Pokémon and discard this card."
     }
   ],
   "_imported": {

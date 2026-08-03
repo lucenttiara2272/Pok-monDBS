@@ -1,0 +1,54 @@
+# Pitch Black (PBL) #1–50 — transcribed from limitlesstcg.com/cards?q=format:standard set:PBL
+# P|Name|SET N|TYPE|HP|stage|evolvesFrom|retreat|weak|attacks|note
+# attacks = Name:COST:damage;Name:COST:damage      COST = Energy symbols
+# Mega Darkrai ex (#48) is already curated with its full Abyss Eye mechanics.
+
+P|Tropius|PBL 1|G|110|0||1|R|Fruity Aroma:C:;Solar Beam:GC:60|Fruity Aroma: look at the top 6 cards of your deck and put any Pokémon found there into your hand.
+P|Grubbin|PBL 2|G|70|0||2|R|String Shot:C:10|String Shot: flip a coin. If heads, the Defending Pokémon is Paralyzed.
+P|Fomantis|PBL 3|G|70|0||1|R|Reckless Charge:G:30|Reckless Charge also does 10 damage to itself.
+P|Lurantis ex|PBL 4|G|260|1|Fomantis|1|R|Lively Cutter:G:60;Leaf Guard:GC:140|Lively Cutter does 200 more if this Pokémon was healed this turn. Leaf Guard: takes 50 less damage next turn.
+P|Poltchageist|PBL 5|G|30|0||0|R|Furtive Drop:C:|Ability Hide 'n' Sneak: prevent all effects of opponent's attacks and Abilities done to this Pokémon. Furtive Drop places 1 damage counter.
+P|Sinistcha|PBL 6|G|60|1|Poltchageist|1|R|Matcha Spin:C:|Ability Hide 'n' Sneak. Matcha Spin: if 6+ Hide 'n' Sneak Pokémon are in your discard, place 4 damage counters on each of your opponent's Pokémon.
+P|Heatran|PBL 7|R|140|0||4|W|Singe:R:;Lava Wall:RRC:120|Singe Burns the Defending Pokémon. Lava Wall prevents damage from Burned Pokémon next turn.
+P|Mega Delphox ex|PBL 8|R|350|2|Braixen|2|W|Trick Portal:R:;Eerie Glow:RCC:200|Trick Portal: look at the top 9 cards and bench any Pokémon found. Eerie Glow Burns and Confuses the Defending Pokémon.
+P|Sizzlipede|PBL 9|R|80|0||2|W|Controlled Burn:R:;Bug Out:CCC:50|Controlled Burn discards the top card of your opponent's deck.
+P|Centiskorch|PBL 10|R|140|1|Sizzlipede|3|W|Controlled Burn:R:;Heat Tackle:RCCC:160|Heat Tackle also does 30 damage to itself.
+P|Charcadet|PBL 11|R|80|0||2|W|Best Punch:R:40|Best Punch: flip a coin. If tails, this attack does nothing.
+P|Armarouge|PBL 12|R|140|1|Charcadet|2|W|Flame Legion:R:40|Flame Legion does 40 more for each Benched Pokémon with [R] Energy attached.
+P|Goldeen|PBL 13|W|70|0||1|L|Pierce:CC:30|
+P|Seaking|PBL 14|W|110|1|Goldeen|1|L|Hydro Jet:CCC:|Hydro Jet does 30 damage to 1 of your opponent's Pokémon for each [W] Energy attached to this Pokémon.
+P|Wailmer|PBL 15|W|130|0||4|L|Water Gun:WW:40;Wave Splash:WWW:80|
+P|Wailord ex|PBL 16|W|380|1|Wailmer|4|L|Surf:WWW:120;Falling Down:WWWWW:270|Falling Down leaves this Pokémon Asleep.
+P|Relicanth|PBL 17|W|100|0||1|L|Fossil Beatdown:C:10|Fossil Beatdown does 30 more for each Benched Pokémon with "Antique" in its name.
+P|Popplio|PBL 18|W|70|0||1|L|Pound:W:20|
+P|Brionne|PBL 19|W|90|1|Popplio|2|L|Hyper Voice:W:40|
+P|Primarina|PBL 20|W|150|2|Brionne|2|L|Aqua Return:WC:120|Ability Enriching Melody: when you play this to evolve, heal all damage from 1 of your Pokémon. Aqua Return shuffles this Pokémon back into your deck.
+P|Finizen|PBL 21|W|80|0||2|L|Draining Fin:WW:20|Draining Fin heals 20 damage from this Pokémon.
+P|Palafin|PBL 22|W|150|1|Finizen|2|L|Knuckle Justice:WW:80|Knuckle Justice does 200 more if your opponent has exactly 1 Prize card remaining.
+P|Electrike|PBL 23|L|70|0||1|F|Collect:L:;Tackle:LL:30|Collect draws a card.
+P|Manectric|PBL 24|L|120|1|Electrike|1|F|Flashing Barrier:LL:50;Sonic Edge:LLL:110|Flashing Barrier prevents damage from Evolution Pokémon next turn. Sonic Edge ignores effects on the Defending Pokémon.
+P|Charjabug|PBL 25|L|100|1|Grubbin|2|F|Vise Grip:L:30;Ram:LL:50|
+P|Vikavolt|PBL 26|L|160|2|Charjabug|2|F|Quick Dive:L:;Giga Railgun:LL:260|Quick Dive does 50 damage to 1 of your opponent's Pokémon. Giga Railgun does nothing without Voltaic [L] Energy attached.
+P|Mega Zeraora ex|PBL 27|L|270|0||1|F|Thunderous Fist:L:60;Zepto Turn:LLL:150|Thunderous Fist does 60 damage for each [L] Energy attached. Zepto Turn switches this Pokémon with a Benched Pokémon.
+P|Miraidon|PBL 28|L|120|0||1|F|Thunder:LL:90|Ability Photon Cord: if Knocked Out while Active, move up to 2 Basic [L] Energy to a Benched Pokémon. Thunder also does 30 damage to itself.
+P|Slowpoke|PBL 29|P|70|0||2|D|All-You-Can-Yeet:P:;Headbutt:CC:20|All-You-Can-Yeet: discard any number of cards from your hand.
+P|Slowbro|PBL 30|P|130|1|Slowpoke|3|D|All Out:P:50;Zen Headbutt:CCC:110|All Out does 160 more if you have no cards in hand.
+P|Mega Slowbro ex|PBL 31|P|330|1|Slowpoke|3|D|Shellnado Spin:PPP:180|Shellnado Spin places 12 damage counters on the Attacking Pokémon if this is damaged next turn.
+P|Jynx|PBL 32|P|100|0||1|D|Intense Kiss:P:;Psy Bolt:PC:50|Intense Kiss discards the Defending Pokémon and all attached cards at the end of your opponent's next turn.
+P|Shuppet|PBL 33|P|50|0||1|D|Hang Down:P:10|Ability Hide 'n' Sneak: prevent all effects of your opponent's attacks and Abilities done to this Pokémon.
+P|Banette|PBL 34|P|80|1|Shuppet|1|D|Puppet Pull:P:80|Ability Hide 'n' Sneak. Puppet Pull: search your deck for a card and put it into your hand.
+P|Spiritomb|PBL 35|P|60|0||1|D|Spiritual End:P:|Spiritual End: if 13+ Hide 'n' Sneak Pokémon are in your discard, quadruple the damage counters on 2 of your opponent's Pokémon.
+P|Litwick|PBL 36|P|70|0||1|D|Will-O-Wisp:P:20|
+P|Lampent|PBL 37|P|90|1|Litwick|1|D|Spreading Light:P:|Spreading Light: search your deck for up to 3 Lampent and put them onto your Bench.
+P|Mega Chandelure ex|PBL 38|P|350|2|Lampent|2|D|Phantom Maze:PP:130|Ability Binding Flame: your opponent's Active Pokémon's Retreat Cost is [C] more. Phantom Maze does 50 more for each [C] in that Retreat Cost.
+P|Dhelmise|PBL 39|P|140|0||3|D|Vengeful Anchor:P:30|Vengeful Anchor does 140 more if 4+ Hide 'n' Sneak Pokémon are in your discard.
+P|Marshadow|PBL 40|P|90|0||1|D|Shadowy Knot:P:30|Shadowy Knot does 30 damage for each [C] in your opponent's Active Pokémon's Retreat Cost.
+P|Annihilape|PBL 41|P|150|2|Primeape|2|D|Ghostly Blow:PP:100|Ability Durable Body: if this would be Knocked Out by attack damage, flip a coin; on heads it survives with 10 HP. Ghostly Blow places 5 damage counters on a Benched Pokémon.
+P|Mankey|PBL 42|F|50|0||1|P|Low Kick:C:20|
+P|Primeape|PBL 43|F|110|1|Mankey|2|P|Corkscrew Punch:CC:50|
+P|Cranidos|PBL 44|F|100|1|Antique Skull Fossil|2|G|Push Down:FF:70|Push Down switches out your opponent's Active Pokémon.
+P|Rampardos ex|PBL 45|F|330|2|Cranidos|2|G|Rowdy Hammer:FF:150|Ability Destructive Headbutting: once per turn while Active, flip a coin; on heads discard an Energy from your opponent's Active Pokémon. Rowdy Hammer does 150 more next turn.
+P|Drilbur|PBL 46|F|70|0||2|G|Call for Family:C:;Dig Claws:CCC:50|Call for Family: search your deck for up to 2 Basic Pokémon and put them onto your Bench.
+P|Koraidon|PBL 47|F|130|0||2|P|Battle Claw:F:30;Gaia Impact:FFC:190|Battle Claw does 30 more against Evolution Pokémon. Gaia Impact discards all Energy from this Pokémon.
+P|Vullaby|PBL 49|D|70|0||1|L|Flap:D:10;Gust:DC:20|
+P|Mandibuzz|PBL 50|D|120|1|Vullaby|2|L|Bone Sniper:D:;Blasting Wind:DDC:120|Bone Sniper does 70 damage to 1 of your opponent's Pokémon that has a Special Energy attached.

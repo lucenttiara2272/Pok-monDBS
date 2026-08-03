@@ -4,9 +4,24 @@
   "asOf": "2026-08",
   "source": "https://limitlesstcg.com/cards?q=format:standard",
   "legalSets": [
-    "TEF", "TWM", "SFA", "SCR", "SSP", "PRE",
-    "JTG", "DRI", "BLK", "WHT",
-    "MEG", "MEE", "MEP", "PFL", "POR", "ASC", "CRI", "PBL"
+    "TEF",
+    "TWM",
+    "SFA",
+    "SCR",
+    "SSP",
+    "PRE",
+    "JTG",
+    "DRI",
+    "BLK",
+    "WHT",
+    "MEG",
+    "MEE",
+    "MEP",
+    "PFL",
+    "POR",
+    "ASC",
+    "CRI",
+    "PBL"
   ],
   "legalSetNames": {
     "TEF": "Temporal Forces",
@@ -29,7 +44,44 @@
     "PBL": "Pitch Black"
   },
   "rotatedExamples": [
-    "SVI", "SV1", "SV2", "SV3", "SV3PT5", "SV4", "SV4PT5",
-    "FST", "CRE", "BRS", "EVS", "SIT", "LOR", "CRZ", "ASR", "BST", "PGO", "PR-SW"
-  ]
+    "SVI",
+    "SV1",
+    "SV2",
+    "SV3",
+    "SV3PT5",
+    "SV4",
+    "SV4PT5",
+    "FST",
+    "CRE",
+    "BRS",
+    "EVS",
+    "SIT",
+    "LOR",
+    "CRZ",
+    "ASR",
+    "BST",
+    "PGO",
+    "PR-SW"
+  ],
+  "expectedUnique": {
+    "TEF": 162,
+    "TWM": 167,
+    "SFA": 64,
+    "SCR": 142,
+    "SSP": 191,
+    "PRE": 180,
+    "JTG": 159,
+    "DRI": 182,
+    "BLK": 86,
+    "WHT": 86,
+    "MEG": 132,
+    "MEE": 9,
+    "MEP": 30,
+    "PFL": 110,
+    "POR": 88,
+    "ASC": 217,
+    "CRI": 86,
+    "PBL": 84
+  },
+  "_expectedNote": "Distinct card names, excluding alternate-art reprints that share a name. PBL is measured (120 prints -> 84 names); the others are estimates from set size and will be corrected as each set is transcribed."
 }

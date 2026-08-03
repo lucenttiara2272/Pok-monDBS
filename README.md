@@ -118,7 +118,39 @@ tests/                parity, calibration, and data-integrity tests
 python/               original Python reference implementation
 ```
 
-## Importing the full Standard pool
+## Building out the card pool
+
+`npm run coverage` shows how much of the Standard pool is in the database and which
+sets are still missing.
+
+The pool is transcribed from [limitlesstcg.com](https://limitlesstcg.com) set by set,
+50 cards per page, in batches under `data/batches/`. Each batch is one line per card in
+a compact pipe-delimited format; card text is synthesised from the structured fields so
+only genuinely load-bearing prose has to be typed:
+
+```
+P|Name|SET N|TYPE|HP|stage|evolvesFrom|retreat|weak|attacks|note
+I|Name|SET N|Item text          O| Tool    S| Supporter    D| Stadium
+E|Name|SET N|SYM|basic|text
+```
+
+Apply one with:
+
+```bash
+node tools/add-batch.mjs data/batches/pbl-1.txt --dry-run
+node tools/add-batch.mjs data/batches/pbl-1.txt
+npm test
+```
+
+Prize counts are derived from the name — `Mega X ex` is 3 Prizes, `X ex` is 2, anything
+else 1 — so the most consequential number can't be typo'd. Existing cards are never
+overwritten, so re-running a batch is safe, and a card from a set outside the format is
+rejected rather than silently added.
+
+Note that Limitless counts *prints*: the tail of every set is alternate art sharing a
+name with an earlier number. Pitch Black lists 120 prints but only 84 distinct cards.
+
+## Importing from an API (partial)
 
 `data/cards.json` ships with a hand-curated core. To pull in the whole Standard-legal
 pool:
@@ -131,6 +163,12 @@ npm test
 
 Source is [pokemontcg.io](https://pokemontcg.io). Set `POKEMONTCG_API_KEY` if you hit
 rate limits.
+
+**This source is incomplete for this format.** Its `legalities.standard` flag lags the
+real rotation: it reports rotated Sword & Shield cards as legal while having none of the
+2026 Mega Evolution sets. The importer therefore filters on `data/format.json` rather
+than trusting the flag, which is why a run yields far fewer cards than the API claims.
+Batch transcription above is the reliable path; treat the importer as a head start.
 
 **Curated cards always win.** Anything already in `data/cards.json` keeps its
 hand-written `sim` block; the importer only adds names that aren't there. Those curated

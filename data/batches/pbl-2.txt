@@ -1,0 +1,36 @@
+# Pitch Black (PBL) #51–84. Cards #85–120 are alternate-art reprints of earlier
+# numbers and dedupe by name, so they add nothing.
+# Dark Bell (#75) and Jett (#79) are already curated with full mechanics.
+
+P|Inkay|PBL 51|D|60|0||1|G|Procurement:D:;Spinning Attack:DD:30|Procurement: search your deck for an Item card and put it into your hand.
+P|Malamar|PBL 52|D|120|1|Inkay|2|G|Perplex:D:;Brain Crush:D:130|Perplex Confuses the Defending Pokémon. Brain Crush does nothing unless the Defending Pokémon is Confused.
+P|Nickit|PBL 53|D|70|0||1|G|Gnaw:D:10;Rear Kick:DC:30|
+P|Thievul|PBL 54|D|100|1|Nickit|1|G|Skill Thief:CC:;Sharp Fang:DCC:80|Skill Thief: if you have no cards in hand, use an attack from one of your opponent's Pokémon.
+P|Morpeko ex|PBL 55|D|180|0||1|G|Wheely Draw:D:;Hangry Blaster:DD:40|Wheely Draw shuffles your hand into your deck and draws 6. Hangry Blaster does 40 more for each damage counter on this Pokémon.
+P|Zarude|PBL 56|D|130|0||2|G|Overhead Throw:D:30;Shadowy Whip:DDD:100|Overhead Throw also does 30 to one of your Benched Pokémon. Shadowy Whip does 70 more if your Benched Pokémon have Shadowy [D] Energy attached.
+P|Maschiff|PBL 57|D|70|0||2|G|Bite:DD:40|
+P|Mabosstiff|PBL 58|D|140|1|Maschiff|3|G|Bite:DD:60;Plunging Headbutt:DDD:210|Plunging Headbutt: this Pokémon takes 100 more damage during your opponent's next turn.
+P|Chi-Yu|PBL 59|D|90|0||1|G|Whirling Envy:D:20|Whirling Envy does 90 more with 2+ damage counters on this Pokémon, and ignores Weakness.
+P|Skarmory|PBL 60|M|120|0||1|L|Steel Cutter:M:40|Steel Cutter: discard up to 2 Basic [M] Energy from hand; 40 damage for each discarded.
+P|Shieldon|PBL 61|M|100|1|Antique Armor Fossil|3|R|Smithereen Smash:MC:50|Smithereen Smash discards an Energy from your opponent's Active Pokémon.
+P|Bastiodon|PBL 62|M|160|2|Shieldon|4|R|Hammer In:MMC:160|Ability Ancient Bulwark: while this is Benched, prevent all damage to your Pokémon from attackers with 2 or less Energy attached.
+P|Bronzor|PBL 63|M|80|0||3|R|Mirror Attack:M:10|Mirror Attack does 30 more against [M] Pokémon.
+P|Bronzong|PBL 64|M|130|1|Bronzor|3|R|Gentle Slap:M:40;Metal Block:MMC:120|Metal Block: takes 100 less damage from Evolution Pokémon next turn.
+P|Mega Excadrill ex|PBL 65|M|340|1|Drilbur|4|R|Undermine:MM:90;Maximum Drilling:MMM:200|Undermine discards the top 2 cards of your opponent's deck. Maximum Drilling does 130 more with 2+ extra Energy attached.
+P|Pikipek|PBL 66|C|70|0||1|L|Double Stab:C:10|Double Stab: flip 2 coins, 10 damage for each heads.
+P|Trumbeak|PBL 67|C|90|1|Pikipek|1|L|Fly:C:30|Fly: flip a coin. Tails does nothing; heads prevents all damage and effects next turn.
+P|Toucannon|PBL 68|C|150|2|Trumbeak|2|L|Feather Rondo:C:60|Ability Aerial Draw: once per turn, draw a card. Feather Rondo does 20 more for each Benched Pokémon in play.
+P|Type: Null|PBL 69|C|110|0||2|F|Power Edge:CC:40|
+P|Silvally|PBL 70|C|140|1|Type: Null|2|F|Air Slash:CCC:130|Ability Call a Buddy: once per turn with an empty hand, search your deck for a Supporter. Air Slash discards an Energy from this Pokémon.
+P|Bombirdier|PBL 71|C|100|0||1|L|Challenging Delivery:CC:;Speed Wing:CCC:100|Challenging Delivery: flip 2 coins; on double heads search your deck for a Pokémon and bench it.
+I|Antique Armor Fossil|PBL 72|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Protective Armor: while Active, all of your Pokémon take 10 less damage.
+I|Antique Skull Fossil|PBL 73|Play as a 60-HP Basic [C] Pokémon that can't be affected by Special Conditions and can't retreat. Ability Spiny Skull: places 3 damage counters on an attacker that damages it.
+O|Backtrack Badge|PBL 74|Once during your turn, after flipping coins for an attack of the [C] Pokémon this is attached to, you may ignore the results and flip again.
+D|Fossil Quarry|PBL 76|Once during each player's turn, that player may search their deck for up to 2 Item cards with "Antique" in their name and put them onto their Bench.
+S|Gladion's Final Battle|PBL 77|Playable only as the last card in your hand. This turn, your Pokémon without a Rule Box do 80 more damage to your opponent's Active Pokémon.
+S|Gwynn|PBL 78|Discard up to 2 Pokémon without a Rule Box from your hand, and draw 3 cards for each card discarded.
+S|Misty's Vitality|PBL 80|Search your deck for up to 4 Basic [W] Energy and attach them to 1 of your Pokémon. Your turn ends.
+S|Rust Syndicate Grunt|PBL 81|Usable only if any of your Pokémon were Knocked Out during your opponent's last turn. Discard an Energy from 1 of your opponent's Pokémon.
+O|Tremendous Bomb|PBL 82|If the non-Mega Pokémon this is attached to is Active and takes 240+ damage from a Mega Evolution Pokémon ex, place 12 damage counters on the Attacking Pokémon and discard this card.
+E|Shadowy Darkness Energy|PBL 83|D|0|Provides [D] Energy. While the [D] Pokémon this is attached to is on your Bench, prevent all damage done to it by attacks.
+E|Voltaic Lightning Energy|PBL 84|L|0|Provides [L] Energy. Attacks by the [L] Pokémon this is attached to do 20 more damage to your opponent's Active Pokémon.
