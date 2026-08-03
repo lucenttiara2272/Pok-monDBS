@@ -118,7 +118,28 @@ python/               original Python reference implementation
 
 ## Adding a card
 
-Append to `data/cards.json`:
+The search box only filters the cards in `data/cards.json` — it is **not** a lookup of
+every card ever printed. If something doesn't appear, it isn't in the database yet.
+
+**In the app:** hit **+ Add card**, fill in the form, and it shows up immediately. Custom
+cards are saved in your browser's local storage, so they survive a reload but live only on
+that machine. Press **Export JSON** to copy them in the right shape and paste them into
+`data/cards.json` to make them permanent and shared.
+
+**Attacks are data-driven.** A Pokémon with a `sim.attacks` array can fight without any
+engine change — the engine reads the Energy cost, damage, and knockout effects straight
+from the JSON. Supported attack fields:
+
+| Field | Meaning |
+|---|---|
+| `cost` | e.g. `{ "D": 2, "C": 1 }` — `C` accepts any Energy |
+| `damage` | base damage |
+| `bonusIfOwnBenchDamaged` | extra damage if your own Bench has damage counters |
+| `flipUntilTailsBonus` | extra damage per heads, flipping until tails |
+| `koIfSpecialCondition` | auto-KO if the Defending Pokémon has a Special Condition |
+| `koIfExactDamage` | auto-KO at exactly this much damage already on it |
+
+**By hand:** append to `data/cards.json`:
 
 ```json
 {

@@ -40,11 +40,14 @@
     <div class="picker-head">
       <input id="search" type="search" placeholder="Search cards…" autocomplete="off">
       <div class="filters" id="filters"></div>
+      <button id="add-card" class="btn">+ Add card</button>
+      <button id="export" class="btn ghost hidden">Export JSON</button>
     </div>
     <div id="grid"></div>
     <p class="hint">
       Set a count with the dropdown on each card. Basic Energy has no copy limit;
-      everything else caps at 4.
+      everything else caps at 4. Missing a card? <b>+ Add card</b> — it saves in this
+      browser and can be exported into <code>data/cards.json</code> to keep for good.
     </p>
   </section>
 
@@ -96,6 +99,100 @@
     the other numbers mean nothing — <code>npm test</code> enforces this.
   </p>
 </footer>
+
+<!-- ------------------------------------------------ add-card dialog -->
+<dialog id="cardModal">
+  <form method="dialog" id="cardForm">
+    <h2>Add a card</h2>
+    <p class="hint" style="margin:0 0 14px">
+      Saved in this browser only. Use <b>Export JSON</b> afterwards to paste it into
+      <code>data/cards.json</code> so it survives and ships with the repo.
+    </p>
+
+    <div class="frow">
+      <label>Name<input name="name" required placeholder="Mega Kangaskhan ex"></label>
+      <label>Set<input name="set" required placeholder="MEG 104"></label>
+    </div>
+
+    <div class="frow">
+      <label>Category
+        <select name="category">
+          <option value="pokemon">Pokémon</option>
+          <option value="item">Item</option>
+          <option value="tool">Tool</option>
+          <option value="supporter">Supporter</option>
+          <option value="energy">Energy</option>
+        </select>
+      </label>
+      <label>Type
+        <select name="type">
+          <option value="">—</option>
+          <option value="D">Darkness [D]</option>
+          <option value="C">Colorless [C]</option>
+          <option value="G">Grass [G]</option>
+          <option value="R">Fire [R]</option>
+          <option value="W">Water [W]</option>
+          <option value="L">Lightning [L]</option>
+          <option value="P">Psychic [P]</option>
+          <option value="F">Fighting [F]</option>
+          <option value="M">Metal [M]</option>
+          <option value="N">Dragon [N]</option>
+        </select>
+      </label>
+      <label>Max copies<input name="max" type="number" value="4" min="1" max="60"></label>
+    </div>
+
+    <label>Card text
+      <textarea name="text" rows="3" required
+        placeholder="Exactly what the card says."></textarea></label>
+
+    <fieldset id="mon-fields">
+      <legend>Pokémon stats</legend>
+      <div class="frow">
+        <label>HP<input name="hp" type="number" value="280" min="10" step="10"></label>
+        <label>Prizes
+          <select name="prizes">
+            <option value="1">1 — single prize</option>
+            <option value="2">2 — ex</option>
+            <option value="3" selected>3 — Mega Evolution ex</option>
+          </select>
+        </label>
+        <label>Retreat<input name="retreat" type="number" value="2" min="0" max="5"></label>
+        <label>Weakness
+          <select name="weak">
+            <option value="">—</option>
+            <option value="G">Grass</option><option value="R">Fire</option>
+            <option value="W">Water</option><option value="L">Lightning</option>
+            <option value="P">Psychic</option><option value="F">Fighting</option>
+            <option value="D">Darkness</option><option value="M">Metal</option>
+          </select>
+        </label>
+      </div>
+
+      <legend style="margin-top:14px">Attack (leave the name blank for a non-attacker)</legend>
+      <div class="frow">
+        <label>Attack name<input name="atkName" placeholder="Rapid-Fire Combo"></label>
+        <label>Damage<input name="atkDmg" type="number" value="0" min="0" step="10"></label>
+      </div>
+      <div class="frow">
+        <label>Energy cost — typed
+          <input name="costTyped" type="number" value="0" min="0" max="5"></label>
+        <label>Energy cost — any [C]
+          <input name="costAny" type="number" value="0" min="0" max="5"></label>
+      </div>
+      <p class="hint" style="margin:4px 0 0">
+        "Typed" uses the card's own Type above. A [D][D][C] cost is typed&nbsp;2, any&nbsp;1.
+      </p>
+    </fieldset>
+
+    <div id="form-err" class="msg err hidden"></div>
+
+    <menu>
+      <button value="cancel" class="btn ghost" formnovalidate>Cancel</button>
+      <button id="save-card" value="save" class="btn primary">Save card</button>
+    </menu>
+  </form>
+</dialog>
 
 <script type="module" src="src/ui.js"></script>
 </body>

@@ -43,6 +43,25 @@
       }
     },
     {
+      "id": "mega-kangaskhan-ex",
+      "name": "Mega Kangaskhan ex",
+      "set": "MEG 104",
+      "category": "pokemon",
+      "subtype": "Basic · Mega Evolution ex",
+      "type": "C",
+      "max": 4,
+      "text": "Ability: Run Errand — once during your turn, if this Pokémon is in the Active Spot, you may draw 2 cards. You can't use more than 1 Run Errand Ability each turn. Rapid-Fire Combo [C][C][C] 200+ — flip a coin until you get tails. This attack does 50 more damage for each heads.",
+      "warning": "Colorless, so Dark Bell Confuses IT TOO — playing Dark Bell while this is your Active gives you a 50% chance to whiff your own attack. Its Run Errand Ability is also switched off by Team Rocket's Watchtower, which ~49% of the field plays.",
+      "sim": {
+        "basic": true, "hp": 300, "prizes": 3, "weak": "F", "retreat": 3,
+        "role": "attacker",
+        "attacks": [
+          { "name": "Rapid-Fire Combo", "cost": { "C": 3 }, "damage": 200,
+            "flipUntilTailsBonus": 50 }
+        ]
+      }
+    },
+    {
       "id": "fezandipiti-ex",
       "name": "Fezandipiti ex",
       "set": "ASC 142",
@@ -102,7 +121,11 @@
       "category": "item",
       "max": 4,
       "text": "Both Active non-[D] Pokémon are now Confused.",
-      "sim": { "effect": "confuseBothActives", "onlyNonDark": true }
+      "sim": {
+        "effect": "confuseBothActives",
+        "appliesSpecialCondition": true,
+        "onlyNonDark": true
+      }
     },
     {
       "id": "night-stretcher",

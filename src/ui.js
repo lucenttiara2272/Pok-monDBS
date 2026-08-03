@@ -24,14 +24,84 @@ let deck = {};                 // { cardName: count }
 let filter = 'all';
 let query = '';
 
+/* ------------------------------------------------------- custom cards --- */
+// Cards the user adds live here and are merged over data/cards.json at boot.
+// Browser-local: Export JSON moves them into the repo permanently.
+const STORE_KEY = 'ptcg-deck-lab.customCards';
+
+function loadCustom() {
+  try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
+  catch { return []; }
+}
+function saveCustom(list) {
+  localStorage.setItem(STORE_KEY, JSON.stringify(list));
+}
+function slug(s) {
+  return s.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+/** Build a card record from the dialog's form fields. */
+function cardFromForm(fd) {
+  const cat = fd.get('category');
+  const name = fd.get('name').trim();
+  const card = {
+    id: slug(name),
+    name,
+    set: fd.get('set').trim(),
+    category: cat,
+    max: Number(fd.get('max')) || 4,
+    text: fd.get('text').trim(),
+    custom: true,
+  };
+  const type = fd.get('type');
+  if (type) card.type = type;
+
+  if (cat === 'pokemon') {
+    card.sim = {
+      basic: true,
+      hp: Number(fd.get('hp')),
+      prizes: Number(fd.get('prizes')),
+      retreat: Number(fd.get('retreat')),
+    };
+    const weak = fd.get('weak');
+    if (weak) card.sim.weak = weak;
+
+    const atkName = (fd.get('atkName') || '').trim();
+    if (atkName) {
+      const typed = Number(fd.get('costTyped')) || 0;
+      const any = Number(fd.get('costAny')) || 0;
+      const cost = {};
+      if (typed > 0) {
+        if (!type) throw new Error('An attack with a typed Energy cost needs a Type.');
+        cost[type] = typed;
+      }
+      if (any > 0) cost.C = any;
+      if (!typed && !any) throw new Error('An attack needs at least one Energy in its cost.');
+      card.sim.role = 'attacker';
+      card.sim.attacks = [{
+        name: atkName,
+        cost,
+        damage: Number(fd.get('atkDmg')) || 0,
+      }];
+    }
+  } else if (cat === 'energy') {
+    card.sim = { basicEnergy: card.max > 4, provides: type || 'C' };
+  }
+  return card;
+}
+
 /* ---------------------------------------------------------------- boot --- */
 async function boot() {
   const [cardsJson, metaJson] = await Promise.all([
     fetch('data/cards.json').then((r) => r.json()),
     fetch('data/meta.json').then((r) => r.json()),
   ]);
-  CARDS = cardsJson.cards;
-  INDEX = makeCardIndex(cardsJson);
+  // custom cards win on name collision, so you can correct a bundled card
+  const custom = loadCustom();
+  const merged = [...cardsJson.cards.filter(
+    (c) => !custom.some((x) => x.name === c.name)), ...custom];
+  CARDS = merged;
+  INDEX = makeCardIndex({ cards: merged });
   META = metaJson.decks;
 
   // preset selector
@@ -60,7 +130,54 @@ async function boot() {
   $('clear').onclick = () => { deck = {}; renderAll(); };
   $('copy').onclick = copyList;
 
+  // add-card dialog
+  const modal = $('cardModal');
+  $('add-card').onclick = () => {
+    $('cardForm').reset();
+    $('form-err').classList.add('hidden');
+    modal.showModal();
+  };
+  $('cardForm').addEventListener('change', () => {
+    const cat = $('cardForm').category.value;
+    $('mon-fields').style.display = cat === 'pokemon' ? '' : 'none';
+  });
+  $('save-card').onclick = (e) => {
+    const form = $('cardForm');
+    if (!form.reportValidity()) { e.preventDefault(); return; }
+    let card;
+    try {
+      card = cardFromForm(new FormData(form));
+    } catch (err) {
+      e.preventDefault();
+      const box = $('form-err');
+      box.textContent = err.message;
+      box.classList.remove('hidden');
+      return;
+    }
+    const list = loadCustom().filter((c) => c.name !== card.name);
+    list.push(card);
+    saveCustom(list);
+    CARDS = [...CARDS.filter((c) => c.name !== card.name), card];
+    INDEX = makeCardIndex({ cards: CARDS });
+    query = '';
+    $('search').value = '';
+    renderAll();
+  };
+
   renderAll();
+}
+
+/** Copy every custom card as JSON ready to paste into data/cards.json. */
+function exportCustom() {
+  const list = loadCustom().map(({ custom, ...c }) => c);
+  if (!list.length) return;
+  const json = list.map((c) => JSON.stringify(c, null, 2)
+    .split('\n').map((l) => '    ' + l).join('\n')).join(',\n');
+  navigator.clipboard.writeText(json + ',').then(() => {
+    const b = $('export'); const t = b.textContent;
+    b.textContent = 'Copied — paste into data/cards.json';
+    setTimeout(() => { b.textContent = t; }, 2600);
+  });
 }
 
 /* ---------------------------------------------------------------- grid --- */
@@ -86,25 +203,48 @@ function renderGrid() {
       const max = maxFor(c);
       const opts = Array.from({ length: max + 1 }, (_, i) =>
         `<option value="${i}"${i === n ? ' selected' : ''}>${i}</option>`).join('');
-      const isMega = /^Mega /.test(c.name);
+      const prizes = c.sim && c.sim.prizes;
       html += `
         <div class="card${n ? ' in' : ''}">
+          ${c.custom ? `<button class="rm-custom" data-del="${c.name}"
+            title="Delete this custom card">✕</button>` : ''}
           <div class="nm">${c.name}</div>
           <div class="meta">
             <span>${c.set}</span>
             ${c.type ? `<span class="badge ${c.type}">${c.type}</span>` : ''}
-            ${isMega ? '<span class="badge mega">3 prizes</span>' : ''}
+            ${prizes === 3 ? '<span class="badge mega">3 prizes</span>' : ''}
+            ${c.custom ? '<span class="badge custom">custom</span>' : ''}
           </div>
           <div class="tx" title="${(c.text || '').replace(/"/g, '&quot;')}">${c.text || ''}</div>
+          ${c.warning ? `<div class="cardwarn">${c.warning}</div>` : ''}
           <div class="qty">
             <select data-card="${c.name}">${opts}</select>
-            ${isMega ? '<span class="warn3">Mega</span>' : ''}
           </div>
         </div>`;
     }
     html += '</div>';
   }
-  wrap.innerHTML = html || '<p class="hint">No cards match that search.</p>';
+
+  if (!html) {
+    const q = query ? `“${$('search').value}”` : 'that filter';
+    html = `<div class="empty">
+      <p style="margin:0 0 6px">No card matches ${q}.</p>
+      <p style="margin:0">This searches the ${CARDS.length} cards in
+      <code>data/cards.json</code> — it isn't a lookup of every card ever printed.
+      Use <b>+ Add card</b> to add it.</p></div>`;
+  }
+  wrap.innerHTML = html;
+
+  wrap.querySelectorAll('button[data-del]').forEach((b) => {
+    b.onclick = () => {
+      const name = b.dataset.del;
+      saveCustom(loadCustom().filter((c) => c.name !== name));
+      CARDS = CARDS.filter((c) => c.name !== name);
+      INDEX = makeCardIndex({ cards: CARDS });
+      delete deck[name];
+      renderAll();
+    };
+  });
 
   wrap.querySelectorAll('select[data-card]').forEach((s) => {
     s.onchange = () => {
@@ -163,7 +303,14 @@ function renderDeck() {
   });
 }
 
-function renderAll() { renderGrid(); renderDeck(); }
+function renderAll() {
+  renderGrid();
+  renderDeck();
+  const exp = $('export');
+  const has = loadCustom().length > 0;
+  exp.classList.toggle('hidden', !has);
+  exp.onclick = exportCustom;
+}
 
 function copyList() {
   const lines = [];

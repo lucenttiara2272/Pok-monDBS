@@ -23,6 +23,9 @@ export function buildSpec(counts, index) {
     spec[name] = {
       n,
       kind: card.category,
+      // `type` lives at the top level of the card, not inside `sim`, but the engine
+      // needs it — Dark Bell only Confuses non-[D] Pokémon, including your own.
+      type: card.type,
       ...(card.sim || {}),
     };
   }

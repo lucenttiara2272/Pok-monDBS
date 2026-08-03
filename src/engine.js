@@ -52,7 +52,75 @@ function choice(rng, seq) {
 
 /* -------------------------------------------------------------- helpers --- */
 
+/**
+ * Legacy export kept for readability elsewhere. The engine no longer relies on it —
+ * anything with a `sim.attacks` array is treated as an attacker, so a card added to
+ * data/cards.json can fight without touching this file.
+ */
 export const ATTACKER_IDS = new Set(['Mega Darkrai ex', 'Mega Absol ex']);
+
+/** Names in this spec that can actually attack. */
+function attackerNames(spec) {
+  return new Set(Object.entries(spec)
+    .filter(([, d]) => Array.isArray(d.attacks) && d.attacks.length)
+    .map(([n]) => n));
+}
+
+/** Can `mon` pay `cost`? [C] accepts any Energy; typed symbols need that type. */
+function canPay(mon, cost) {
+  const total = mon.energy.length;
+  let need = 0;
+  for (const [sym, n] of Object.entries(cost)) {
+    need += n;
+    if (sym === 'C') continue;
+    if (mon.energy.filter((e) => e === sym).length < n) return false;
+  }
+  return total >= need;
+}
+
+/**
+ * Pick the best attack this Pokémon can use right now.
+ * Knockout effects win; otherwise highest damage.
+ */
+function chooseAttack(S, mon, opp, bonusDamage, rng) {
+  const card = S.card(mon.name);
+  if (!card || !Array.isArray(card.attacks)) return null;
+
+  // a card in hand that can inflict a Special Condition on the opponent
+  const conditionCard = Object.keys(S.spec).find((n) =>
+    S.spec[n].appliesSpecialCondition && S.hand.includes(n));
+
+  let best = null;
+  for (const atk of card.attacks) {
+    if (!canPay(mon, atk.cost || {})) continue;
+
+    if (atk.koIfSpecialCondition) {
+      // Dark Bell only Confuses non-[D] Pokémon, so a Darkness opponent is immune
+      if (!conditionCard) continue;
+      if (S.spec[conditionCard].onlyNonDark && opp.darkType) continue;
+      const cand = { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name,
+        usesCard: conditionCard };
+      return cand;                                   // a KO beats any damage roll
+    }
+
+    if (typeof atk.koIfExactDamage === 'number') {
+      if (opp.dmgOnActive !== atk.koIfExactDamage) continue;
+      return { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name };
+    }
+
+    let dmg = (atk.damage || 0) + bonusDamage;
+    if (atk.bonusIfOwnBenchDamaged && S.benchHasDamage()) {
+      dmg += atk.bonusIfOwnBenchDamaged;
+    }
+    if (atk.flipUntilTailsBonus) {
+      while (rng() < 0.5) dmg += atk.flipUntilTailsBonus;
+    }
+    if (!best || dmg > best.dmg) {
+      best = { ko: false, dmg, reason: 'attack', name: atk.name };
+    }
+  }
+  return best;
+}
 export const DRAW_SUPPORTERS = new Set([
   "Lillie's Determination", 'Judge', 'Jett', "Team Rocket's Petrel",
 ]);
@@ -142,6 +210,7 @@ class Side {
   constructor(spec, rng) {
     this.spec = spec;
     this.rng = rng;
+    this.attackers = attackerNames(spec);
     this.deck = [];
     this.hand = [];
     this.discard = [];
@@ -184,7 +253,7 @@ class Side {
 
     const basics = this.hand.filter((c) => this.card(c).kind === 'pokemon');
     if (basics.length === 0) return;
-    const pick = basics.find((c) => ATTACKER_IDS.has(c)) || basics[0];
+    const pick = basics.find((c) => this.attackers.has(c)) || basics[0];
     this.hand.splice(this.hand.indexOf(pick), 1);
     this.active = this.newMon(pick);
     for (const c of [...this.hand]) {
@@ -252,8 +321,11 @@ function playDrawSupporter(S) {
     } else if (s === "Team Rocket's Petrel") {
       const A = S.active;
       let want;
-      if (![S.active, ...S.bench].some((m) => m && ATTACKER_IDS.has(m.name))) want = 'Ultra Ball';
-      else if (A && S.darkCount(A) >= 3) want = 'Dark Bell';
+      if (![S.active, ...S.bench].some((m) => m && S.attackers.has(m.name))) want = 'Ultra Ball';
+      else if (A && S.darkCount(A) >= 3) {
+        want = Object.keys(S.spec).find((n) => S.spec[n].appliesSpecialCondition)
+          || 'Energy Search';
+      }
       else want = 'Energy Search';
       if (S.searchDeck((c) => c === want, 1).length === 0) {
         S.searchDeck((c) => c === 'Ultra Ball', 1);
@@ -276,8 +348,16 @@ function ultraBall(S) {
     S.hand.splice(S.hand.indexOf(junk), 1);
     S.discard.push(junk);
   }
-  let got = S.searchDeck((c) => c === 'Mega Darkrai ex', 1);
-  if (!got.length) got = S.searchDeck((c) => c === 'Mega Absol ex', 1);
+  const rank = (n) => {
+    const a = S.card(n).attacks || [];
+    return Math.max(0, ...a.map((x) => (x.damage || 0) + (x.koIfSpecialCondition ? 999 : 0)));
+  };
+  const wanted = [...S.attackers].sort((a, b) => rank(b) - rank(a));
+  let got = [];
+  for (const w of wanted) {
+    got = S.searchDeck((c) => c === w, 1);
+    if (got.length) break;
+  }
   if (!got.length) got = S.searchDeck((c) => S.card(c).kind === 'pokemon', 1);
   return got.length > 0;
 }
@@ -289,7 +369,7 @@ function userTurn(S, opp, turn) {
   if (S.draw(1) === 0) return { ko: false, dmg: 0, deckout: true };
 
   const megasInPlay = () =>
-    [S.active, ...S.bench].filter((m) => m && ATTACKER_IDS.has(m.name));
+    [S.active, ...S.bench].filter((m) => m && S.attackers.has(m.name));
 
   const benchAll = () => {
     for (const c of [...S.hand]) {
@@ -308,17 +388,17 @@ function userTurn(S, opp, turn) {
       playDrawSupporter(S);
       ultraBall(S);
     }
-    if (S.has('Night Stretcher') && S.discard.some((c) => ATTACKER_IDS.has(c))) {
+    if (S.has('Night Stretcher') && S.discard.some((c) => S.attackers.has(c))) {
       S.play('Night Stretcher');
-      const i = S.discard.findIndex((c) => ATTACKER_IDS.has(c));
+      const i = S.discard.findIndex((c) => S.attackers.has(c));
       if (i >= 0) S.hand.push(S.discard.splice(i, 1)[0]);
     }
     benchAll();
   }
 
   // put a Mega in the Active spot
-  if (!ATTACKER_IDS.has(S.active.name)) {
-    const idx = S.bench.findIndex((m) => ATTACKER_IDS.has(m.name));
+  if (!S.attackers.has(S.active.name)) {
+    const idx = S.bench.findIndex((m) => S.attackers.has(m.name));
     if (idx >= 0) {
       let moved = false;
       if (S.has('Switch')) { S.play('Switch'); moved = true; }
@@ -350,7 +430,7 @@ function userTurn(S, opp, turn) {
   }
 
   const A = S.active;
-  const isAttacker = ATTACKER_IDS.has(A.name);
+  const isAttacker = S.attackers.has(A.name);
   let dk = S.darkCount(A);
 
   // Supporter that enables an attack
@@ -364,7 +444,7 @@ function userTurn(S, opp, turn) {
       A.energy.push(DARK);
       A.poisoned = true;                      // our own Active gets Poisoned
       if (got.length > 1) {
-        const tgt = S.bench.find((m) => ATTACKER_IDS.has(m.name)) || A;
+        const tgt = S.bench.find((m) => S.attackers.has(m.name)) || A;
         tgt.energy.push(DARK);
       }
     }
@@ -400,9 +480,9 @@ function userTurn(S, opp, turn) {
   if (!S.energyAttached) {
     let target = A;
     if (isAttacker && dk >= 3) {
-      target = S.bench.find((m) => ATTACKER_IDS.has(m.name) && S.darkCount(m) < 3) || A;
+      target = S.bench.find((m) => S.attackers.has(m.name) && S.darkCount(m) < 3) || A;
     } else if (!isAttacker) {
-      target = S.bench.find((m) => ATTACKER_IDS.has(m.name)) || A;
+      target = S.bench.find((m) => S.attackers.has(m.name)) || A;
     }
     if (S.has('Darkness Energy')) {
       S.hand.splice(S.hand.indexOf('Darkness Energy'), 1);
@@ -435,22 +515,31 @@ function userTurn(S, opp, turn) {
     S.play("Black Belt's Training"); S.supporterUsed = true; bbt = 40;
   }
 
-  if (A.name === 'Mega Darkrai ex') {
-    if (dk >= 3 && S.has('Dark Bell') && !opp.darkType) {
-      S.play('Dark Bell');
-      result.ko = true; result.reason = 'abyss_eye';
-      S.abyssEyeKos++;
-    } else if (dk >= 2) {
-      result.dmg = 110 + (S.benchHasDamage() ? 110 : 0) + bbt;
-      result.reason = 'dusk_raid';
-    } else { result.reason = 'no_energy'; S.turnsStuck++; }
-  } else if (A.name === 'Mega Absol ex') {
-    if (tot >= 3 && dk >= 2) {
-      result.dmg = 200 + bbt; result.reason = 'claw_of_darkness';
-    } else if (tot >= 2 && dk >= 1 && opp.dmgOnActive === 60) {
-      result.ko = true; result.reason = 'terminal_period'; S.absolKos++;
-    } else { result.reason = 'no_energy'; S.turnsStuck++; }
-  } else { result.reason = 'no_attacker'; S.turnsStuck++; }
+  const picked = chooseAttack(S, A, opp, bbt, S.rng);
+  if (!picked) {
+    result.reason = isAttacker ? 'no_energy' : 'no_attacker';
+    S.turnsStuck++;
+  } else {
+    if (picked.usesCard) {
+      S.play(picked.usesCard);
+      // Dark Bell Confuses BOTH Active non-[D] Pokemon. If our own attacker is not
+      // a Darkness Pokemon we Confuse ourselves too, and a tails means no attack.
+      const ourCard = S.card(A.name);
+      if (S.spec[picked.usesCard].onlyNonDark && ourCard.type !== DARK) {
+        A.confused = true;
+        if (S.rng() < 0.5) {
+          result.reason = 'confused_self';
+          S.turnsStuck++;
+          if (A.poisoned) A.dmg += 10;
+          return result;
+        }
+      }
+    }
+    result.ko = picked.ko;
+    result.dmg = picked.dmg;
+    result.reason = picked.reason;
+    if (picked.ko) S.abyssEyeKos++;
+  }
 
   if ((result.dmg > 0 || result.ko) && S.firstAttackTurn === null) {
     S.firstAttackTurn = turn;
@@ -520,7 +609,7 @@ export function playGame(spec, meta, rng) {
 
       const whiffed = rng() < (meta.whiff ?? 0.15);
       let dmg = whiffed ? 0 : meta.dmg;
-      if (meta.grass && S.active && ATTACKER_IDS.has(S.active.name)) dmg *= 2;
+      if (meta.grass && S.active && S.attackers.has(S.active.name)) dmg *= 2;
 
       if (S.active && dmg > 0) {
         let retaliate = 0;
@@ -549,7 +638,7 @@ export function playGame(spec, meta, rng) {
           if (S.bench.length) {
             let idx = 0, best = -1;
             S.bench.forEach((m, i) => {
-              const score = (ATTACKER_IDS.has(m.name) ? 1000 : 0) + (m.hp - m.dmg);
+              const score = (S.attackers.has(m.name) ? 1000 : 0) + (m.hp - m.dmg);
               if (score > best) { best = score; idx = i; }
             });
             S.active = S.bench.splice(idx, 1)[0];

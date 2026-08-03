@@ -131,3 +131,30 @@ select:focus,input:focus{outline:2px solid var(--acc);outline-offset:-1px}
 .foot{max-width:1400px;margin:0 auto;padding:18px 22px 60px;border-top:1px solid var(--line);
   font-size:11.5px;color:var(--dim);line-height:1.6}
 code{background:#21262d;padding:1px 5px;border-radius:4px;font-size:11px}
+
+/* ---------------- add-card dialog ---------------- */
+dialog{background:var(--panel);color:var(--tx);border:1px solid var(--line);
+  border-radius:12px;padding:22px;max-width:640px;width:calc(100% - 40px);
+  box-shadow:0 24px 60px rgba(0,0,0,.6)}
+dialog::backdrop{background:rgba(0,0,0,.6);backdrop-filter:blur(3px)}
+dialog h2{margin:0 0 6px;font-size:17px}
+dialog label{display:flex;flex-direction:column;gap:4px;font-size:10.5px;
+  color:var(--dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:11px;flex:1}
+dialog input,dialog textarea,dialog select{background:var(--panel2);color:var(--tx);
+  border:1px solid var(--line);border-radius:6px;padding:7px 9px;font-size:13px;
+  font-family:inherit;text-transform:none;letter-spacing:0;width:100%}
+dialog textarea{resize:vertical}
+.frow{display:flex;gap:10px;flex-wrap:wrap}
+dialog fieldset{border:1px solid var(--line);border-radius:8px;padding:13px;
+  margin:6px 0 14px}
+dialog legend{font-size:10.5px;color:var(--dim);text-transform:uppercase;
+  letter-spacing:.6px;padding:0 6px}
+dialog menu{display:flex;gap:9px;justify-content:flex-end;margin:0;padding:0}
+.badge.custom{border-color:#58a6ff55;color:var(--blue)}
+.card .rm-custom{position:absolute;top:7px;right:8px;background:none;border:none;
+  color:var(--dim);cursor:pointer;font-size:13px;line-height:1;padding:2px}
+.card .rm-custom:hover{color:var(--bad)}
+.card .cardwarn{font-size:10.5px;color:var(--warn);line-height:1.4;
+  border-left:2px solid var(--warn);padding-left:7px}
+.empty{border:1px dashed var(--line);border-radius:9px;padding:22px;text-align:center;
+  color:var(--dim);font-size:13px}
