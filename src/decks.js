@@ -32,7 +32,15 @@ export function buildSpec(counts, index) {
   return spec;
 }
 
-/** Counts-only presets. Kept separate from mechanics so they stay readable. */
+/**
+ * Counts-only presets. Kept separate from mechanics so they stay readable.
+ *
+ * These are calibration references for the test suite, not a menu of decks to
+ * build from — `tests/parity.test.js` pins the engine against the recorded
+ * Python results for each one. The deck builder shows `UI_PRESETS` instead, so
+ * an artefact like the original 61-card list stays available to the tests
+ * without cluttering the dropdown.
+ */
 export const PRESETS = {
   'As sent (61 cards)': {
     'Mega Darkrai ex': 3, 'Mega Absol ex': 2, 'Fezandipiti ex': 1, 'Munkidori': 2,
@@ -65,6 +73,9 @@ export const PRESETS = {
     "Janine's Secret Art": 2, "Black Belt's Training": 2,
   },
 };
+
+/** Presets worth offering as a starting point in the deck builder. */
+export const UI_PRESETS = ['Optimised (43%)'];
 
 /** The control probe overrides Mega Darkrai to 2 prizes; apply after buildSpec. */
 export function applyControlOverride(spec) {

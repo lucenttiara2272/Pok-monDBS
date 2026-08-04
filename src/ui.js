@@ -7,7 +7,7 @@ import {
   runGauntlet, validateDeck, deckStats,
 } from './engine.js?v=dev';
 import {
-  makeCardIndex, buildSpec, PRESETS, applyControlOverride,
+  makeCardIndex, buildSpec, PRESETS, UI_PRESETS, applyControlOverride,
 } from './decks.js?v=dev';
 import { optimiseDeck } from './optimise.js?v=dev';
 
@@ -32,6 +32,16 @@ let pinned = new Set();        // cards the optimiser must not change
 // Cards the user adds live here and are merged over data/cards.json at boot.
 // Browser-local: Export JSON moves them into the repo permanently.
 const STORE_KEY = 'ptcg-deck-lab.customCards';
+const DECKS_KEY = 'ptcg-deck-lab.savedDecks';
+
+/** Decks the user saved, kept in this browser. { name: {card: count} } */
+function loadDecks() {
+  try { return JSON.parse(localStorage.getItem(DECKS_KEY) || '{}'); }
+  catch { return {}; }
+}
+function saveDecks(all) {
+  localStorage.setItem(DECKS_KEY, JSON.stringify(all));
+}
 
 function loadCustom() {
   try { return JSON.parse(localStorage.getItem(STORE_KEY) || '[]'); }
@@ -114,11 +124,15 @@ async function boot() {
   INDEX = makeCardIndex({ cards: merged });
   META = metaJson.decks;
 
-  const sel = $('preset');
-  sel.innerHTML = Object.keys(PRESETS).map((p) => `<option>${p}</option>`).join('');
-  sel.value = 'Optimised (43%)';
-  sel.onchange = () => { deck = { ...PRESETS[sel.value] }; renderAll(); };
-  deck = { ...PRESETS[sel.value] };
+  refreshPresets();
+  $('preset').onchange = () => {
+    const v = $('preset').value;
+    if (v === '__new') { deck = {}; pinned = new Set(); }
+    else if (v.startsWith('saved:')) deck = { ...loadDecks()[v.slice(6)] };
+    else if (PRESETS[v]) deck = { ...PRESETS[v] };
+    renderAll();
+  };
+  deck = { ...PRESETS[UI_PRESETS[0]] };
 
   const box = $('search');
   box.oninput = () => {
@@ -142,6 +156,7 @@ async function boot() {
 
   $('run').onclick = run;
   $('optimise').onclick = optimise;
+  $('save').onclick = saveCurrentDeck;
   $('clear').onclick = () => { deck = {}; renderAll(); };
   $('copy').onclick = copyList;
 
@@ -188,6 +203,41 @@ async function boot() {
   }
 
   renderAll();
+}
+
+/** Rebuild the preset dropdown: saved decks first, then the bundled examples. */
+function refreshPresets(selected) {
+  const sel = $('preset');
+  const saved = loadDecks();
+  const names = Object.keys(saved).sort();
+  sel.innerHTML = [
+    names.length
+      ? `<optgroup label="Your decks">${names.map((n) =>
+        `<option value="saved:${n}">${n}</option>`).join('')}</optgroup>` : '',
+    `<optgroup label="Examples">${UI_PRESETS.map((p) =>
+      `<option value="${p}">${p}</option>`).join('')}</optgroup>`,
+    '<optgroup label="Start over"><option value="__new">Empty deck</option></optgroup>',
+  ].join('');
+  sel.value = selected || UI_PRESETS[0];
+}
+
+function saveCurrentDeck() {
+  const size = Object.values(deck).reduce((a, c) => a + c, 0);
+  if (!size) return;
+  const current = $('preset').value;
+  const suggested = current.startsWith('saved:') ? current.slice(6) : '';
+  const name = (window.prompt('Save this deck as:', suggested) || '').trim();
+  if (!name) return;
+
+  const all = loadDecks();
+  if (all[name] && !window.confirm(`Replace the saved deck "${name}"?`)) return;
+  all[name] = { ...deck };
+  saveDecks(all);
+  refreshPresets(`saved:${name}`);
+
+  const b = $('save'); const t = b.textContent;
+  b.textContent = 'Saved';
+  setTimeout(() => { b.textContent = t; }, 1400);
 }
 
 /** Copy every custom card as JSON ready to paste into data/cards.json. */
@@ -385,7 +435,24 @@ function renderDeck() {
   }
   $('legality').innerHTML = msgs;
 
-  $('decklist').innerHTML = '';
+  const sel = $('preset');
+  const isSaved = sel && sel.value.startsWith('saved:');
+  $('decklist').innerHTML = isSaved
+    ? `<button class="btn ghost" id="del-deck" style="width:100%">
+         Delete saved deck "${sel.value.slice(6)}"</button>`
+    : '';
+  if (isSaved) {
+    $('del-deck').onclick = () => {
+      const name = sel.value.slice(6);
+      if (!window.confirm(`Delete the saved deck "${name}"?`)) return;
+      const all = loadDecks();
+      delete all[name];
+      saveDecks(all);
+      refreshPresets();
+      deck = { ...PRESETS[UI_PRESETS[0]] };
+      renderAll();
+    };
+  }
 }
 
 function renderAll() {
@@ -442,26 +509,35 @@ async function optimise() {
     return;
   }
 
-  const gain = res.afterScore - res.beforeScore;
-  const improved = gain > 0 && res.diff.length > 0;
+  // Two different outcomes need two different framings. A deck that was already
+  // 60 cards gets a before/after comparison. A part-built deck has no win rate to
+  // compare against, so present it as "built you a 60" instead of a fake 0% -> X%.
+  const built = res.wasIncomplete;
+  const gain = built ? null : res.afterScore - res.beforeScore;
+  const changed = res.diff.length > 0;
+  const improved = changed && (built || gain > 0);
 
-  const diffRows = res.diff.length ? res.diff.map((d) => `
+  const headline = built
+    ? `<div class="optbig" style="color:var(--good)">${res.afterScore.toFixed(1)}%</div>
+       <div class="hint" style="margin:2px 0 0">
+         built a legal 60 around your ${res.originalSize}
+         card${res.originalSize === 1 ? '' : 's'}</div>`
+    : `<div class="optbig" style="color:${improved ? 'var(--good)' : 'var(--dim)'}">
+         ${res.beforeScore.toFixed(1)}% → ${res.afterScore.toFixed(1)}%</div>
+       <div class="hint" style="margin:2px 0 0">
+         ${improved ? `+${gain.toFixed(1)} points, meta-weighted`
+    : 'no change worth making'}</div>`;
+
+  const diffRows = res.diff.map((d) => `
     <span class="${d.to > d.from ? 'up' : 'down'}">${d.to > d.from ? '+' : '−'}</span>
     <span>${d.name}</span>
-    <span class="qty">${d.from} → ${d.to}</span>`).join('') : '';
+    <span class="qty">${d.from} → ${d.to}</span>`).join('');
 
   $('opt-body').innerHTML = `
     <div class="optbar">
-      <div>
-        <div class="optbig" style="color:${improved ? 'var(--good)' : 'var(--dim)'}">
-          ${res.beforeScore.toFixed(1)}% → ${res.afterScore.toFixed(1)}%
-        </div>
-        <div class="hint" style="margin:2px 0 0">
-          ${improved ? `+${gain.toFixed(1)} points, meta-weighted`
-    : 'no change worth making'}
-        </div>
-      </div>
-      ${improved ? '<button id="opt-apply" class="btn primary">Apply changes</button>' : ''}
+      <div>${headline}</div>
+      ${changed ? `<button id="opt-apply" class="btn primary">${
+  built ? 'Use this deck' : 'Apply changes'}</button>` : ''}
     </div>
 
     ${res.note ? `<div class="msg warn">${res.note}</div>` : ''}
@@ -470,6 +546,10 @@ async function optimise() {
        ${[...pinned].join(', ')}</div>` : `<div class="msg warn">Nothing is pinned, so
        every card was fair game. Pin the cards you are building around with the ○
        button on each row.</div>`}
+
+    ${built ? `<div class="msg">Your ${res.originalSize} cards had no win rate to
+       measure — a deck has to be 60 to be simulated — so there is no before figure
+       to compare against here.</div>` : ''}
 
     ${diffRows ? `<div class="difftbl">${diffRows}</div>` : ''}
 
@@ -482,7 +562,7 @@ async function optimise() {
       possible deck.
     </p>`;
 
-  if (improved) {
+  if (changed) {
     $('opt-apply').onclick = () => {
       deck = { ...res.after };
       renderAll();
