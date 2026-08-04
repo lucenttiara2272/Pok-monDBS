@@ -354,11 +354,14 @@ function applyStructuralFixes(counts, index, pool, locked) {
     .filter(([n]) => index[n] && pred(index[n], n))
     .reduce((a, [, c]) => a + c, 0);
 
+  const wantsEnabler = needsEnabler(out, index);
   const cutOne = () => {
     const cand = Object.keys(out)
       .filter((n) => !locked.has(n) && out[n] > 0
         && !(index[n].category === 'pokemon')
-        && !DRAW_SUPPORTERS.has(n))
+        && !DRAW_SUPPORTERS.has(n)
+        // padding the Pokemon line is not worth the deck's win condition
+        && !(wantsEnabler && index[n].sim && index[n].sim.appliesSpecialCondition))
       .sort((a, b) => out[b] - out[a]);
     const pick = cand[0];
     if (!pick) return false;
@@ -419,16 +422,30 @@ const FILL_TEMPLATE = [
   ['Maximum Belt', 1],
 ];
 
+/** How many copies of a combo enabler a real list runs. One is not a plan. */
+const ENABLER_TARGET = 4;
+
+/** The best enabler the pool offers, or null. Pool order is already ranked. */
+function bestEnabler(index, pool, locked) {
+  return pool.find((n) => !locked.has(n) && index[n]
+    && index[n].sim && index[n].sim.appliesSpecialCondition) || null;
+}
+
 function makeLegal60(counts, index, pool, locked) {
   const out = { ...counts };
   const size = () => Object.values(out).reduce((a, b) => a + b, 0);
   const inPool = new Set(pool);
 
-  // trim overflow from the least valuable unpinned cards
+  const wantsEnabler = needsEnabler(out, index);
+  const isEnablerCard = (n) => wantsEnabler && index[n] && index[n].sim
+    && index[n].sim.appliesSpecialCondition;
+
+  // trim overflow from the least valuable unpinned cards. The enabler is exempt:
+  // trimming it is the one cut that can cost the deck its whole win condition.
   let guard = 0;
   while (size() > 60 && guard++ < 200) {
     const order = Object.keys(out)
-      .filter((n) => !locked.has(n) && out[n] > 0)
+      .filter((n) => !locked.has(n) && out[n] > 0 && !isEnablerCard(n))
       .sort((a, b) => (isEnergy(index, a) ? 1 : 0) - (isEnergy(index, b) ? 1 : 0));
     if (!order.length) break;
     const pick = order[order.length - 1];
@@ -436,6 +453,23 @@ function makeLegal60(counts, index, pool, locked) {
     if (!out[pick]) delete out[pick];
   }
   if (size() === 60) return out;
+
+  // 0. If the deck holds an attack that only works with a separate enabler, put
+  // the enabler in *first*, at a real count. FILL_TEMPLATE is a list of generic
+  // staples, so without this a part-built Mega Darkrai list was completed to a
+  // legal 60 that could never use Abyss Eye — the reason it was built. Hill
+  // climbing could not rescue it either: it only ever proposes one copy at a
+  // time, and a single Dark Bell in 60 cards measures as noise, so the move was
+  // never accepted. The enabler has to be seeded, not searched for.
+  if (wantsEnabler && !hasEnabler(out, index)) {
+    const enabler = bestEnabler(index, pool, locked);
+    if (enabler) {
+      const target = Math.min(ENABLER_TARGET, maxCopies(index, enabler));
+      while ((out[enabler] || 0) < target && size() < 60) {
+        out[enabler] = (out[enabler] || 0) + 1;
+      }
+    }
+  }
 
   // 1. bring the Pokemon line up to a workable count, using what is already here
   const monsInDeck = () => Object.entries(out)
@@ -488,6 +522,7 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
   const removable = Object.keys(counts)
     .filter((n) => !locked.has(n) && counts[n] > 0);
   const addable = pool.filter((n) => (counts[n] || 0) < maxCopies(index, n));
+  const wantsEnabler = needsEnabler(counts, index);
 
   // Favour breadth over depth: try many different additions against a handful of
   // plausible cuts, rather than every possible cut for the first few additions.
@@ -516,9 +551,24 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
       // does nothing measurable; raising it to 11 fixes the mulligan rate. A
       // pure one-card-at-a-time search cannot cross that gap, so offer a few
       // larger swaps as well.
-      const isMon = index[add] && index[add].category === 'pokemon';
-      if (isMon && counts[rem] >= 3) moves.push({ add, rem, qty: 3 });
-      else if (isMon && counts[rem] >= 2) moves.push({ add, rem, qty: 2 });
+      //
+      // The same valley applies to a combo enabler, and more sharply: one Dark
+      // Bell in 60 cards is drawn too rarely to show up over a few hundred games,
+      // so the ±1 search rejected it every round and a deck that arrived here
+      // without one stayed stuck. Offer it in a playable count instead.
+      const card = index[add];
+      const isMon = card && card.category === 'pokemon';
+      const isEnabler = wantsEnabler && card && card.sim
+        && card.sim.appliesSpecialCondition;
+      if (isMon || isEnabler) {
+        const headroom = maxCopies(index, add) - (counts[add] || 0);
+        const big = Math.min(isEnabler ? ENABLER_TARGET : 3, headroom, counts[rem]);
+        // one full-count swap, plus a cheaper 2-for-2 in case the big one costs
+        // more elsewhere than it gains. Two extra candidates, not four — every
+        // move spends simulation budget the rest of the pool also needs.
+        if (big >= 2) moves.push({ add, rem, qty: big });
+        if (big > 2) moves.push({ add, rem, qty: 2 });
+      }
     }
   }
   return moves.slice(0, maxMoves);

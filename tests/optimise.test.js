@@ -153,6 +153,44 @@ test('a deck missing its enabler can get one back', async () => {
     + `Got: ${JSON.stringify(r.diff)}`);
 });
 
+test('completing a part-built deck includes the combo enabler', async () => {
+  // Reported bug: pinning a Pokemon line and asking for a legal 60 produced a
+  // deck with no Dark Bell in it. The fill template is a list of generic staples
+  // and the enabler is not generic, so the deck was completed with Energy and
+  // Items and could never use Abyss Eye — the attack it was built around. The
+  // search could not fix it afterwards either, because it only ever offered one
+  // copy at a time and one Dark Bell in 60 cards does not measure.
+  const partial = {
+    'Mega Darkrai ex': 3, 'Mega Absol ex': 2, 'Fezandipiti ex': 1,
+    'Munkidori': 3, 'Jett': 1,
+  };
+  const r = await optimiseDeck(partial, INDEX, meta.decks,
+    { ...FAST, rounds: 1, locked: Object.keys(partial) });
+
+  assert.equal(r.wasIncomplete, true);
+  assert.equal(deckSize(buildSpec(r.after, INDEX)), 60);
+  assert.equal(validateDeck(buildSpec(r.after, INDEX)).ok, true);
+  assert.ok((r.after['Dark Bell'] || 0) >= 2,
+    'a built-out Mega Darkrai deck must be able to trigger Abyss Eye. '
+    + `Got: ${JSON.stringify(r.after)}`);
+});
+
+test('the enabler is offered in a playable count, not one at a time', async () => {
+  // A deck already at 60 cannot be seeded, so the search has to be able to add
+  // the enabler in bulk. A single copy is inside the noise floor of any sample
+  // the optimiser can afford, so ±1 moves alone will never accept it.
+  const stranded = { ...PRESETS['Optimised (43%)'] };
+  delete stranded['Dark Bell'];
+  stranded['Darkness Energy'] = (stranded['Darkness Energy'] || 0) + 4;
+
+  const r = await optimiseDeck(stranded, INDEX, meta.decks,
+    { games: 150, rounds: 2, maxMoves: 16, budget: 40, finalGames: 600 });
+
+  const bell = r.after['Dark Bell'] || 0;
+  assert.ok(bell === 0 || bell >= 2,
+    `restoring exactly one enabler is not a plan — got ${bell}`);
+});
+
 test('the diff explains exactly what changed', async () => {
   const start = { 'Mega Darkrai ex': 4, 'Darkness Energy': 20, 'Ultra Ball': 4 };
   const r = await optimiseDeck(start, INDEX, meta.decks,
