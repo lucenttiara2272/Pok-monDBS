@@ -127,8 +127,9 @@ test('the engine attaches Energy of any type, not just Darkness', () => {
     'Blaze ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 2, 'Fire Energy': 14,
     'Ultra Ball': 4, 'Night Stretcher': 3, 'Energy Search': 4, 'Switch': 2,
     "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
-    'Buddy-Buddy Poffin': 4, 'Master Ball': 2, 'Poké Pad': 2, 'Prime Catcher': 2,
-    'Energy Retrieval': 2, 'Judge': 2,
+    // 1 Master Ball, no Prime Catcher: both are ACE SPEC and a deck gets one.
+    'Buddy-Buddy Poffin': 4, 'Master Ball': 1, 'Poké Pad': 3,
+    'Energy Retrieval': 4, 'Judge': 2,
   }, idx);
 
   const rng = makeRng(4);
@@ -157,8 +158,9 @@ test('an Energy cost is paid with the right type', () => {
     'Blaze2 ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 2, [energy]: 14,
     'Ultra Ball': 4, 'Night Stretcher': 3, 'Energy Search': 4, 'Switch': 2,
     "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
-    'Buddy-Buddy Poffin': 4, 'Master Ball': 2, 'Poké Pad': 2, 'Prime Catcher': 2,
-    'Energy Retrieval': 2, 'Judge': 2,
+    // 1 Master Ball, no Prime Catcher: both are ACE SPEC and a deck gets one.
+    'Buddy-Buddy Poffin': 4, 'Master Ball': 1, 'Poké Pad': 3,
+    'Energy Retrieval': 4, 'Judge': 2,
   }, idx);
 
   const right = runGauntlet(shell('Fire Energy'), meta.decks, { games: 600, seed: 6 });
@@ -173,7 +175,7 @@ test('evolution decks are flagged as under-played rather than silently wrong', (
     'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2, 'Fezandipiti ex': 1,
     'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4, 'Night Stretcher': 3,
     'Switch': 2, "Lillie's Determination": 4, "Boss's Orders": 3, 'Lacey': 2,
-    'Poké Pad': 2, 'Master Ball': 2, 'Fire Energy': 8, 'Psychic Energy': 8,
+    'Poké Pad': 3, 'Master Ball': 1, 'Fire Energy': 8, 'Psychic Energy': 8,
   }, INDEX);
   const v = validateDeck(spec);
   assert.equal(v.ok, true, v.errors.join('; '));
