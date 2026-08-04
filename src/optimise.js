@@ -639,7 +639,6 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
       const add = addable[a];
       const rem = cutFirst[r];
       if (!add || !rem || add === rem) continue;
-      moves.push({ add, rem, qty: 1 });
 
       // Some improvements only exist in bulk. Raising Pokemon count from 8 to 9
       // does nothing measurable; raising it to 11 fixes the mulligan rate. A
@@ -658,15 +657,26 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
       // line needs two different cards to land on the same Active at the same
       // time, so a single copy of either is deep inside the noise floor.
       const isPiece = isRetaliatePiece(add, index, targets);
-      if (isMon || isEnabler || isPiece) {
-        const headroom = maxCopies(index, add) - (counts[add] || 0);
-        const big = Math.min(isEnabler || isPiece ? ENABLER_TARGET : 3,
-          headroom, counts[rem]);
-        // one full-count swap, plus a cheaper 2-for-2 in case the big one costs
-        // more elsewhere than it gains. Two extra candidates, not four — every
-        // move spends simulation budget the rest of the pool also needs.
-        if (big >= 2) moves.push({ add, rem, qty: big });
-        if (big > 2) moves.push({ add, rem, qty: 2 });
+      const isCombo = isEnabler || isPiece;
+      const headroom = maxCopies(index, add) - (counts[add] || 0);
+      const big = Math.min(isCombo ? ENABLER_TARGET : 3, headroom, counts[rem]);
+
+      if (isCombo) {
+        // Combo pieces are never offered one at a time. A single copy is inside
+        // the noise floor, so a lone evaluation can come out ahead by luck — and
+        // when it did, the search banked it and stopped, leaving a deck holding
+        // exactly one Dark Bell. That is not a plan: it is the same dead combo
+        // as zero copies, dressed up as a fix. If we cannot afford a real count
+        // against this cut, propose nothing and let another cut carry it.
+        if (big >= 2) {
+          moves.push({ add, rem, qty: big });
+          if (big > 2) moves.push({ add, rem, qty: 2 });
+        }
+      } else {
+        moves.push({ add, rem, qty: 1 });
+        // Some improvements only exist in bulk: 8 Pokemon to 9 measures as
+        // nothing, 8 to 11 fixes the mulligan rate outright.
+        if (isMon && big >= 2) moves.push({ add, rem, qty: big });
       }
     }
   }

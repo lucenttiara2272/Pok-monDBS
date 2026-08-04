@@ -149,6 +149,33 @@ function payableDamage(S, mon) {
   return best;
 }
 
+/**
+ * Could this Pokemon take an auto-knockout on their Active right now?
+ *
+ * Mirrors the two auto-KO branches in chooseAttack without consuming RNG, so the
+ * gust policy can ask "is there a better line available" before spending a card.
+ */
+function canAutoKo(S, mon, opp) {
+  const card = S.card(mon.name);
+  if (!card || !Array.isArray(card.attacks)) return false;
+  const conditionCard = Object.keys(S.spec).find((n) =>
+    S.spec[n].appliesSpecialCondition && S.hand.includes(n));
+  for (const atk of card.attacks) {
+    if (!canPay(mon, atk.cost || {}, (e) => S.symOf(e))) continue;
+    if (atk.koIfSpecialCondition) {
+      if (opp.confusedActive) return true;
+      if (conditionCard && !(S.spec[conditionCard].onlyNonDark && opp.darkType)) {
+        return true;
+      }
+    }
+    if (typeof atk.koIfExactDamage === 'number'
+        && opp.dmgOnActive === atk.koIfExactDamage) {
+      return true;
+    }
+  }
+  return false;
+}
+
 function chooseAttack(S, mon, opp, bonusDamage, rng) {
   const card = S.card(mon.name);
   if (!card || !Array.isArray(card.attacks)) return null;
@@ -747,17 +774,47 @@ export const ITEM_EFFECTS = {
  * (`gustAndConfuse`, which also leaves the dragged-up Pokemon Confused — a real
  * Special Condition, so Abyss Eye can then knock it out outright).
  */
-function maybeGust(S, opp, ourDamage) {
+function maybeGust(S, opp, mon, ourDamage) {
   if (opp.gusted || !opp.bench) return false;
   // Already lethal on what is in front of us: nothing to gain.
   if (ourDamage >= opp.hpLeft) return false;
   if (ourDamage < opp.bench.hp) return false;
+
+  // Never trade down on prizes. An auto-knockout takes the archetype's whole
+  // two-or-three-prize attacker off the board this turn; a gust takes a
+  // one-prize support Pokemon. Because `payableDamage` deliberately ignores
+  // auto-KO attacks, the caller's number says nothing about whether Abyss Eye is
+  // live, and an earlier version of this check was blind to exactly that: it
+  // gusted every turn it held the card, spending the turn on a one-prize body
+  // while a two-prize knockout sat available. In a Dark Bell deck that is a
+  // straight halving of the prize rate, and it cost several points of win rate.
+  if (canAutoKo(S, mon, opp)) return false;
+
+  // Does this gust take the last prize we need?
+  //
+  // Against a two-prize archetype our prize count runs 0, 2, 4, 6 and never
+  // stops on 5, so an earlier version of this rule — gust only when it wins —
+  // meant gust cards could not be played at all outside the one-prize matchups.
+  // The tests caught that as "Boss's Orders was never played", which is the
+  // right complaint: a card that never fires is the same blank this whole piece
+  // of work set out to remove.
+  const closes = (6 - S.prizesTaken) <= opp.bench.prizes;
 
   for (const name of [...new Set(S.hand)]) {
     const d = S.card(name);
     if (!d || (d.effect !== 'gust' && d.effect !== 'gustAndConfuse')) continue;
     const isSupporter = d.kind === 'supporter';
     if (isSupporter && S.supporterUsed) continue;
+    // The cost that actually matters is the Supporter slot, not the card.
+    //
+    // An Item gust is free, so it can be spent whenever the prize maths favours
+    // it. A Supporter gust competes with the deck's draw, and stalling a shell
+    // that runs a dozen refills to take one cheap prize is a bad trade — that,
+    // rather than the gusting itself, was most of the fourteen points four
+    // Boss's Orders cost a Dark Bell deck. So a Supporter gust waits until we
+    // are not holding a refill, or until the prize ends the game.
+    if (isSupporter && !closes
+        && S.hand.some((c) => DRAW_SUPPORTERS.has(c))) continue;
     S.play(name);
     if (isSupporter) S.supporterUsed = true;
     S.itemsPlayed.push(name);
@@ -1070,7 +1127,7 @@ function userTurn(S, opp, turn) {
   // rather than a trial chooseAttack: that function consumes RNG for
   // flip-until-tails attacks, so calling it twice a turn would shift every
   // downstream roll and quietly desynchronise the whole simulation.
-  if (isAttacker) maybeGust(S, opp, payableDamage(S, A));
+  if (isAttacker) maybeGust(S, opp, A, payableDamage(S, A));
 
   // Bonus damage against a Pokemon ex, from a Supporter and/or the attached Tool.
   // `opp.prizes >= 2` is the engine's stand-in for "is an ex" — the meta model

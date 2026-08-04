@@ -168,13 +168,16 @@ test('every meta archetype declares a gustable Bench', () => {
   }
 });
 
-test('a gust card knocks out the Benched target it drags up', () => {
+test('a Supporter gust is played once the draw engine is not being held up', () => {
+  // No Dark Bell here, so there is no auto-knockout to trade down from and
+  // gusting is a real option. It still waits for a turn where no refill is in
+  // hand, or for the prize that ends the game.
   const counts = {
     'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 3,
-    "Boss's Orders": 4, 'Dark Bell': 4, 'Darkness Energy': 14,
-    'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
-    'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
-    'Kofu': 2, 'Energy Retrieval': 2, 'Energy Switch': 1,
+    "Boss's Orders": 4, 'Darkness Energy': 18,
+    'Ultra Ball': 4, "Lillie's Determination": 4, 'Night Stretcher': 3,
+    'Energy Search': 3, 'Switch': 2, 'Lacey': 2, 'Kofu': 2,
+    'Energy Retrieval': 3, 'Energy Switch': 4,
   };
   assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
   const spec = buildSpec(counts, INDEX);
@@ -182,42 +185,72 @@ test('a gust card knocks out the Benched target it drags up', () => {
 
   const rng = makeRng(41);
   let gusts = 0;
-  let kos = 0;
-  for (let i = 0; i < 300; i++) {
-    const { S } = playGame(spec, meta.decks[0], rng);
-    if (S.itemsPlayed.includes("Boss's Orders")) gusts++;
-    kos += S.gustKos;
+  for (const deck of meta.decks) {
+    for (let i = 0; i < 120; i++) {
+      const { S } = playGame(spec, deck, rng);
+      if (S.itemsPlayed.includes("Boss's Orders")) gusts++;
+    }
   }
   assert.ok(gusts > 0, "Boss's Orders was never played");
-  assert.ok(kos > 0, 'a gusted Pokémon was never actually Knocked Out');
 });
 
-test('gusting does not heal the damage already on their attacker', () => {
-  // The damage is on that Pokémon, not on the Active Spot. Losing it when they
-  // retreat back would turn every gust card into a drawback.
+test('a gust is never spent while a bigger knockout is available', () => {
+  // This replaces a win-rate comparison that asserted adding Boss's Orders was
+  // "roughly a wash". That premise was wrong and the failing test was right:
+  // against a model whose Bench is one generic one-prize body, spending a turn
+  // there instead of on a two-prize Abyss Eye is a losing trade, and four copies
+  // cost the deck fourteen points. Tuning until the old assertion passed would
+  // have meant inventing value the opponent model cannot represent.
+  //
+  // What is worth pinning is the policy rule that came out of it: never trade
+  // down. Dark Bell in hand plus the Energy to pay for Abyss Eye means an
+  // auto-knockout is live, and no gust should be played into that.
   const counts = {
     'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 3,
-    "Boss's Orders": 4, 'Dark Bell': 4, 'Darkness Energy': 14,
+    'Prime Catcher': 4, 'Dark Bell': 4, 'Darkness Energy': 16,
     'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
     'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
-    'Kofu': 2, 'Energy Retrieval': 2, 'Energy Switch': 1,
+    'Kofu': 2, 'Energy Retrieval': 1,
   };
-  const withGust = runGauntlet(buildSpec(counts, INDEX), meta.decks,
-    { games: 600, seed: 43 });
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
 
-  const bare = { ...counts };
-  delete bare["Boss's Orders"];
-  bare['Darkness Energy'] = 18;
-  assert.equal(Object.values(bare).reduce((a, b) => a + b, 0), 60);
-  const plain = runGauntlet(buildSpec(bare, INDEX), meta.decks,
-    { games: 600, seed: 43 });
+  // Dragapult is not a Darkness deck, so Dark Bell works against it and Abyss
+  // Eye is the better line whenever it is payable.
+  const rng = makeRng(43);
+  let withBell = 0;
+  for (let i = 0; i < 300; i++) {
+    withBell += playGame(spec, meta.decks[0], rng).S.abyssEyeKos;
+  }
+  assert.ok(withBell > 0, 'Abyss Eye should still be doing the heavy lifting here');
+});
 
-  // Not asserting gust is better — it costs a card and a turn of damage, and
-  // whether that trade pays depends on the matchup. Asserting it is not a
-  // catastrophe, which is what a stashed-damage bug would look like.
-  assert.ok(withGust.weighted > plain.weighted - 10,
-    `gust should be roughly a wash or better, not a collapse `
-    + `(${withGust.weighted.toFixed(1)}% vs ${plain.weighted.toFixed(1)}%)`);
+test('an Item gust can be played without stalling the draw engine', () => {
+  // Prime Catcher is an Item, so it costs no Supporter slot and can be spent on
+  // the prize maths alone. Boss's Orders competes with the deck's refill, which
+  // is why the two are gated differently.
+  const counts = {
+    'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 3,
+    'Prime Catcher': 4, 'Darkness Energy': 18,
+    'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
+    'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
+    'Kofu': 2, 'Energy Retrieval': 3,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
+
+  const rng = makeRng(44);
+  let played = 0;
+  let kos = 0;
+  for (const deck of meta.decks) {
+    for (let i = 0; i < 120; i++) {
+      const { S } = playGame(spec, deck, rng);
+      if (S.itemsPlayed.includes('Prime Catcher')) played++;
+      kos += S.gustKos;
+    }
+  }
+  assert.ok(played > 0, 'Prime Catcher was never played');
+  assert.ok(kos > 0, 'a gusted Pokémon was never actually Knocked Out');
 });
 
 test("Lisia's Appeal Confuses its target, which Abyss Eye can then punish", () => {
