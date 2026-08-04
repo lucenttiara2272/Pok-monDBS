@@ -128,6 +128,30 @@ function candidatePool(counts, index, locked) {
   return [...pool].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
 }
 
+/**
+ * Would this deck still be able to do the thing it is built to do?
+ *
+ * Hill climbing scores one card at a time, which is blind to combos. Dark Bell
+ * on its own looks like a weak Item, so the search happily cut the last copy —
+ * and with it Mega Darkrai's Abyss Eye, the entire win condition. The deck came
+ * back at 23% instead of 43% and the search thought it had improved, because
+ * every intermediate step measured slightly better than the last.
+ *
+ * So: if the deck holds an attack that needs an enabler, it must keep an enabler.
+ */
+function comboIntact(counts, index) {
+  const has = (pred) => Object.keys(counts).some((n) => counts[n] > 0
+    && index[n] && pred(index[n]));
+
+  const needsCondition = has((c) => (c.sim && c.sim.attacks || [])
+    .some((a) => a.koIfSpecialCondition));
+  if (needsCondition) {
+    const enabler = has((c) => c.sim && c.sim.appliesSpecialCondition);
+    if (!enabler) return false;
+  }
+  return true;
+}
+
 function maxCopies(index, name) {
   const c = index[name];
   if (!c) return 4;
@@ -150,11 +174,22 @@ function score(counts, index, meta, games, seed) {
   return runGauntlet(spec, meta, { games, seed }).weighted;
 }
 
+/** Hand the thread back so the browser can repaint. */
+const tick = () => new Promise((r) => { setTimeout(r, 0); });
+
 /**
  * @param {Record<string,number>} startCounts  the deck as it stands
  * @param {Set<string>|string[]} lockedNames   cards the user pinned
+ *
+ * Async because the search is several hundred simulations and takes about ten
+ * seconds. Run straight through it monopolises the main thread: the browser
+ * cannot repaint, so a progress bar sits frozen at zero and the page looks hung.
+ * Yielding between candidates costs a little throughput and buys an interface
+ * that visibly moves.
+ *
+ * `onProgress` receives { phase, done, total, pct, round, rounds, best, trying }.
  */
-export function optimiseDeck(startCounts, index, meta, opts = {}) {
+export async function optimiseDeck(startCounts, index, meta, opts = {}) {
   const {
     games = 250,
     seed = 20260803,
@@ -186,6 +221,17 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
   // focused list with filler Pokemon can easily cost more than the mulligan
   // rate gains, so both starts are scored and the better one wins. The prior
   // proposes; the simulation decides.
+  const report = (phase, extra = {}) => {
+    if (!onProgress) return;
+    onProgress({
+      phase, done: spent, total: budget,
+      pct: Math.min(1, spent / budget), ...extra,
+    });
+  };
+
+  report('start', { pct: 0 });
+  await tick();
+
   const repaired = applyStructuralFixes(counts, index, pool, locked);
   const startPlain = score(counts, index, meta, games, seed);
   const startFixed = deckSize(toSpec(repaired, index)) === 60
@@ -218,10 +264,20 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
       const candSpec = toSpec(cand, index);
       if (deckSize(candSpec) !== 60) continue;
       if (!validateDeck(candSpec).ok) continue;
+      if (!comboIntact(cand, index)) continue;   // never cut the win condition
       const s = score(cand, index, meta, games, seed);
       spent++;
       if (best === null || s > best.s) best = { s, move: moves[i], counts: cand };
-      if (onProgress) onProgress(Math.min(1, spent / budget));
+
+      report('search', {
+        round: round + 1,
+        rounds,
+        best: Math.max(current, best.s),
+        trying: moves[i].add,
+      });
+      // yield periodically rather than every candidate — often enough for a
+      // smooth bar, rarely enough not to dominate the runtime
+      if (spent % 4 === 0) await tick();
     }
 
     // require a real gain, not noise from a single lucky evaluation
@@ -232,17 +288,31 @@ export function optimiseDeck(startCounts, index, meta, opts = {}) {
   }
 
   // 3. re-score start and finish on a fresh, larger sample
+  report('verify', { pct: 1 });
+  await tick();
   const verifySeed = seed + 7919;
   const finalBefore = wasIncomplete
     ? null                                   // an incomplete deck cannot be scored
     : score(before, index, meta, finalGames, verifySeed);
-  const finalAfter = score(counts, index, meta, finalGames, verifySeed);
+  let finalAfter = score(counts, index, meta, finalGames, verifySeed);
+
+  // If the fresh sample does not confirm the gain, actually hand back the deck
+  // the user started with. This previously returned the modified deck while the
+  // note claimed the list was left alone, so the Apply button offered changes the
+  // optimiser had itself measured as worse. Saying it and doing it must match.
+  let reverted = false;
+  if (!wasIncomplete && finalAfter <= finalBefore) {
+    counts = before;
+    finalAfter = finalBefore;
+    reverted = true;
+  }
 
   return {
     before, after: counts,
     beforeScore: finalBefore,
     afterScore: finalAfter,
     searchScore: current,
+    reverted,
     history,
     structuralNote,
     diff: diffCounts(before, counts),

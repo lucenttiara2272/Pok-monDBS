@@ -4,8 +4,8 @@
   "description": "Pokemon TCG deck builder and meta simulator for the Regulation H/I/J Standard format",
   "type": "module",
   "scripts": {
-    "test": "node --test tests/*.test.js",
-    "serve": "python3 -m http.server 8000",
+    "test": "node --test --test-concurrency=1 tests/*.test.js",
+    "serve": "node tools/serve.mjs",
     "import": "node tools/import-cards.mjs",
     "import:dry": "node tools/import-cards.mjs --dry-run",
     "coverage": "node tools/coverage.mjs",

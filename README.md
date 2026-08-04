@@ -27,8 +27,14 @@ simulation engine are both plain ES modules, so GitHub Pages hosts the whole thi
 It needs to be served over HTTP (ES modules + `fetch` won't work from `file://`):
 
 ```bash
-npm run serve          # then open http://localhost:8000
+npm run serve             # then open http://localhost:8000
+npm run serve -- 3000     # a different port
 ```
+
+The server is a small dependency-free Node script (`tools/serve.mjs`). It used to
+be `python3 -m http.server`, which fails on Windows without Python — and the
+`python3` alias there opens the Microsoft Store rather than erroring cleanly.
+Node is already required by this project, so there is no second runtime to install.
 
 Tests:
 

@@ -490,18 +490,47 @@ async function optimise() {
   btn.textContent = 'Optimising…';
   const panel = $('opt');
   panel.classList.remove('hidden');
-  $('opt-body').innerHTML =
-    '<div class="progress"><span id="opt-bar"></span></div>'
-    + '<p class="hint" style="margin:0">Searching card swaps and re-scoring each one. '
-    + 'This runs a few hundred simulations, so it takes a few seconds.</p>';
+  $('opt-body').innerHTML = `
+    <div class="optbar">
+      <div>
+        <div class="optbig" id="opt-pct">0%</div>
+        <div class="hint" id="opt-stage" style="margin:2px 0 0">preparing…</div>
+      </div>
+      <div style="text-align:right">
+        <div class="optbig" id="opt-best" style="color:var(--good)">—</div>
+        <div class="hint" style="margin:2px 0 0">best so far</div>
+      </div>
+    </div>
+    <div class="progress"><span id="opt-bar"></span></div>
+    <p class="hint" style="margin:8px 0 0" id="opt-detail">
+      Each step simulates a few hundred games, so this takes a few seconds.</p>`;
   panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
   await new Promise((r) => setTimeout(r, 40));
 
+  const STAGE = {
+    start: 'setting up and scoring your starting deck',
+    search: 'searching card swaps',
+    verify: 're-scoring on a fresh sample',
+  };
+
   let res;
   try {
-    res = optimiseDeck(deck, INDEX, META, {
+    res = await optimiseDeck(deck, INDEX, META, {
       locked: [...pinned],
       games: 250, rounds: 8, maxMoves: 44, budget: 340, finalGames: 2500,
+      onProgress: (p) => {
+        const pct = Math.round(p.pct * 100);
+        $('opt-bar').style.width = `${pct}%`;
+        $('opt-pct').textContent = `${pct}%`;
+        $('opt-stage').textContent = STAGE[p.phase] || p.phase;
+        if (typeof p.best === 'number' && p.best >= 0) {
+          $('opt-best').textContent = `${p.best.toFixed(1)}%`;
+        }
+        $('opt-detail').textContent = p.phase === 'search'
+          ? `Round ${p.round} of ${p.rounds} · candidate ${p.done} of ${p.total}`
+            + (p.trying ? ` · trying ${p.trying}` : '')
+          : 'Each step simulates a few hundred games.';
+      },
     });
   } catch (e) {
     $('opt-body').innerHTML = `<div class="msg err">Optimiser failed: ${e.message}</div>`;
@@ -540,7 +569,10 @@ async function optimise() {
   built ? 'Use this deck' : 'Apply changes'}</button>` : ''}
     </div>
 
-    ${res.note ? `<div class="msg warn">${res.note}</div>` : ''}
+    ${res.reverted ? `<div class="msg warn">The changes the search liked did not
+       hold up when re-scored on a fresh set of games, so your deck has been left
+       exactly as it was. Nothing to apply.</div>` : ''}
+    ${res.note && !res.reverted ? `<div class="msg warn">${res.note}</div>` : ''}
     ${res.structuralNote ? `<div class="msg">${res.structuralNote}</div>` : ''}
     ${pinned.size ? `<div class="msg ok">Pinned and left untouched:
        ${[...pinned].join(', ')}</div>` : `<div class="msg warn">Nothing is pinned, so
