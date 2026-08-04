@@ -471,8 +471,8 @@ function applyStructuralFixes(counts, index, pool, locked) {
   const monTargets = pool.filter((n) => index[n].category === 'pokemon'
     && isBasic(index[n].sim));
   guard = 0;
-  while (countOf((c) => c.category === 'pokemon' && isBasic(c.sim)) < 11
-      && guard++ < 12) {
+  while (countOf((c) => c.category === 'pokemon' && isBasic(c.sim)) < TARGET_POKEMON
+      && guard++ < 14) {
     const pick = monTargets.find((n) => (out[n] || 0) < maxCopies(index, n));
     if (!pick || !cutOne()) break;
     out[pick] = (out[pick] || 0) + 1;
@@ -514,6 +514,16 @@ const FILL_TEMPLATE = [
   ["AZ's Tranquility", 1],
   ['Air Balloon', 1],
 ];
+
+/**
+ * Pokémon count the builder aims for when completing a deck.
+ *
+ * Was 9 in makeLegal60 and 11 in applyStructuralFixes — two different numbers,
+ * neither of them near what real lists run. Competitive decks sit at 12–16
+ * because below that the mulligan rate compounds: 9 Basics in 60 cards is a 30%
+ * chance of starting a card down, and 13 halves it.
+ */
+const TARGET_POKEMON = 12;
 
 /** How many copies of a combo enabler a real list runs. One is not a plan. */
 const ENABLER_TARGET = 4;
@@ -571,7 +581,7 @@ function makeLegal60(counts, index, pool, locked) {
   const monCandidates = Object.keys(out)
     .filter((n) => index[n] && index[n].category === 'pokemon' && !locked.has(n));
   guard = 0;
-  while (monsInDeck() < 9 && size() < 60 && guard++ < 30) {
+  while (monsInDeck() < TARGET_POKEMON && size() < 60 && guard++ < 30) {
     const pick = monCandidates.find((n) => out[n] < maxCopies(index, n));
     if (!pick) break;
     out[pick] += 1;

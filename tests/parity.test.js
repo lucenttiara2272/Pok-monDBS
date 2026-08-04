@@ -86,6 +86,36 @@ test('Abyss Eye does nothing to N\'s Zoroark ex (Darkness is immune to Dark Bell
     `Zoroark ${zoro.toFixed(1)}% should be far worse than Dragapult ${drag.toFixed(1)}%`);
 });
 
+test('mulligans cost tempo in proportion to how many you take', () => {
+  // The penalty used to be a single flat turn once you had mulliganed twice, so
+  // the first was free and the fifth cost no more than the second. Pokémon count
+  // only pays for itself by avoiding mulligans, which is why the optimiser kept
+  // measuring extra Pokémon as worthless — correctly, given what it was charging.
+  const thin = { ...PRESETS['Optimised (43%)'] };
+  const fat = { ...thin };
+
+  // Strip the deck down to a single Basic species, backfilling with Energy.
+  let freed = 0;
+  for (const n of ['Mega Absol ex', 'Fezandipiti ex', 'Munkidori']) {
+    freed += thin[n] || 0;
+    delete thin[n];
+  }
+  thin['Darkness Energy'] += freed;
+  assert.equal(Object.values(thin).reduce((a, b) => a + b, 0), 60);
+
+  const thinSpec = buildSpec(thin, INDEX);
+  const fatSpec = buildSpec(fat, INDEX);
+  assert.ok(mulliganRate(thinSpec) > mulliganRate(fatSpec) + 0.15,
+    'the stripped deck should mulligan far more often');
+
+  const a = runGauntlet(thinSpec, METendl, { games: 2500, seed: 777 }).weighted;
+  const b = runGauntlet(fatSpec, METendl, { games: 2500, seed: 777 }).weighted;
+  assert.ok(b > a,
+    `a deck that mulligans ${(mulliganRate(thinSpec) * 100).toFixed(0)}% of games `
+    + `should lose to one that mulligans ${(mulliganRate(fatSpec) * 100).toFixed(0)}% `
+    + `(${a.toFixed(1)}% vs ${b.toFixed(1)}%)`);
+});
+
 test('deck validation catches the 61-card list', () => {
   const spec = buildSpec(PRESETS['As sent (61 cards)'], INDEX);
   const v = validateDeck(spec);

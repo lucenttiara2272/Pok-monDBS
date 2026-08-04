@@ -464,6 +464,16 @@ function logC(n, k) {
 }
 
 /** Exact hypergeometric probability that an opening 7 contains no Basic Pokémon. */
+/**
+ * Turns of opponent setup bought by each of your mulligans.
+ *
+ * A judgement call, not a derivation: an extra card in an opening hand is worth
+ * a fraction of a turn, so three mulligans costing roughly one full turn is the
+ * intended scale. Exposed as a constant because the calibration test — an
+ * ordinary control shell must land near 50% — is what actually keeps it honest.
+ */
+export const MULLIGAN_TEMPO = 0.35;
+
 export function mulliganRate(spec) {
   const size = deckSize(spec);
   const basics = Object.values(spec)
@@ -1280,8 +1290,23 @@ export function playGame(spec, meta, rng) {
     return true;
   };
   opp.bench = meta.bench || null;
-  let setup = Math.max(1, Math.round(rng.gauss(meta.setupMu, meta.setupSd)));
-  if (S.mulligans >= 2) setup = Math.max(1, setup - 1);
+  // Mulligans cost tempo, in proportion to how many you took.
+  //
+  // The rule is that your opponent draws one extra card for every mulligan, so
+  // the cost is linear. This used to be `if (S.mulligans >= 2) setup -= 1`: the
+  // first mulligan was free, the fifth cost the same as the second, and a deck
+  // running nine Basics at a 30% mulligan rate was charged almost nothing for it.
+  //
+  // That is why the optimiser kept declining to add Pokemon. It was right, given
+  // what it was measuring — Pokemon count only pays for itself through mulligans,
+  // and mulligans were nearly free. The fix belongs here rather than in a
+  // heuristic telling the search to prefer more Pokemon.
+  //
+  // The Python reference has the same threshold, with a comment beside the
+  // opening hand promising the per-mulligan version. The port carried the
+  // shortfall across faithfully.
+  let setup = Math.max(1, Math.round(
+    rng.gauss(meta.setupMu, meta.setupSd) - S.mulligans * MULLIGAN_TEMPO));
 
   let lossReason = null;
   let turn = 0;

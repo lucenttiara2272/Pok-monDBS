@@ -16,6 +16,18 @@ import { dirname, join } from 'node:path';
 const here = dirname(fileURLToPath(import.meta.url));
 const src = readFileSync(join(here, '../tools/import-cards.mjs'), 'utf8');
 
+/**
+ * The importer with comments stripped.
+ *
+ * Every assertion below that inspects source must use this rather than `src`.
+ * Twice now a test that forbade a pattern has failed on the comment explaining
+ * why the pattern is forbidden — a source grep cannot tell an explanation from
+ * an instruction, and the comments here deliberately quote the wrong versions.
+ */
+const codeOnly = src
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^\s*\/\/.*$/gm, '');
+
 /** Pull the pure helpers out of the script without executing main(). */
 function loadHelpers() {
   const body = src
@@ -25,7 +37,7 @@ function loadHelpers() {
     .replace(/async function fetchPage[\s\S]*$/m, '');
   // eslint-disable-next-line no-new-func
   return new Function(
-    `${body}\nreturn { toCard, prizesOf, symbolise, stageOf, categoryOf, damageOf };`,
+    `${body}\nreturn { toCard, prizesOf, symbolise, stageOf, categoryOf, damageOf, setQuery };`,
   )();
 }
 
@@ -137,7 +149,119 @@ test('the importer refuses to write when nothing was fetched', () => {
   assert.match(src, /if \(!pagesOk \|\| seen\.size === 0\)/);
 });
 
+test('the importer queries by set, not by the API\'s Standard flag', () => {
+  // legalities.standard:legal tracks the real-world rotation; format.json pins
+  // the format this project simulates. Trusting the API's flag silently dropped
+  // every set it had since rotated out, before the local legalSets check could
+  // see them — a run reported new cards while importing none from those sets.
+  //
+  assert.doesNotMatch(codeOnly, /legalities\.standard:legal/,
+    'the API must not be the authority on which sets are legal here');
+  assert.match(codeOnly, /set\.ptcgoCode:/,
+    'the importer should ask for the sets format.json lists');
+});
+
+test('the set query is built in the one form the API accepts', () => {
+  // Grouping the terms — (a OR b) — is the obvious way to write this and the
+  // API's parser rejects it, returning an empty body rather than an error. The
+  // import then completes, reports a plausible count, and silently pulls almost
+  // nothing. That cost a whole round trip to notice, because a failed import and
+  // a successful one look identical from the summary line.
+  // One set per request. Grouping as `(a OR b)` returns an empty body with a
+  // 200; a bare `a OR b OR …` across all eighteen sets is long enough to 500 the
+  // server. Six sets worked and eighteen did not, so the safe form is one.
+  assert.equal(H.setQuery('TEF'), 'set.ptcgoCode:TEF');
+  assert.doesNotMatch(H.setQuery('TEF'), /[()]|\bOR\b/,
+    'neither grouping nor multi-set OR survives contact with the API');
+});
+
+test('a partial fetch refuses to write', () => {
+  // The empty-result guard already existed and was not enough. Rate limiting
+  // throws mid-fetch, the loop breaks, and every step after it behaves normally
+  // — so a run that got half the pool wrote half a database and printed the same
+  // summary as a complete one. A dry run projecting 420 new cards silently
+  // became 216 written, and only a card count caught it.
+  assert.match(codeOnly, /incomplete\.length === 0/,
+    'the importer must know whether every set downloaded in full');
+  assert.match(codeOnly, /Leaving data\/cards\.json untouched/);
+  assert.match(codeOnly, /--partial/,
+    'an incomplete import should be possible, but only when asked for');
+});
+
+test('basic Energy keeps the name the rest of the project uses', () => {
+  // The API says "Basic Darkness Energy"; the presets, the decks and the engine
+  // all say "Darkness Energy". Importing the API's name added a second entry for
+  // the same card that the curated-card guard could not recognise, and the
+  // optimiser started building decks out of it.
+  const c = H.toCard({
+    name: 'Basic Darkness Energy', supertype: 'Energy', subtypes: ['Basic'],
+    types: ['Darkness'], set: { ptcgoCode: 'MEE' }, number: '7',
+  });
+  assert.equal(c.name, 'Darkness Energy');
+  assert.equal(c.sim.basicEnergy, true);
+
+  assert.equal(H.toCard({
+    name: 'Basic Fighting Energy', supertype: 'Energy', subtypes: ['Basic'],
+    types: ['Fighting'], set: { ptcgoCode: 'MEE' }, number: '6',
+  }).name, 'Fighting Energy');
+
+  // Only the "Basic <type> Energy" shape is rewritten. A Trainer that happens to
+  // begin with the word keeps its name, or the database quietly loses cards to a
+  // rename nobody asked for.
+  assert.equal(H.toCard({
+    name: 'Basic Research Energy Machine', supertype: 'Trainer',
+    subtypes: ['Item'], set: { ptcgoCode: 'TEF' }, number: '99',
+  }).name, 'Basic Research Energy Machine');
+});
+
+test('an ACE SPEC Special Energy is capped at 1, not 4', () => {
+  // The ACE SPEC block used to run before the category branches, and the Energy
+  // branch then reassigned max unconditionally. The card came in flagged as
+  // restricted and still capped at 4 — the deck builder knew the rule and let
+  // you break it anyway.
+  const c = H.toCard({
+    name: 'Enriching Energy', supertype: 'Energy', subtypes: ['Special'],
+    rules: ["ACE SPEC: You can't have more than 1 ACE SPEC card in your deck."],
+    set: { ptcgoCode: 'SSP' }, number: '191',
+  });
+  assert.equal(c.aceSpec, true);
+  assert.equal(c.max, 1, 'ACE SPEC must win over the Special Energy cap of 4');
+
+  // And an ordinary Special Energy is still 4.
+  assert.equal(H.toCard({
+    name: 'Spiky Energy', supertype: 'Energy', subtypes: ['Special'],
+    set: { ptcgoCode: 'JTG' }, number: '159',
+  }).max, 4);
+});
+
+test('the import keys cards by their final name, not the API\'s', () => {
+  // toCard renames "Basic Darkness Energy"; keying the dedupe map by raw name
+  // compared the wrong string against the curated list and filed the card under
+  // a name it does not have, leaving two entries both called "Darkness Energy".
+  assert.match(codeOnly, /seen\.has\(card\.name\)/);
+  assert.match(codeOnly, /curated\.has\(card\.name\)/);
+  assert.doesNotMatch(codeOnly, /curated\.has\(raw\.name\)/,
+    'the curated guard must compare the name the card will actually carry');
+});
+
+test('re-importing refreshes a card instead of duplicating it', () => {
+  // Curated cards were guarded by name, previously imported ones were not, so
+  // every re-run appended a second copy of everything the last run added — 553
+  // cards carrying 500 unique ids after two passes.
+  assert.match(codeOnly, /const byName = new Map\(\)/,
+    'the merge must be keyed by name, not a plain concatenation');
+  assert.doesNotMatch(codeOnly, /\[\.\.\.existing\.cards, \.\.\.seen\.values\(\)\]/,
+    'concatenating existing and new cards duplicates every imported card');
+});
+
+test('throttling is retried rather than treated as a dead set', () => {
+  // The API answers rate limiting with an intermittent 500, not a 429. Treating
+  // it as fatal dropped seven of eighteen sets from a run.
+  assert.match(codeOnly, /r\.status >= 500 \|\| r\.status === 429/);
+  assert.match(codeOnly, /MAX_ATTEMPTS/);
+});
+
 test('curated cards are never overwritten by the importer', () => {
-  assert.match(src, /if \(curated\.has\(raw\.name\)\) continue;/,
+  assert.match(codeOnly, /if \(curated\.has\(card\.name\)\) continue;/,
     'hand-written sim blocks encode mechanics the API cannot express');
 });

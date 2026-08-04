@@ -46,6 +46,9 @@ const LIMIT = (() => {
   return i >= 0 ? Number(args[i + 1]) : Infinity;
 })();
 
+const PARTIAL = args.includes('--partial');
+const MAX_ATTEMPTS = 5;
+const RETRY_BASE_MS = 1200;
 const API = 'https://api.pokemontcg.io/v2/cards';
 const PAGE_SIZE = 250;
 
@@ -101,9 +104,19 @@ function prizesOf(c) {
 function toCard(c) {
   const category = categoryOf(c);
   const setCode = (c.set && (c.set.ptcgoCode || c.set.id) || '').toUpperCase();
+  // The API calls it "Basic Darkness Energy"; the curated database, the presets
+  // and every deck list in this project call it "Darkness Energy". Left alone,
+  // the import adds a second entry for the same card under the API's name, and
+  // because it is a different name the curated-card guard does not catch it. The
+  // optimiser then happily built decks around 24 "Basic Darkness Energy" while a
+  // test looking for "Darkness Energy" reported none at all.
+  const name = /^Basic .+ Energy$/.test(c.name)
+    ? c.name.replace(/^Basic /, '')
+    : c.name;
+
   const out = {
-    id: (c.id || c.name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
-    name: c.name,
+    id: (c.id || name).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''),
+    name,
     set: `${setCode} ${c.number}`.trim(),
     category,
     max: /^(Basic .+ Energy)$/.test(c.name) ? null : 4,
@@ -112,17 +125,6 @@ function toCard(c) {
   };
   const t = (c.types || [])[0];
   if (t && TYPE[t]) out.type = TYPE[t];
-
-  // ACE SPEC is a deckbuilding restriction the API states in the card's rules
-  // text: one per deck across every ACE SPEC card, not one of each. Reading it
-  // here means imported cards carry the limit automatically. The ten already in
-  // the database were all marked "max": 4 with no flag, which is how the builder
-  // ended up producing lists running two Master Ball.
-  if ((c.rules || []).some((r) => /ACE SPEC/i.test(r))
-      || (c.subtypes || []).some((s) => /ACE SPEC/i.test(s))) {
-    out.aceSpec = true;
-    out.max = 1;
-  }
 
   if (category === 'pokemon') {
     const stage = stageOf(c.subtypes);
@@ -156,6 +158,22 @@ function toCard(c) {
     out.max = basic ? null : 4;
     out.sim = { basicEnergy: basic, provides: out.type || 'C' };
   }
+
+  // ACE SPEC is a deckbuilding restriction the API states in the card's rules
+  // text: one per deck across every ACE SPEC card, not one of each.
+  //
+  // Applied last, on purpose. This used to sit above the category branches, and
+  // the Energy branch then reassigned `max` unconditionally — so an ACE SPEC
+  // Special Energy like Enriching Energy came in flagged but still capped at 4,
+  // which is the worst of both worlds: the deck builder knew it was restricted
+  // and let you run four anyway. Anything that overrides `max` has to run before
+  // this block, not after it.
+  if ((c.rules || []).some((r) => /ACE SPEC/i.test(r))
+      || (c.subtypes || []).some((s) => /ACE SPEC/i.test(s))) {
+    out.aceSpec = true;
+    out.max = 1;
+  }
+
   return out;
 }
 
@@ -171,14 +189,70 @@ function buildText(c) {
   return bits.join(' ').trim() || c.name;
 }
 
-async function fetchPage(page) {
-  const url = `${API}?q=legalities.standard:legal&page=${page}&pageSize=${PAGE_SIZE}`
+/**
+ * Query by set, not by the API's own Standard flag.
+ *
+ * `q=legalities.standard:legal` sounds right and is quietly wrong: it returns
+ * whatever the API currently considers Standard, which tracks the real-world
+ * rotation. data/format.json deliberately does not — it pins the format this
+ * project simulates. So every set the API has since rotated out was filtered
+ * away before the local legalSets check ever saw it, and a run would report
+ * "104 new cards" while silently importing none of them from those sets. That
+ * is how seventeen ACE SPEC cards stayed missing after a successful import.
+ *
+ * Asking for the sets we actually want inverts it: the API decides nothing, and
+ * a set it has never heard of simply returns no rows.
+ *
+ * One set per query, deliberately. Two earlier shapes both failed silently or
+ * loudly: grouping the terms as `(a OR b)` made the parser return an empty body
+ * with a 200, and a bare `a OR b OR …` across all eighteen sets was long enough
+ * to 500 the server outright. Six sets worked, eighteen did not, which is the
+ * kind of limit you only find by hitting it.
+ *
+ * Asking for one set at a time sidesteps the length ceiling entirely, lets a set
+ * the API has never heard of return zero rows harmlessly, and makes the
+ * completeness check per-set rather than one number for the whole run.
+ */
+function setQuery(code) {
+  return `set.ptcgoCode:${code}`;
+}
+
+const sleep = (ms) => new Promise((r) => { setTimeout(r, ms); });
+
+/**
+ * Fetch one page, retrying on the failures that are not really failures.
+ *
+ * This API answers throttling with a 500 rather than a 429, and it does it
+ * intermittently: the same set query that fails here succeeds seconds later from
+ * elsewhere. Treating that as fatal meant seven of eighteen sets dropped out of a
+ * run for no reason anyone could see from the error message.
+ *
+ * A 404 or a 400 is a real answer and retrying it just wastes time, so only 5xx
+ * and 429 are retried, with a widening gap between attempts.
+ */
+async function fetchPage(page, q, attempt = 1) {
+  const url = `${API}?q=${encodeURIComponent(q)}&page=${page}&pageSize=${PAGE_SIZE}`
     + '&orderBy=name';
   const headers = {};
   if (process.env.POKEMONTCG_API_KEY) headers['X-Api-Key'] = process.env.POKEMONTCG_API_KEY;
-  const r = await fetch(url, { headers });
-  if (!r.ok) throw new Error(`${r.status} ${r.statusText} for page ${page}`);
-  return r.json();
+
+  let r;
+  try {
+    r = await fetch(url, { headers });
+  } catch (e) {
+    if (attempt >= MAX_ATTEMPTS) throw e;
+    await sleep(RETRY_BASE_MS * attempt);
+    return fetchPage(page, q, attempt + 1);
+  }
+  if (r.ok) return r.json();
+
+  const worthRetrying = r.status >= 500 || r.status === 429;
+  if (worthRetrying && attempt < MAX_ATTEMPTS) {
+    await sleep(RETRY_BASE_MS * attempt);
+    return fetchPage(page, q, attempt + 1);
+  }
+  throw new Error(`${r.status} ${r.statusText} for page ${page}`
+    + (worthRetrying ? ` after ${attempt} attempts` : ''));
 }
 
 async function main() {
@@ -190,36 +264,60 @@ async function main() {
   console.log(`Curated cards to preserve: ${curated.size}`);
 
   const seen = new Map();
-  let page = 1;
-  let total = Infinity;
   let pagesOk = 0;
   let skipped = 0;
+  const incomplete = [];
 
-  while ((page - 1) * PAGE_SIZE < total && seen.size < LIMIT) {
-    process.stdout.write(`\rFetching page ${page}… (${seen.size} unique so far)`);
-    let data;
-    try {
-      data = await fetchPage(page);
-      pagesOk++;
-    } catch (e) {
-      console.error(`\nStopped at page ${page}: ${e.message}`);
-      break;
-    }
-    total = data.totalCount ?? 0;
-    for (const raw of data.data || []) {
-      if (seen.has(raw.name)) continue;      // one entry per card name
-      if (curated.has(raw.name)) continue;   // never clobber a hand-written card
-      // The API's legalities.standard flag lags the real rotation, so trust the
-      // set code instead. Without this, rotated Sword & Shield cards come in.
-      const code = ((raw.set && (raw.set.ptcgoCode || raw.set.id)) || '').toUpperCase();
-      if (!legalSets.has(code)) { skipped++; continue; }
+  for (const code of legalSets) {
+    if (seen.size >= LIMIT) break;
+    let page = 1;
+    let total = Infinity;
+    let got = 0;
+    let failed = null;
+
+    while ((page - 1) * PAGE_SIZE < total && seen.size < LIMIT) {
+      process.stdout.write(`\r${code}: page ${page}… (${seen.size} unique so far)   `);
+      let data;
       try {
-        seen.set(raw.name, toCard(raw));
-      } catch { /* skip anything malformed */ }
+        data = await fetchPage(page, setQuery(code));
+        pagesOk++;
+      } catch (e) {
+        failed = e.message;
+        break;
+      }
+      total = data.totalCount ?? 0;
+      got += (data.data || []).length;
+      for (const raw of data.data || []) {
+        // Belt and braces: we asked for this set, but the API has been known to
+        // widen a query, and rotated cards must never slip into the pool.
+        const setCode = ((raw.set && (raw.set.ptcgoCode || raw.set.id)) || '').toUpperCase();
+        if (!legalSets.has(setCode)) { skipped++; continue; }
+
+        // Key off the card's final name, not the API's raw one. toCard renames
+        // "Basic Darkness Energy" to "Darkness Energy", so keying by raw name
+        // meant the curated check compared the wrong string and the merge filed
+        // the card under a name it does not have — producing two entries both
+        // called "Darkness Energy" under different keys.
+        let card;
+        try {
+          card = toCard(raw);
+        } catch { continue; }                  // skip anything malformed
+        if (seen.has(card.name)) continue;     // one entry per card name
+        if (curated.has(card.name)) continue;  // never clobber a hand-written card
+        seen.set(card.name, card);
+      }
+      if (!data.data || !data.data.length) break;
+      page++;
     }
-    if (!data.data || !data.data.length) break;
-    page++;
+
+    if (failed) {
+      incomplete.push(`${code} (${failed})`);
+      console.error(`\n${code}: stopped — ${failed}`);
+    } else if (Number.isFinite(total) && got < total && seen.size < LIMIT) {
+      incomplete.push(`${code} (${got}/${total})`);
+    }
   }
+
   console.log(`\nImported ${seen.size} new cards `
     + `(${skipped} skipped as not in a ${format.format} set).`);
 
@@ -231,7 +329,40 @@ async function main() {
     process.exit(1);
   }
 
-  const merged = [...existing.cards, ...seen.values()]
+  // A *partial* run is the dangerous one. Rate limiting throws mid-fetch, the
+  // loop breaks, and everything downstream behaves normally — so a run that got
+  // half the pool writes half a database and prints the same cheerful summary as
+  // a complete one. That is exactly how a dry run projecting 420 new cards
+  // turned into 216 written with no indication anything had gone wrong.
+  const complete = LIMIT !== Infinity || incomplete.length === 0;
+  if (!complete) {
+    console.error(
+      `\nIncomplete — these sets did not fully download: ${incomplete.join(', ')}.`
+      + '\nLeaving data/cards.json untouched.');
+    console.error(
+      'This is almost always rate limiting. Set POKEMONTCG_API_KEY and re-run, '
+      + 'or pass --partial to accept an incomplete import on purpose.');
+    if (!PARTIAL) process.exit(1);
+    console.error('--partial given: writing anyway.');
+  }
+
+  // Merge by name, not by concatenation.
+  //
+  // The old `[...existing.cards, ...seen.values()]` only ever appended. Curated
+  // cards were protected by name, but previously *imported* ones were not — so a
+  // second run re-added every card the first run had brought in, and the file
+  // grew a duplicate entry, and a duplicate id, for each of them. Two runs left
+  // 553 cards carrying 500 unique ids.
+  //
+  // Keying by name makes a re-import refresh a stale imported card in place,
+  // which is what you want from a tool you are expected to run repeatedly.
+  const byName = new Map();
+  for (const c of existing.cards) byName.set(c.name, c);
+  for (const [cardName, card] of seen) {
+    if (curated.has(cardName)) continue;      // hand-written wins, always
+    byName.set(cardName, card);
+  }
+  const merged = [...byName.values()]
     .sort((a, b) => a.category.localeCompare(b.category) || a.name.localeCompare(b.name));
 
   const counts = merged.reduce((acc, c) => {
