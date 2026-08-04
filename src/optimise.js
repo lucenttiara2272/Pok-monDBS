@@ -23,15 +23,25 @@
  */
 
 import {
-  runGauntlet, validateDeck, deckSize, isBasic, DRAW_SUPPORTERS,
+  runGauntlet, validateDeck, deckSize, isBasic, DRAW_SUPPORTERS, isPlayedTrainer,
 } from './engine.js?v=dev';
 
-/** Trainers worth considering in almost any deck, best first. */
+/**
+ * Trainers worth considering in almost any deck, best first.
+ *
+ * Every entry must be a card the engine actually plays. This list used to read
+ * like a real-format staples list — Buddy-Buddy Poffin, Master Ball, Poké Pad,
+ * Prime Catcher, Boss's Orders — none of which the play policy touches, so the
+ * optimiser was filling built decks with about a dozen slots the simulator draws
+ * as blanks and then reporting a win rate for the result. Anything not modelled
+ * is filtered out of the pool anyway (see `candidatePool`); keeping the list
+ * itself honest means the two never drift apart silently.
+ */
 const GENERIC_STAPLES = [
-  'Ultra Ball', 'Buddy-Buddy Poffin', 'Master Ball', 'Poké Pad', 'Poké Ball',
+  'Ultra Ball', 'Buddy-Buddy Poffin', 'Master Ball', 'Poké Pad',
   'Night Stretcher', 'Switch', 'Prime Catcher', 'Energy Search',
-  'Energy Retrieval', 'Energy Switch', 'Super Potion', 'Tool Scrapper',
-  'Hero’s Cape', "Hero's Cape", 'Maximum Belt', 'Rescue Board',
+  'Energy Retrieval', 'Energy Switch', 'Air Balloon', 'Maximum Belt',
+  "Hero's Cape",
 ];
 
 const GENERIC_SUPPORTERS = [
@@ -76,7 +86,8 @@ function completeEvolutionLines(counts, index) {
  * cards would make every round hundreds of simulations long for no real gain,
  * because most of the database is filler that no deck wants.
  */
-function candidatePool(counts, index, locked) {
+export function candidatePool(counts, index, locked = []) {
+  const lockedSet = locked instanceof Set ? locked : new Set(locked);
   const pool = new Set();
   const add = (n) => { if (index[n]) pool.add(n); };
 
@@ -106,6 +117,25 @@ function candidatePool(counts, index, locked) {
     }
   }
 
+  // Pieces that build toward an exact-damage knockout. Mega Absol's Terminal
+  // Period knocks out an opponent sitting on exactly 6 damage counters, and the
+  // only way to put them there on your own terms is retaliate chip — Punk
+  // Helmet's 40 plus Spiky Energy's 20 is exactly 60. Neither piece is a generic
+  // staple, neither does much alone, and one of them is a Special Energy that
+  // the Energy branch above deliberately skips, so nothing else would ever
+  // propose them and the line could only exist if you built it by hand.
+  //
+  // A piece bigger than the target can only overshoot it, so it is not offered.
+  // Beyond that the search does not reason about which subset sums to the
+  // target: it proposes the parts and lets the simulation measure the result.
+  const targets = exactDamageTargets(counts, index);
+  if (targets.length) {
+    const cap = Math.max(...targets);
+    for (const c of Object.values(index)) {
+      if (c.sim && c.sim.retaliate && c.sim.retaliate <= cap) pool.add(c.name);
+    }
+  }
+
   // Rare Candy only earns a slot if there is a Stage 2 to hit
   if (Object.keys(counts).some((n) => index[n] && index[n].sim
       && index[n].sim.stage === 2)) {
@@ -120,7 +150,18 @@ function candidatePool(counts, index, locked) {
     if ((c.sim.hp || 0) <= 130 && c.sim.prizes === 1) pool.add(c.name);
   }
 
-  locked.forEach((n) => pool.delete(n));   // never propose changing a pinned card
+  // Never propose a card the simulator cannot use. Two ways that happens: the
+  // play policy has no code for it at all, or it is modelled but its condition
+  // is one this deck can never meet. Either way the slot does nothing, and the
+  // optimiser has no business spending one on it.
+  //
+  // This governs additions only. Cards already in the deck stay put and remain
+  // cuttable — flagging beats overriding someone's own list.
+  for (const n of [...pool]) {
+    if (!isUsable(n, counts, index)) pool.delete(n);
+  }
+
+  lockedSet.forEach((n) => pool.delete(n));   // never propose changing a pinned card
 
   // Priority order matters: each round only scores a slice of the pool, so the
   // levers that move win rates most have to be at the front. Draw Supporters and
@@ -130,7 +171,9 @@ function candidatePool(counts, index, locked) {
   const rank = (n) => {
     const c = index[n];
     // an attack the deck cannot use at all is the biggest available gain
-    if (wantsEnabler && c.sim && c.sim.appliesSpecialCondition) return -1;
+    if (wantsEnabler && c.sim && c.sim.appliesSpecialCondition) return -2;
+    // then the pieces of a knockout line the deck is already half-built for
+    if (isRetaliatePiece(n, index, targets)) return -1;
     if (DRAW_SUPPORTERS.has(n)) return 0;
     if (c.category === 'pokemon' && isBasic(c.sim)) return 1;
     if (['Ultra Ball', 'Buddy-Buddy Poffin', 'Master Ball', 'Poké Pad',
@@ -141,8 +184,52 @@ function candidatePool(counts, index, locked) {
   return [...pool].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
 }
 
+const TRAINER_KINDS = new Set(['item', 'tool', 'supporter']);
+
+/** Does this deck hold a Basic small enough for an hpLimit search to find? */
+function hasBasicUpTo(counts, index, hp) {
+  return Object.keys(counts).some((n) => {
+    const c = index[n];
+    return counts[n] > 0 && c && c.category === 'pokemon' && c.sim
+      && isBasic(c.sim) && typeof c.sim.hp === 'number' && c.sim.hp <= hp;
+  });
+}
+
+/** Would adding this card to this deck do anything the simulator can see? */
+function isUsable(name, counts, index) {
+  const c = index[name];
+  if (!c) return false;
+  const sim = c.sim || {};
+  if (TRAINER_KINDS.has(c.category) && !isPlayedTrainer(name, sim)) return false;
+  // Buddy-Buddy Poffin in a deck whose smallest Basic is 110 HP is a blank.
+  if (typeof sim.hpLimit === 'number' && !hasBasicUpTo(counts, index, sim.hpLimit)) {
+    return false;
+  }
+  return true;
+}
+
 const hasIn = (counts, index, pred) => Object.keys(counts)
   .some((n) => counts[n] > 0 && index[n] && pred(index[n]));
+
+/** Exact damage totals this deck's attacks can cash in on, e.g. Absol's 60. */
+function exactDamageTargets(counts, index) {
+  const out = new Set();
+  for (const n of Object.keys(counts)) {
+    if (!counts[n]) continue;
+    const c = index[n];
+    for (const a of ((c && c.sim && c.sim.attacks) || [])) {
+      if (typeof a.koIfExactDamage === 'number') out.add(a.koIfExactDamage);
+    }
+  }
+  return [...out];
+}
+
+/** A card that chips the attacker toward one of those totals. */
+function isRetaliatePiece(name, index, targets) {
+  const c = index[name];
+  return Boolean(targets.length && c && c.sim && c.sim.retaliate
+    && c.sim.retaliate <= Math.max(...targets));
+}
 
 /** Does this deck hold an attack that only works with a separate enabler card? */
 function needsEnabler(counts, index) {
@@ -404,22 +491,28 @@ function lockedNamesOf(v) {
  * ~48 singletons that scored 0% — technically 60 cards, useless as a deck. Real
  * lists are built from a small number of cards at sensible counts, so fill from
  * a template of target counts instead, and only then top up with Energy.
+ *
+ * Every entry has to be a card the engine plays. The previous template was
+ * written from a real-format staples list and handed each built deck 3 Buddy-Buddy
+ * Poffin, 3 Boss's Orders, 2 Master Ball, 2 Poké Pad, a Prime Catcher and a
+ * Maximum Belt — twelve slots the simulator draws as blanks. The deck looked
+ * complete and the win rate looked precise while a fifth of the list did nothing.
  */
 const FILL_TEMPLATE = [
   ["Lillie's Determination", 4],
   ['Ultra Ball', 4],
-  ['Buddy-Buddy Poffin', 4],
-  ["Boss's Orders", 3],
   ['Night Stretcher', 3],
   ['Energy Search', 3],
+  ['Buddy-Buddy Poffin', 3],
+  ["Boss's Orders", 2],
+  ['Lacey', 2],
+  ['Kofu', 2],
+  ['Master Ball', 2],
   ['Switch', 2],
   ['Energy Retrieval', 2],
-  ['Lacey', 2],
-  ['Poké Pad', 2],
   ['Energy Switch', 2],
-  ['Master Ball', 2],
-  ['Prime Catcher', 1],
-  ['Maximum Belt', 1],
+  ["AZ's Tranquility", 1],
+  ['Air Balloon', 1],
 ];
 
 /** How many copies of a combo enabler a real list runs. One is not a plan. */
@@ -523,6 +616,7 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
     .filter((n) => !locked.has(n) && counts[n] > 0);
   const addable = pool.filter((n) => (counts[n] || 0) < maxCopies(index, n));
   const wantsEnabler = needsEnabler(counts, index);
+  const targets = exactDamageTargets(counts, index);
 
   // Favour breadth over depth: try many different additions against a handful of
   // plausible cuts, rather than every possible cut for the first few additions.
@@ -560,9 +654,14 @@ function proposeMoves(counts, index, pool, locked, maxMoves) {
       const isMon = card && card.category === 'pokemon';
       const isEnabler = wantsEnabler && card && card.sim
         && card.sim.appliesSpecialCondition;
-      if (isMon || isEnabler) {
+      // Retaliate pieces have the same problem as the enabler, twice over: the
+      // line needs two different cards to land on the same Active at the same
+      // time, so a single copy of either is deep inside the noise floor.
+      const isPiece = isRetaliatePiece(add, index, targets);
+      if (isMon || isEnabler || isPiece) {
         const headroom = maxCopies(index, add) - (counts[add] || 0);
-        const big = Math.min(isEnabler ? ENABLER_TARGET : 3, headroom, counts[rem]);
+        const big = Math.min(isEnabler || isPiece ? ENABLER_TARGET : 3,
+          headroom, counts[rem]);
         // one full-count swap, plus a cheaper 2-for-2 in case the big one costs
         // more elsewhere than it gains. Two extra candidates, not four — every
         // move spends simulation budget the rest of the pool also needs.

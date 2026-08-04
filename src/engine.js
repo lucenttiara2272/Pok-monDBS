@@ -130,6 +130,25 @@ function energyShortfall(S, mon) {
  * Pick the best attack this Pokémon can use right now.
  * Knockout effects win; otherwise highest damage.
  */
+/**
+ * Best printed damage this Pokemon could deal right now. No RNG, no bonuses.
+ *
+ * Auto-knockout attacks are excluded on purpose: whether Abyss Eye can fire
+ * depends on a Special Condition that a gust card may be about to apply, so
+ * counting it here would make the gust decision argue from its own conclusion.
+ */
+function payableDamage(S, mon) {
+  const card = S.card(mon.name);
+  if (!card || !Array.isArray(card.attacks)) return 0;
+  let best = 0;
+  for (const atk of card.attacks) {
+    if (!canPay(mon, atk.cost || {}, (e) => S.symOf(e))) continue;
+    if (atk.koIfSpecialCondition || typeof atk.koIfExactDamage === 'number') continue;
+    best = Math.max(best, atk.damage || 0);
+  }
+  return best;
+}
+
 function chooseAttack(S, mon, opp, bonusDamage, rng) {
   const card = S.card(mon.name);
   if (!card || !Array.isArray(card.attacks)) return null;
@@ -143,17 +162,27 @@ function chooseAttack(S, mon, opp, bonusDamage, rng) {
     if (!canPay(mon, atk.cost || {}, (e) => S.symOf(e))) continue;
 
     if (atk.koIfSpecialCondition) {
+      // The condition may already be there. Lisia's Appeal Confuses the Pokemon
+      // it drags up, and that Confusion is not type-restricted the way Dark
+      // Bell's is — so this is the one route by which Abyss Eye can knock out
+      // something in a Darkness deck, though only the Benched Basic it pulled
+      // up rather than the archetype's actual attacker.
+      if (opp.confusedActive) {
+        return { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name,
+          via: 'specialCondition' };
+      }
       // Dark Bell only Confuses non-[D] Pokémon, so a Darkness opponent is immune
       if (!conditionCard) continue;
       if (S.spec[conditionCard].onlyNonDark && opp.darkType) continue;
       const cand = { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name,
-        usesCard: conditionCard };
+        usesCard: conditionCard, via: 'specialCondition' };
       return cand;                                   // a KO beats any damage roll
     }
 
     if (typeof atk.koIfExactDamage === 'number') {
       if (opp.dmgOnActive !== atk.koIfExactDamage) continue;
-      return { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name };
+      return { ko: true, dmg: 0, reason: 'auto_ko', name: atk.name,
+        via: 'exactDamage' };
     }
 
     // Night Joker and friends: use the best attack from a matching Benched
@@ -221,6 +250,52 @@ export const DRAW_SUPPORTER_INFO = {
 export const DRAW_SUPPORTERS = new Set(Object.keys(DRAW_SUPPORTER_INFO));
 
 /**
+ * Trainers the play policy actually plays.
+ *
+ * There is no generic effect dispatcher: the turn loop reaches for cards by
+ * name, and `sim.effect` in cards.json is documentation rather than behaviour.
+ * A Trainer missing from this set is shuffled in, drawn, held, and never used —
+ * it occupies a slot and does nothing, so a deck full of them reports a win rate
+ * measured on far fewer than 60 working cards.
+ *
+ * Keeping the list beside the policy lets the builder say that out loud instead
+ * of quietly overstating a list. Add a name here only when the turn loop really
+ * uses it — an entry here that the policy ignores is worse than no entry at all,
+ * because it turns an honest warning into a false reassurance.
+ *
+ * Deliberately NOT included, because the opponent model still cannot represent
+ * what they do: Tool Scrapper and Crushing Hammer, which need the opponent's
+ * Tools and Energy attachments, and neither exists. meta.json now gives each
+ * archetype a Bench, which is what unblocked the gust cards, but its Active is
+ * otherwise a bundle of statistics with no cards attached to it.
+ */
+export const PLAYED_TRAINERS = new Set([
+  // Items with bespoke policy call sites
+  'Ultra Ball', 'Night Stretcher', 'Switch', 'Energy Search', 'Energy Retrieval',
+  'Energy Switch', 'Rare Candy',
+  // Items driven by the ITEM_EFFECTS registry
+  'Buddy-Buddy Poffin', 'Master Ball', 'Poké Ball', 'Poké Pad', 'Super Potion',
+  // Gust cards, played by maybeGust against the archetype's Bench
+  'Prime Catcher', "Boss's Orders", "Lisia's Appeal",
+  // Tools
+  'Air Balloon', 'Punk Helmet', 'Powerglass', 'Amulet of Hope',
+  "Hero's Cape", 'Maximum Belt',
+  // Supporters with bespoke handling, beyond the draw list
+  "AZ's Tranquility", "Janine's Secret Art", "Black Belt's Training",
+  ...DRAW_SUPPORTERS,
+]);
+
+const TRAINER_KINDS = new Set(['item', 'tool', 'supporter']);
+
+/**
+ * Dark Bell and anything like it is reached for by capability, not by name, so
+ * it counts as played without being listed above.
+ */
+export function isPlayedTrainer(name, d) {
+  return PLAYED_TRAINERS.has(name) || Boolean(d && d.appliesSpecialCondition);
+}
+
+/**
  * A deck spec is { cardName: { n, kind, ...simFields } }.
  * `kind` is one of pokemon | item | tool | supporter | energy.
  */
@@ -282,6 +357,40 @@ export function validateDeck(spec) {
       `${inert.map(([n]) => n).join(', ')} ${inert.length > 1 ? 'have' : 'has'} no `
       + 'damage the simulator understands — their attacks are effect text that is not '
       + 'modelled, so they will not attack. Treat the win rate as a lower bound.');
+  }
+
+  // Trainers the policy never reaches for are drawn as blanks. This is the single
+  // most misleading thing the simulator can do, because the deck looks full and
+  // the win rate looks precise while a chunk of the list is doing nothing.
+  const inertTrainers = Object.entries(spec)
+    .filter(([n, d]) => TRAINER_KINDS.has(d.kind) && !isPlayedTrainer(n, d));
+  if (inertTrainers.length && size === 60) {
+    const slots = inertTrainers.reduce((a, [, d]) => a + d.n, 0);
+    warnings.push(
+      `${slots} card${slots > 1 ? 's' : ''} the simulator never plays: `
+      + `${inertTrainers.map(([n, d]) => `${d.n}× ${n}`).join(', ')}. `
+      + 'These are not modelled, so they are drawn as blanks — the deck is '
+      + `effectively being simulated as ${60 - slots} working cards. Real games `
+      + 'will run better than the number shown.');
+  }
+
+  // A card can be modelled and still be dead in a particular list. Buddy-Buddy
+  // Poffin only fetches Basics of 70 HP or less; in a deck whose smallest Basic
+  // is 110 it never hits anything. Flagged rather than blocked — it is a legal
+  // inclusion and the choice belongs to whoever built the deck.
+  const basicHps = Object.values(spec)
+    .filter((d) => d.kind === 'pokemon' && isBasic(d) && typeof d.hp === 'number')
+    .map((d) => d.hp);
+  if (basicHps.length) {
+    const smallest = Math.min(...basicHps);
+    for (const [n, d] of Object.entries(spec)) {
+      if (typeof d.hpLimit === 'number' && smallest > d.hpLimit) {
+        warnings.push(
+          `${n} searches for Basic Pokémon with ${d.hpLimit} HP or less, and the `
+          + `smallest Basic in this deck has ${smallest} HP. It can never find a `
+          + 'target — those slots are doing nothing.');
+      }
+    }
   }
 
   // The play policy was built around Basic attackers. It evolves when it draws the
@@ -360,7 +469,13 @@ class Side {
     this.firstAttackTurn = null;
     this.abyssEyeKos = 0;
     this.duskRaidKos = 0;
-    this.absolKos = 0;
+    // Auto-knockouts split by how they were set up. These used to be pooled into
+    // abyssEyeKos, so a Terminal Period knockout — a completely different line,
+    // driven by retaliate damage rather than by Dark Bell — was reported as an
+    // Abyss Eye. `absolKos` was declared beside them and never once incremented.
+    this.exactDamageKos = 0;
+    this.gustKos = 0;
+    this.itemsPlayed = [];
   }
 
   card(name) { return this.spec[name]; }
@@ -518,40 +633,182 @@ function playDrawSupporter(S) {
   return false;
 }
 
-function ultraBall(S) {
-  if (!S.has('Ultra Ball') || S.hand.length < 3) return false;
-  S.play('Ultra Ball');
-  for (let i = 0; i < 2; i++) {
-    if (!S.hand.length) break;
-    const junk = S.hand.find((c) =>
-      ['Jett', 'Air Balloon', 'Spiky Energy', 'Energy Search'].includes(c))
-      || choice(S.rng, S.hand);
-    S.hand.splice(S.hand.indexOf(junk), 1);
-    S.discard.push(junk);
-  }
-  // If an attacker is already in play or in hand, fetch the next piece of the
-  // line; otherwise fetch the Basic that starts the strongest line we own.
+/**
+ * Fetch the most useful Pokemon the deck can offer, subject to `ok`.
+ *
+ * Shared by every search Item. Preference order is the same one Ultra Ball has
+ * always used: the strongest Basic attacker, then a Basic that leads to one,
+ * then any playable Basic, then anything at all. Pulled out of `ultraBall` so
+ * Master Ball and friends make the same choice instead of each re-deriving it
+ * slightly differently.
+ */
+function fetchBestPokemon(S, ok = () => true) {
   const rank = (n) => {
     const a = S.card(n).attacks || [];
     return Math.max(0, ...a.map((x) => (x.damage || 0) + (x.koIfSpecialCondition ? 999 : 0)));
   };
+  const tryFor = (pred) => S.searchDeck((c) => ok(c) && pred(c), 1);
+
   const wanted = [...S.attackers].sort((a, b) => rank(b) - rank(a));
-  let got = [];
   for (const w of wanted) {
-    if (isBasic(S.card(w))) {
-      got = S.searchDeck((c) => c === w, 1);
-      if (got.length) break;
+    if (!isBasic(S.card(w))) continue;
+    const got = tryFor((c) => c === w);
+    if (got.length) return got;
+  }
+  for (const b of basicsLeadingToAttackers(S)) {
+    const got = tryFor((c) => c === b);
+    if (got.length) return got;
+  }
+  let got = tryFor((c) => S.isPlayableBasic(c));
+  if (!got.length) got = tryFor((c) => S.card(c).kind === 'pokemon');
+  return got;
+}
+
+/**
+ * Self-contained card effects, keyed by `sim.effect` in data/cards.json.
+ *
+ * Signature: (S, d) => boolean, where `d` is the card's own spec entry and the
+ * return value says whether the card was spent. A handler reads its numbers from
+ * `d` — heal amount, search limit, HP cap, coin-flip chance — so adding a card
+ * that reuses an existing effect is a data change in cards.json, not a code
+ * change here. That is the entire point of the registry: `sim.effect` used to be
+ * decorative, and cards carrying it were drawn as blanks.
+ *
+ * Note what is deliberately NOT here. Ultra Ball, Night Stretcher, Switch, Rare
+ * Candy, Energy Search, Energy Retrieval and Energy Switch keep their bespoke
+ * call sites, because for those the interesting question is *when* to play them
+ * — mid-retreat, mid-evolution, mid-Energy-maths — and that sequencing is turn
+ * policy rather than card text. Moving them behind a uniform signature would
+ * have meant threading the surrounding local state through the registry for no
+ * behavioural gain and a real regression risk.
+ */
+export const ITEM_EFFECTS = {
+  /** Ultra Ball, Master Ball, Poké Ball, Poké Pad. */
+  searchPokemon(S, d) {
+    const noRuleBox = (c) => (S.card(c).prizes || 1) === 1;
+    const ok = d.noRuleBox ? noRuleBox : () => true;
+    if (!S.deck.some((c) => S.card(c).kind === 'pokemon' && ok(c))) return false;
+    if (d.discardCost) {
+      if (S.hand.length < d.discardCost) return false;
+      for (let i = 0; i < d.discardCost; i++) {
+        if (!S.hand.length) break;
+        const junk = S.hand.find((c) =>
+          ['Jett', 'Air Balloon', 'Spiky Energy', 'Energy Search'].includes(c))
+          || choice(S.rng, S.hand);
+        S.hand.splice(S.hand.indexOf(junk), 1);
+        S.discard.push(junk);
+      }
+    }
+    // A tails flip still spends the card — that is the cost of a coin-flip Item
+    // and pretending otherwise would make Poké Ball strictly better than it is.
+    if (typeof d.chance === 'number' && S.rng() >= d.chance) return true;
+    return fetchBestPokemon(S, ok).length > 0;
+  },
+
+  /**
+   * Buddy-Buddy Poffin. Only reaches Basics at or under `hpLimit`, which is why
+   * it is dead in a deck whose smallest Basic is bigger — validateDeck warns
+   * about exactly that rather than letting it look like a live card.
+   */
+  searchSmallBasics(S, d) {
+    const ok = (c) => S.isPlayableBasic(c) && (S.card(c).hp || 0) <= d.hpLimit;
+    if (S.bench.length >= 5 || !S.deck.some(ok)) return false;
+    const room = Math.min(d.count || 1, 5 - S.bench.length);
+    const got = S.searchDeck(ok, room);
+    for (const g of got) {
+      S.hand.splice(S.hand.indexOf(g), 1);
+      S.bench.push(S.newMon(g));
+    }
+    return got.length > 0;
+  },
+
+  /** Super Potion. Worth a card only on something actually worth healing. */
+  healAndDiscardEnergy(S, d) {
+    const target = S.inPlay()
+      .filter((m) => m.dmg > 0 && m.energy.length > 0)
+      .sort((a, b) => b.dmg - a.dmg)[0];
+    if (!target || target.dmg < d.heal / 2) return false;
+    target.dmg = Math.max(0, target.dmg - d.heal);
+    S.discard.push(target.energy.pop());
+    return true;
+  },
+};
+
+/**
+ * Play a gust card, if dragging something up beats hitting what is already there.
+ *
+ * The heuristic is deliberately narrow: gust only when we cannot Knock Out their
+ * Active this turn but can Knock Out the Benched target. Gusting is not free
+ * value — you are trading a card and a turn of damage for a one-prize Pokemon
+ * instead of a two-prize one — so a policy that gusted whenever it held the card
+ * would make decks measurably worse and would misrepresent what these cards do.
+ *
+ * Handles Boss's Orders and Prime Catcher (`gust`) and Lisia's Appeal
+ * (`gustAndConfuse`, which also leaves the dragged-up Pokemon Confused — a real
+ * Special Condition, so Abyss Eye can then knock it out outright).
+ */
+function maybeGust(S, opp, ourDamage) {
+  if (opp.gusted || !opp.bench) return false;
+  // Already lethal on what is in front of us: nothing to gain.
+  if (ourDamage >= opp.hpLeft) return false;
+  if (ourDamage < opp.bench.hp) return false;
+
+  for (const name of [...new Set(S.hand)]) {
+    const d = S.card(name);
+    if (!d || (d.effect !== 'gust' && d.effect !== 'gustAndConfuse')) continue;
+    const isSupporter = d.kind === 'supporter';
+    if (isSupporter && S.supporterUsed) continue;
+    S.play(name);
+    if (isSupporter) S.supporterUsed = true;
+    S.itemsPlayed.push(name);
+    opp.gustTo(opp.bench, d.effect === 'gustAndConfuse');
+    return true;
+  }
+  return false;
+}
+
+/** Items whose timing is decided by bespoke policy, not the generic pass. */
+const POLICY_MANAGED = new Set([
+  'Ultra Ball', 'Night Stretcher', 'Switch', 'Rare Candy',
+  'Energy Search', 'Energy Retrieval', 'Energy Switch',
+]);
+
+/**
+ * Play every registry-backed Item that would do something this turn.
+ *
+ * Items are unlimited per turn, so this loops until nothing more is useful. The
+ * handler decides whether the card accomplishes anything; a card that returns
+ * false is left in hand rather than burned, which matters for Poffin in a deck
+ * that has temporarily run out of small Basics.
+ */
+function playRegistryItems(S) {
+  let guard = 0;
+  let played = true;
+  while (played && guard++ < 12) {
+    played = false;
+    for (const name of [...new Set(S.hand)]) {
+      if (POLICY_MANAGED.has(name)) continue;
+      const d = S.card(name);
+      if (!d || d.kind !== 'item') continue;
+      const fn = ITEM_EFFECTS[d.effect];
+      if (!fn) continue;
+      const i = S.hand.indexOf(name);
+      S.hand.splice(i, 1);
+      if (fn(S, d)) {
+        S.discard.push(name);
+        S.itemsPlayed.push(name);
+        played = true;
+      } else {
+        S.hand.push(name);
+      }
     }
   }
-  if (!got.length) {
-    for (const b of basicsLeadingToAttackers(S)) {
-      got = S.searchDeck((c) => c === b, 1);
-      if (got.length) break;
-    }
-  }
-  if (!got.length) got = S.searchDeck((c) => S.isPlayableBasic(c), 1);
-  if (!got.length) got = S.searchDeck((c) => S.card(c).kind === 'pokemon', 1);
-  return got.length > 0;
+}
+
+function ultraBall(S) {
+  if (!S.has('Ultra Ball') || S.hand.length < 3) return false;
+  S.play('Ultra Ball');
+  return ITEM_EFFECTS.searchPokemon(S, { ...S.card('Ultra Ball'), discardCost: 2 });
 }
 
 /**
@@ -643,6 +900,12 @@ function userTurn(S, opp, turn) {
   };
   benchAll();
   doEvolutions(S, turn);
+
+  // Registry Items first: they fetch bodies and Pokemon into hand, so running
+  // them before the dig means the dig sees what they found instead of spending
+  // an Ultra Ball on something Poffin would have benched for free.
+  playRegistryItems(S);
+  benchAll();
 
   // dig for an attacker if we have none
   if (megasInPlay().length === 0) {
@@ -762,10 +1025,35 @@ function userTurn(S, opp, turn) {
     }
   }
 
-  // tools
+  // Tools. Chosen by what the card does rather than by a hardcoded name list, so
+  // a new Tool with an hpBonus or a damage boost is picked up from cards.json
+  // without touching this file. A Tool that does nothing for this Pokemon — Punk
+  // Helmet on a non-[D] body — is skipped rather than wasted on it.
   if (A.tool === null) {
-    for (const t of ['Punk Helmet', 'Powerglass', 'Amulet of Hope']) {
-      if (S.has(t)) { S.hand.splice(S.hand.indexOf(t), 1); A.tool = t; break; }
+    const usable = (t) => {
+      const d = S.spec[t];
+      if (!d || d.kind !== 'tool') return false;
+      if (d.requiresDark && S.card(A.name).type !== DARK) return false;
+      return Boolean(d.retaliate || d.hpBonus || d.damageBoostVsEx
+        || d.effect || t === 'Air Balloon');
+    };
+    // Established preference first, so decks that already worked keep making the
+    // same choice; anything new falls in behind it ranked by what it contributes.
+    const PREFERRED = ['Punk Helmet', 'Powerglass', 'Amulet of Hope'];
+    const value = (t) => {
+      const d = S.spec[t];
+      return (d.retaliate || 0) + (d.hpBonus || 0) + (d.damageBoostVsEx || 0);
+    };
+    const rank = (t) => {
+      const i = PREFERRED.indexOf(t);
+      return i >= 0 ? i - PREFERRED.length : 0;      // preferred sort ahead of the rest
+    };
+    const pick = [...new Set(S.hand)].filter(usable)
+      .sort((a, b) => rank(a) - rank(b) || value(b) - value(a))[0];
+    if (pick) {
+      S.hand.splice(S.hand.indexOf(pick), 1);
+      A.tool = pick;
+      if (S.spec[pick].hpBonus) A.hp += S.spec[pick].hpBonus;
     }
   }
 
@@ -777,10 +1065,22 @@ function userTurn(S, opp, turn) {
   const tot = S.totalEnergy(A);
   const result = { ko: false, dmg: 0, reason: null };
 
+  // Gust before picking an attack, so the choice is made against whatever is
+  // actually going to be standing there. Probed with a pure damage estimate
+  // rather than a trial chooseAttack: that function consumes RNG for
+  // flip-until-tails attacks, so calling it twice a turn would shift every
+  // downstream roll and quietly desynchronise the whole simulation.
+  if (isAttacker) maybeGust(S, opp, payableDamage(S, A));
+
+  // Bonus damage against a Pokemon ex, from a Supporter and/or the attached Tool.
+  // `opp.prizes >= 2` is the engine's stand-in for "is an ex" — the meta model
+  // has no card identity, only a prize value, and everything worth 2 or more is
+  // an ex in this format.
   let bbt = 0;
   if (!S.supporterUsed && S.has("Black Belt's Training") && opp.prizes >= 2) {
     S.play("Black Belt's Training"); S.supporterUsed = true; bbt = 40;
   }
+  if (A.tool && opp.prizes >= 2) bbt += (S.spec[A.tool].damageBoostVsEx || 0);
 
   const picked = chooseAttack(S, A, opp, bbt, S.rng);
   if (!picked) {
@@ -805,7 +1105,10 @@ function userTurn(S, opp, turn) {
     result.ko = picked.ko;
     result.dmg = picked.dmg;
     result.reason = picked.reason;
-    if (picked.ko) S.abyssEyeKos++;
+    if (picked.ko) {
+      if (picked.via === 'exactDamage') S.exactDamageKos++;
+      else S.abyssEyeKos++;
+    }
   }
 
   if ((result.dmg > 0 || result.ko) && S.firstAttackTurn === null) {
@@ -833,10 +1136,81 @@ export function playGame(spec, meta, rng) {
   S.opening();
   if (!S.active) return { win: false, reason: 'no_basic_disaster', turns: 0, S };
 
+  // The opponent's Active is no longer always the archetype's attacker: a gust
+  // card can drag a Benched Pokemon up, and while it is there the thing we are
+  // hitting has different HP and a different prize value. `activeHp` and
+  // `prizes` therefore live on `opp` and are reset from `meta` on a knockout,
+  // rather than `meta.hp` being read directly at every site.
   const opp = {
-    hpLeft: meta.hp, prizes: meta.prizes, darkType: meta.darkType,
-    dmgOnActive: 0, prizesTaken: 0, offlineUntil: 0,
+    activeHp: meta.hp,
+    hpLeft: meta.hp,
+    prizes: meta.prizes,
+    darkType: meta.darkType,
+    dmgOnActive: 0,
+    prizesTaken: 0,
+    offlineUntil: 0,
+    gusted: false,
+    // Damage already on the real attacker, held while a Benched Pokemon is
+    // dragged up. Gusting does not heal anything — the damage is still on that
+    // Pokemon when it comes back — and losing that would make gust cards look
+    // like a drawback instead of tempo.
+    stashedDmg: 0,
+    confusedActive: false,
   };
+  /**
+   * Their Active was Knocked Out. What that costs them depends entirely on which
+   * Pokemon it was.
+   *
+   * Knocking out a Pokemon we dragged up off their Bench is a cheap prize and
+   * nothing more: their attacker comes back with exactly the damage it already
+   * had, and they are not set back a beat, because they never lost the piece
+   * they had been building. Treating the two cases the same — full heal plus a
+   * rebuild delay — meant gusting a 70 HP support card reset their board and
+   * took their attacker offline, which made every gust card look enormously
+   * stronger than it is and was most of an unexplained 6-point win rate jump.
+   */
+  const oppReset = (turn) => {
+    if (opp.gusted) {
+      const dmg = opp.stashedDmg;
+      opp.activeHp = meta.hp;
+      opp.prizes = meta.prizes;
+      opp.dmgOnActive = dmg;
+      opp.hpLeft = meta.hp - dmg;
+      opp.gusted = false;
+      opp.stashedDmg = 0;
+      opp.confusedActive = false;
+      return;
+    }
+    opp.activeHp = meta.hp;
+    opp.prizes = meta.prizes;
+    opp.hpLeft = meta.hp;
+    opp.dmgOnActive = 0;
+    opp.stashedDmg = 0;
+    opp.confusedActive = false;
+    opp.offlineUntil = turn + rebuildDelay(rng, meta);
+  };
+  /** They retreat the gusted Pokemon back; the real attacker returns damaged. */
+  const oppUngust = () => {
+    if (!opp.gusted) return;
+    opp.activeHp = meta.hp;
+    opp.prizes = meta.prizes;
+    opp.dmgOnActive = opp.stashedDmg;
+    opp.hpLeft = meta.hp - opp.stashedDmg;
+    opp.gusted = false;
+    opp.confusedActive = false;
+  };
+  opp.gustTo = (bench, confuse) => {
+    if (opp.gusted || !bench) return false;
+    opp.stashedDmg = opp.dmgOnActive;
+    opp.activeHp = bench.hp;
+    opp.prizes = bench.prizes;
+    opp.hpLeft = bench.hp;
+    opp.dmgOnActive = 0;
+    opp.gusted = true;
+    opp.confusedActive = Boolean(confuse);
+    return true;
+  };
+  opp.bench = meta.bench || null;
   let setup = Math.max(1, Math.round(rng.gauss(meta.setupMu, meta.setupSd)));
   if (S.mulligans >= 2) setup = Math.max(1, setup - 1);
 
@@ -851,15 +1225,15 @@ export function playGame(spec, meta, rng) {
       if (r.deckout) { lossReason = 'deck_out'; break; }
       if (r.ko) {
         S.takePrizes(opp.prizes);
-        opp.hpLeft = meta.hp; opp.dmgOnActive = 0;
-        opp.offlineUntil = turn + rebuildDelay(rng, meta);
+        if (opp.gusted) S.gustKos++;
+        oppReset(turn);
       } else if (r.dmg > 0) {
         opp.hpLeft -= r.dmg;
-        opp.dmgOnActive = meta.hp - opp.hpLeft;
+        opp.dmgOnActive = opp.activeHp - opp.hpLeft;
         if (opp.hpLeft <= 0) {
           S.takePrizes(opp.prizes);
-          opp.hpLeft = meta.hp; opp.dmgOnActive = 0;
-          opp.offlineUntil = turn + rebuildDelay(rng, meta);
+          if (opp.gusted) S.gustKos++;
+          oppReset(turn);
           S.duskRaidKos++;
         }
       }
@@ -869,6 +1243,13 @@ export function playGame(spec, meta, rng) {
     }
 
     /* ---- opponent turn ---- */
+    // A gusted Pokemon that survived is retreated back, and then they attack as
+    // normal. An earlier version skipped their whole turn here, which read as
+    // "gusting denies them tempo" but is not what happens: retreating costs
+    // Energy, not the turn. That one `continue` was worth several points of win
+    // rate on its own and made every gust card look far better than it is.
+    if (opp.gusted) oppUngust();
+
     if (turn >= setup && turn >= opp.offlineUntil) {
       if (meta.hammers > 0 && S.active && S.active.energy.length && rng() < meta.hammers) {
         S.discard.push(S.active.energy.pop());
@@ -879,19 +1260,28 @@ export function playGame(spec, meta, rng) {
       if (meta.grass && S.active && S.attackers.has(S.active.name)) dmg *= 2;
 
       if (S.active && dmg > 0) {
+        // Retaliate is read from the cards themselves, tools included. This used
+        // to be `tool === 'Punk Helmet' ? 40 : 0`, which ignored the card's own
+        // number, ignored every other retaliate tool, and ignored requiresDark —
+        // so a Punk Helmet on a non-[D] Pokemon retaliated when it should not.
+        // The exact total matters here beyond the damage: Punk Helmet's 40 plus
+        // Spiky Energy's 20 is precisely the 6 damage counters Mega Absol's
+        // Terminal Period needs to auto-KO, so an off-by-anything breaks a real
+        // line rather than just nudging a win rate.
         let retaliate = 0;
-        if (S.active.tool === 'Punk Helmet') retaliate += 40;
-        for (const e of S.active.energy) {
-          const d = S.spec[e];
-          if (d && d.retaliate) retaliate += d.retaliate;
-        }
+        const addRetaliate = (d) => {
+          if (!d || !d.retaliate) return;
+          if (d.requiresDark && S.card(S.active.name).type !== DARK) return;
+          retaliate += d.retaliate;
+        };
+        if (S.active.tool) addRetaliate(S.spec[S.active.tool]);
+        for (const e of S.active.energy) addRetaliate(S.spec[e]);
         if (retaliate) {
           opp.hpLeft -= retaliate;
-          opp.dmgOnActive = meta.hp - opp.hpLeft;
+          opp.dmgOnActive = opp.activeHp - opp.hpLeft;
           if (opp.hpLeft <= 0) {
             S.takePrizes(opp.prizes);
-            opp.hpLeft = meta.hp; opp.dmgOnActive = 0;
-            opp.offlineUntil = turn + rebuildDelay(rng, meta);
+            oppReset(turn);
           }
         }
       }

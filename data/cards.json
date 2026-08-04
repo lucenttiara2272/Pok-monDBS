@@ -435,7 +435,10 @@
       "set": "TEF 153",
       "category": "item",
       "max": 4,
-      "text": "Search your deck for a Pokémon and put it into your hand."
+      "text": "Search your deck for a Pokémon and put it into your hand.",
+      "sim": {
+        "effect": "searchPokemon"
+      }
     },
     {
       "id": "mega-signal",
@@ -470,7 +473,11 @@
       "set": "POR 80",
       "category": "item",
       "max": 4,
-      "text": "Flip a coin. If heads, search your deck for a Pokémon and put it into your hand."
+      "text": "Flip a coin. If heads, search your deck for a Pokémon and put it into your hand.",
+      "sim": {
+        "effect": "searchPokemon",
+        "chance": 0.5
+      }
     },
     {
       "id": "pok-pad",
@@ -478,7 +485,11 @@
       "set": "POR 81",
       "category": "item",
       "max": 4,
-      "text": "Search your deck for a Pokémon that doesn't have a Rule Box and put it into your hand."
+      "text": "Search your deck for a Pokémon that doesn't have a Rule Box and put it into your hand.",
+      "sim": {
+        "effect": "searchPokemon",
+        "noRuleBox": true
+      }
     },
     {
       "id": "pok-mon-catcher",
@@ -510,7 +521,10 @@
       "set": "TEF 157",
       "category": "item",
       "max": 4,
-      "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot. If you do, switch your Active Pokémon with a Benched one."
+      "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot. If you do, switch your Active Pokémon with a Benched one.",
+      "sim": {
+        "effect": "gust"
+      }
     },
     {
       "id": "rare-candy",
@@ -577,7 +591,11 @@
       "set": "JTG 158",
       "category": "item",
       "max": 4,
-      "text": "Heal 60 damage from 1 of your Pokémon, then discard an Energy attached to it."
+      "text": "Heal 60 damage from 1 of your Pokémon, then discard an Energy attached to it.",
+      "sim": {
+        "effect": "healAndDiscardEnergy",
+        "heal": 60
+      }
     },
     {
       "id": "switch",
@@ -6889,7 +6907,10 @@
       "set": "TEF 152",
       "category": "tool",
       "max": 4,
-      "text": "The Pokémon this card is attached to gets +100 HP."
+      "text": "The Pokémon this card is attached to gets +100 HP.",
+      "sim": {
+        "hpBonus": 100
+      }
     },
     {
       "id": "hop-s-choice-band",
@@ -6913,7 +6934,10 @@
       "set": "TEF 154",
       "category": "tool",
       "max": 4,
-      "text": "Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex."
+      "text": "Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex.",
+      "sim": {
+        "damageBoostVsEx": 50
+      }
     },
     {
       "id": "occa-berry",

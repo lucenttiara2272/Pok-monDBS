@@ -13,9 +13,9 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 
-import { validateDeck, deckSize } from '../src/engine.js';
+import { validateDeck, deckSize, isPlayedTrainer } from '../src/engine.js';
 import { makeCardIndex, buildSpec, PRESETS } from '../src/decks.js';
-import { optimiseDeck } from '../src/optimise.js';
+import { optimiseDeck, candidatePool } from '../src/optimise.js';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cards = JSON.parse(readFileSync(join(here, '../data/cards.json'), 'utf8'));
@@ -189,6 +189,94 @@ test('the enabler is offered in a playable count, not one at a time', async () =
   const bell = r.after['Dark Bell'] || 0;
   assert.ok(bell === 0 || bell >= 2,
     `restoring exactly one enabler is not a plan — got ${bell}`);
+});
+
+test('the optimiser never adds a card the engine cannot play', async () => {
+  // The fill template was written from a real-format staples list, so every built
+  // deck came back with ~12 slots of Buddy-Buddy Poffin, Boss's Orders, Master
+  // Ball, Poké Pad, Prime Catcher and Maximum Belt. None of them have a code path
+  // in the play policy: they are drawn as blanks, and the reported win rate was
+  // being measured on a deck of about 48 working cards.
+  const partial = { 'Mega Darkrai ex': 3, 'Munkidori': 3, 'Fezandipiti ex': 1 };
+  const r = await optimiseDeck(partial, INDEX, meta.decks,
+    { ...FAST, rounds: 1, locked: Object.keys(partial) });
+
+  const dead = Object.keys(r.after).filter((n) => {
+    const c = INDEX[n];
+    return c && ['item', 'tool', 'supporter'].includes(c.category)
+      && !isPlayedTrainer(n, c.sim || {});
+  });
+  assert.deepEqual(dead, [],
+    `the optimiser filled the deck with cards the simulator never plays: ${dead}`);
+});
+
+test('a search the deck can never satisfy is not added', async () => {
+  // Buddy-Buddy Poffin fetches Basics of 70 HP or less. Munkidori is 110 and
+  // every Mega is far higher, so in this deck it can never hit anything.
+  const partial = { 'Mega Darkrai ex': 3, 'Munkidori': 3, 'Fezandipiti ex': 1 };
+  const r = await optimiseDeck(partial, INDEX, meta.decks,
+    { ...FAST, rounds: 1, locked: Object.keys(partial) });
+
+  assert.equal(r.after['Buddy-Buddy Poffin'] || 0, 0,
+    'Poffin cannot find a target in a deck with no Basic at 70 HP or less');
+});
+
+test('dead cards are flagged, not silently removed', async () => {
+  // Flag-don't-block: if the user put it there, it stays — but validateDeck has
+  // to say plainly that the win rate is measured on fewer working cards, rather
+  // than reporting a confident number for a deck that is part blanks.
+  // Tool Scrapper needs the opponent's Tools, which the meta model still has no
+  // representation for. It is the current example of a genuinely unmodelled
+  // card — the preset's own Trainers all became real once gust was implemented.
+  const deck = { ...PRESETS['Optimised (43%)'] };
+  deck['Darkness Energy'] -= 5;
+  deck['Buddy-Buddy Poffin'] = 3;
+  deck['Tool Scrapper'] = 2;
+  const v = validateDeck(buildSpec(deck, INDEX));
+
+  assert.equal(deckSize(buildSpec(deck, INDEX)), 60);
+  assert.equal(v.ok, true, 'an unmodelled card is legal — it is a warning, not an error');
+  assert.ok(v.warnings.some((w) => /never plays/.test(w)),
+    `no inert-card warning in: ${JSON.stringify(v.warnings)}`);
+  assert.ok(v.warnings.some((w) => /70 HP or less/.test(w)),
+    `no unhittable-search warning in: ${JSON.stringify(v.warnings)}`);
+});
+
+test('the optimiser can reach the pieces of an exact-damage knockout', async () => {
+  // Mega Absol's Terminal Period KOs an opponent on exactly 6 damage counters.
+  // Punk Helmet retaliates 40 and Spiky Energy 20 — together exactly 60. Neither
+  // is a generic staple and Spiky is a Special Energy the Energy branch skips,
+  // so before combo awareness neither could ever be proposed and the line was
+  // unreachable unless you built it by hand.
+  const partial = { 'Mega Absol ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 2 };
+  const r = await optimiseDeck(partial, INDEX, meta.decks,
+    { ...FAST, rounds: 1, locked: Object.keys(partial) });
+
+  const spec = buildSpec(r.after, INDEX);
+  assert.equal(deckSize(spec), 60);
+  assert.equal(validateDeck(spec).ok, true);
+
+  // The search decides whether the line is worth the slots; what it must not do
+  // is be structurally unable to consider it.
+  const pool = candidatePool(partial, INDEX);
+  assert.ok(pool.includes('Punk Helmet'), 'Punk Helmet must be reachable');
+  assert.ok(pool.includes('Spiky Energy'), 'Spiky Energy must be reachable');
+});
+
+test('a retaliate piece too big to hit the target is not offered', () => {
+  // A 100-damage retaliate card can only overshoot a 60 target, so proposing it
+  // would spend simulation budget on a move that cannot complete the line.
+  const big = {
+    id: 'test-huge-helmet', name: 'Test Huge Helmet', set: 'TEST 4',
+    category: 'tool', max: 4, text: 'Retaliates 100.',
+    sim: { retaliate: 100 },
+  };
+  const idx = makeCardIndex({ cards: [...cards.cards, big] });
+  const pool = candidatePool({ 'Mega Absol ex': 4, 'Munkidori': 4 }, idx);
+  assert.ok(pool.includes('Punk Helmet'),
+    'the 40 retaliate piece should still be offered');
+  assert.ok(!pool.includes('Test Huge Helmet'),
+    '100 retaliate can never leave the opponent on exactly 60');
 });
 
 test('the diff explains exactly what changed', async () => {
