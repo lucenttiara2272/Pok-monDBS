@@ -302,11 +302,18 @@ export const PLAYED_TRAINERS = new Set([
   'Energy Switch', 'Rare Candy',
   // Items driven by the ITEM_EFFECTS registry
   'Buddy-Buddy Poffin', 'Master Ball', 'Poké Ball', 'Poké Pad', 'Super Potion',
+  'Scoop Up Cyclone', 'Precious Trolley', 'Poké Vital A', 'Max Rod',
+  'Miracle Headset',
+  // Reached for by capability rather than by name: Dangerous Laser applies a
+  // Special Condition, so chooseAttack finds it the same way it finds Dark Bell.
+  // Unlike Dark Bell it is not type-restricted, so it turns on Abyss Eye against
+  // a Darkness deck too.
+  'Dangerous Laser',
   // Gust cards, played by maybeGust against the archetype's Bench
   'Prime Catcher', "Boss's Orders", "Lisia's Appeal",
   // Tools
   'Air Balloon', 'Punk Helmet', 'Powerglass', 'Amulet of Hope',
-  "Hero's Cape", 'Maximum Belt',
+  "Hero's Cape", 'Maximum Belt', 'Deluxe Bomb',
   // Supporters with bespoke handling, beyond the draw list
   "AZ's Tranquility", "Janine's Secret Art", "Black Belt's Training",
   ...DRAW_SUPPORTERS,
@@ -771,15 +778,56 @@ export const ITEM_EFFECTS = {
     return got.length > 0;
   },
 
-  /** Super Potion. Worth a card only on something actually worth healing. */
+  /**
+   * Super Potion, Poké Vital A. `keepEnergy` is the difference between them:
+   * Super Potion pays an Energy for the heal, Poké Vital A does not.
+   */
   healAndDiscardEnergy(S, d) {
     const target = S.inPlay()
-      .filter((m) => m.dmg > 0 && m.energy.length > 0)
+      .filter((m) => m.dmg > 0 && (d.keepEnergy || m.energy.length > 0))
       .sort((a, b) => b.dmg - a.dmg)[0];
     if (!target || target.dmg < d.heal / 2) return false;
     target.dmg = Math.max(0, target.dmg - d.heal);
-    S.discard.push(target.energy.pop());
+    if (!d.keepEnergy) S.discard.push(target.energy.pop());
     return true;
+  },
+
+  /**
+   * Scoop Up Cyclone: pick a Pokemon up, attachments and all.
+   *
+   * Denies the knockout entirely, which in a Mega deck means denying three
+   * Prizes — far more than the card costs. Played on the Active only when it is
+   * about to die, and never when it is the last body on the board, because
+   * scooping your last Pokemon loses the game on the spot.
+   */
+  scoopUp(S, d, opp) {
+    const A = S.active;
+    if (!A || !S.bench.length) return false;
+    const incoming = (opp && opp.dmg) || 0;
+    const survives = A.hp - A.dmg > incoming;
+    if (A.dmg === 0 || survives) return false;
+
+    S.hand.push(A.name);
+    for (const e of A.energy) S.hand.push(e);
+    if (A.tool) S.hand.push(A.tool);
+    S.active = S.bench.shift();
+    return true;
+  },
+
+  /**
+   * Max Rod, Miracle Headset: pull cards back out of the discard pile.
+   * `kinds` says which categories qualify, `count` how many.
+   */
+  recoverFromDiscard(S, d) {
+    const wanted = new Set(d.kinds || []);
+    const ok = (c) => S.spec[c] && wanted.has(S.spec[c].kind);
+    const got = [];
+    for (let i = S.discard.length - 1; i >= 0 && got.length < (d.count || 1); i--) {
+      if (!ok(S.discard[i])) continue;
+      got.push(S.discard.splice(i, 1)[0]);
+    }
+    S.hand.push(...got);
+    return got.length > 0;
   },
 };
 
@@ -860,7 +908,7 @@ const POLICY_MANAGED = new Set([
  * false is left in hand rather than burned, which matters for Poffin in a deck
  * that has temporarily run out of small Basics.
  */
-function playRegistryItems(S) {
+function playRegistryItems(S, opp) {
   let guard = 0;
   let played = true;
   while (played && guard++ < 12) {
@@ -873,7 +921,7 @@ function playRegistryItems(S) {
       if (!fn) continue;
       const i = S.hand.indexOf(name);
       S.hand.splice(i, 1);
-      if (fn(S, d)) {
+      if (fn(S, d, opp)) {
         S.discard.push(name);
         S.itemsPlayed.push(name);
         played = true;
@@ -983,7 +1031,7 @@ function userTurn(S, opp, turn) {
   // Registry Items first: they fetch bodies and Pokemon into hand, so running
   // them before the dig means the dig sees what they found instead of spending
   // an Ultra Ball on something Poffin would have benched for free.
-  playRegistryItems(S);
+  playRegistryItems(S, opp);
   benchAll();
 
   // dig for an attacker if we have none
@@ -1225,6 +1273,10 @@ export function playGame(spec, meta, rng) {
     hpLeft: meta.hp,
     prizes: meta.prizes,
     darkType: meta.darkType,
+    // What they hit for. Card effects need this to judge whether our Active
+    // survives the coming turn — Scoop Up Cyclone is only worth a card if the
+    // Pokemon it saves was actually about to die.
+    dmg: meta.dmg,
     dmgOnActive: 0,
     prizesTaken: 0,
     offlineUntil: 0,
@@ -1363,13 +1415,18 @@ export function playGame(spec, meta, rng) {
         // Terminal Period needs to auto-KO, so an off-by-anything breaks a real
         // line rather than just nudging a win rate.
         let retaliate = 0;
-        const addRetaliate = (d) => {
+        let spentTool = null;
+        const addRetaliate = (d, toolName) => {
           if (!d || !d.retaliate) return;
           if (d.requiresDark && S.card(S.active.name).type !== DARK) return;
           retaliate += d.retaliate;
+          // Deluxe Bomb goes off once and is discarded. Without this it would
+          // retaliate 120 every single turn, which is a different card.
+          if (toolName && d.discardAfterRetaliate) spentTool = toolName;
         };
-        if (S.active.tool) addRetaliate(S.spec[S.active.tool]);
+        if (S.active.tool) addRetaliate(S.spec[S.active.tool], S.active.tool);
         for (const e of S.active.energy) addRetaliate(S.spec[e]);
+        if (spentTool) { S.discard.push(spentTool); S.active.tool = null; }
         if (retaliate) {
           opp.hpLeft -= retaliate;
           opp.dmgOnActive = opp.activeHp - opp.hpLeft;

@@ -18,8 +18,12 @@ import {
   playGame, makeRng, runGauntlet, validateDeck, ITEM_EFFECTS, PLAYED_TRAINERS,
 } from '../src/engine.js';
 import { makeCardIndex, buildSpec, PRESETS } from '../src/decks.js';
+import { candidatePool } from '../src/optimise.js';
 
 const PRESETS_OPTIMISED = PRESETS['Optimised (43%)'];
+
+/** The optimiser's candidate pool for a given deck, for reachability checks. */
+const candidatePoolFrom = (counts) => candidatePool(counts, INDEX);
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cards = JSON.parse(readFileSync(join(here, '../data/cards.json'), 'utf8'));
@@ -280,6 +284,65 @@ test("Lisia's Appeal Confuses its target, which Abyss Eye can then punish", () =
   assert.ok(autoKos > 0,
     'Dark Bell cannot Confuse a Darkness deck, so every Abyss Eye knockout here '
     + "must have come from Lisia's Appeal — none did");
+});
+
+test('Scoop Up Cyclone saves a Pokémon that was about to be Knocked Out', () => {
+  // Denying a knockout on a Mega denies three Prizes, which is why this is worth
+  // a card in a deck like this and not in most others.
+  const counts = {
+    'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 4,
+    'Scoop Up Cyclone': 1, 'Dark Bell': 4, 'Darkness Energy': 15,
+    'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
+    'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
+    'Kofu': 2, 'Energy Retrieval': 2, 'Energy Switch': 2,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
+  assert.equal(validateDeck(spec).ok, true, validateDeck(spec).errors.join('; '));
+
+  const rng = makeRng(61);
+  let played = 0;
+  for (let i = 0; i < 300; i++) {
+    if (playGame(spec, meta.decks[0], rng).S.itemsPlayed.includes('Scoop Up Cyclone')) {
+      played++;
+    }
+  }
+  assert.ok(played > 0, 'Scoop Up Cyclone was never played');
+});
+
+test('Dangerous Laser turns on Abyss Eye against a Darkness deck', () => {
+  // Dark Bell cannot Confuse a Darkness Pokémon, so Abyss Eye is dead against
+  // Zoroark. Dangerous Laser has no such restriction and needs no new engine
+  // code — chooseAttack finds it by capability, exactly like Dark Bell.
+  const zoroark = meta.decks.find((d) => d.id === 'zoroark');
+  const counts = {
+    'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 4,
+    'Dangerous Laser': 1, 'Darkness Energy': 20,
+    'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
+    'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
+    'Kofu': 2, 'Energy Retrieval': 3,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
+
+  const rng = makeRng(62);
+  let kos = 0;
+  for (let i = 0; i < 400; i++) kos += playGame(spec, zoroark, rng).S.abyssEyeKos;
+  assert.ok(kos > 0,
+    'no enabler here is type-restricted, so Abyss Eye should still knock out');
+});
+
+test('Deluxe Bomb retaliates once and is then discarded', () => {
+  // 120 retaliate every turn would be a different and much stronger card.
+  const bomb = INDEX['Deluxe Bomb'];
+  assert.equal(bomb.sim.retaliate, 120);
+  assert.equal(bomb.sim.discardAfterRetaliate, true);
+
+  // And it overshoots Terminal Period's exact 60, so the combo search must not
+  // offer it as a piece — the cap check exists for precisely this card.
+  const pool = candidatePoolFrom({ 'Mega Absol ex': 4, 'Munkidori': 4 });
+  assert.ok(!pool.includes('Deluxe Bomb'),
+    '120 retaliate can never leave an opponent sitting on exactly 60');
 });
 
 test('ACE SPEC cards are flagged and capped at one copy', () => {

@@ -560,7 +560,11 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Your opponent's Active Pokémon is now Burned and Confused. You may play any number of Item cards during your turn.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "confuseOpponent",
+        "appliesSpecialCondition": true
+      }
     },
     {
       "id": "dark-bell",
@@ -800,7 +804,12 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Put up to 5 in any combination of Pokémon and Basic Energy cards from your discard pile into your hand. You may play any number of Item cards during your turn.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "recoverFromDiscard",
+        "count": 5,
+        "kinds": ["pokemon", "energy"]
+      }
     },
     {
       "id": "sv8-181",
@@ -837,7 +846,12 @@
       "max": 1,
       "text": "Put up to 2 Supporter cards from your discard pile into your hand. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "recoverFromDiscard",
+        "count": 2,
+        "kinds": ["supporter"]
+      }
     },
     {
       "id": "n-s-pp-up",
@@ -899,7 +913,12 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Heal 150 damage from 1 of your Pokémon.    This card can't be put into your hand or deck from the discard pile. You may play any number of Item cards during your turn.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "healAndDiscardEnergy",
+        "heal": 150,
+        "keepEnergy": true
+      }
     },
     {
       "id": "zsv10pt5-84",
@@ -934,7 +953,12 @@
       "max": 1,
       "text": "Search your deck for any number of Basic Pokémon and put them onto your Bench. Then, shuffle your deck. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "searchSmallBasics",
+        "count": 5,
+        "hpLimit": 999
+      }
     },
     {
       "id": "premium-power-pro",
@@ -1017,7 +1041,10 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Put 1 of your Pokémon and all attached cards into your hand. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "scoopUp"
+      }
     },
     {
       "id": "sv8-186",
@@ -39861,7 +39888,11 @@
       "category": "tool",
       "aceSpec": true,
       "max": 1,
-      "text": "If the Pokémon this is attached to is Active and is damaged by an attack, put 12 damage counters on the Attacking Pokémon, then discard this card."
+      "text": "If the Pokémon this is attached to is Active and is damaged by an attack, put 12 damage counters on the Attacking Pokémon, then discard this card.",
+      "sim": {
+        "retaliate": 120,
+        "discardAfterRetaliate": true
+      }
     },
     {
       "id": "sv5-149",
