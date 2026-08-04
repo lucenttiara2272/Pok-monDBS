@@ -113,6 +113,17 @@ function toCard(c) {
   const t = (c.types || [])[0];
   if (t && TYPE[t]) out.type = TYPE[t];
 
+  // ACE SPEC is a deckbuilding restriction the API states in the card's rules
+  // text: one per deck across every ACE SPEC card, not one of each. Reading it
+  // here means imported cards carry the limit automatically. The ten already in
+  // the database were all marked "max": 4 with no flag, which is how the builder
+  // ended up producing lists running two Master Ball.
+  if ((c.rules || []).some((r) => /ACE SPEC/i.test(r))
+      || (c.subtypes || []).some((s) => /ACE SPEC/i.test(s))) {
+    out.aceSpec = true;
+    out.max = 1;
+  }
+
   if (category === 'pokemon') {
     const stage = stageOf(c.subtypes);
     out.subtype = (c.subtypes || []).join(' · ');

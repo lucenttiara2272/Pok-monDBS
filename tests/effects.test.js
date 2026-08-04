@@ -17,7 +17,9 @@ import { dirname, join } from 'node:path';
 import {
   playGame, makeRng, runGauntlet, validateDeck, ITEM_EFFECTS, PLAYED_TRAINERS,
 } from '../src/engine.js';
-import { makeCardIndex, buildSpec } from '../src/decks.js';
+import { makeCardIndex, buildSpec, PRESETS } from '../src/decks.js';
+
+const PRESETS_OPTIMISED = PRESETS['Optimised (43%)'];
 
 const here = dirname(fileURLToPath(import.meta.url));
 const cards = JSON.parse(readFileSync(join(here, '../data/cards.json'), 'utf8'));
@@ -278,6 +280,35 @@ test("Lisia's Appeal Confuses its target, which Abyss Eye can then punish", () =
   assert.ok(autoKos > 0,
     'Dark Bell cannot Confuse a Darkness deck, so every Abyss Eye knockout here '
     + "must have come from Lisia's Appeal — none did");
+});
+
+test('ACE SPEC cards are flagged and capped at one copy', () => {
+  // The whole set was marked "max": 4 with no flag of any kind, so nothing
+  // stopped a deck running four Prime Catcher.
+  const aces = cards.cards.filter((c) => c.aceSpec);
+  assert.ok(aces.length >= 10, `only ${aces.length} ACE SPEC cards flagged`);
+  for (const c of aces) {
+    assert.equal(c.max, 1, `${c.name} is ACE SPEC and must cap at 1 copy`);
+  }
+  // Spot-check one that is easy to miss: Hero's Cape reads like an ordinary Tool.
+  assert.ok(aces.some((c) => c.name === "Hero's Cape"),
+    "Hero's Cape (TEF 152) is ACE SPEC despite looking like a plain Tool");
+});
+
+test('two different ACE SPEC cards is an error, not a warning', () => {
+  const counts = { ...PRESETS_OPTIMISED };
+  counts['Darkness Energy'] -= 2;
+  counts['Prime Catcher'] = 1;
+  counts['Maximum Belt'] = 1;
+  const v = validateDeck(buildSpec(counts, INDEX));
+  assert.equal(v.ok, false, 'one of each ACE SPEC is still illegal');
+  assert.ok(v.errors.some((e) => /ACE SPEC/.test(e)), v.errors.join('; '));
+
+  // One on its own is fine.
+  const legal = { ...PRESETS_OPTIMISED };
+  legal['Darkness Energy'] -= 1;
+  legal['Prime Catcher'] = 1;
+  assert.equal(validateDeck(buildSpec(legal, INDEX)).ok, true);
 });
 
 test('an implemented card is no longer reported as a blank', () => {

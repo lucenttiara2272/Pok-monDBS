@@ -351,6 +351,18 @@ export function validateDeck(spec) {
       errors.push(`${d.n}× ${name} exceeds the 4-copy limit.`);
     }
   }
+  // ACE SPEC is one per deck across every ACE SPEC card, not one of each. The
+  // database had all ten of them marked "max": 4 with no flag at all, so the
+  // builder happily produced lists running two Master Ball — legal-looking,
+  // simulated, and impossible to register for an actual event.
+  const aceSpecs = Object.entries(spec).filter(([, d]) => d.aceSpec);
+  const aceTotal = aceSpecs.reduce((a, [, d]) => a + d.n, 0);
+  if (aceTotal > 1) {
+    errors.push(
+      `${aceTotal} ACE SPEC cards (${aceSpecs.map(([n, d]) => `${d.n}× ${n}`).join(', ')}) `
+      + '— a deck may contain only 1 ACE SPEC card of any kind.');
+  }
+
   const pokemon = Object.values(spec)
     .filter((d) => d.kind === 'pokemon').reduce((a, c) => a + c.n, 0);
   if (pokemon === 0) errors.push('Deck contains no Pokémon.');

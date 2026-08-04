@@ -271,7 +271,7 @@ function toSpec(counts, index) {
   for (const [name, n] of Object.entries(counts)) {
     if (!n || !index[name]) continue;
     spec[name] = { n, kind: index[name].category, type: index[name].type,
-      ...(index[name].sim || {}) };
+      aceSpec: index[name].aceSpec === true, ...(index[name].sim || {}) };
   }
   return spec;
 }
@@ -507,7 +507,7 @@ const FILL_TEMPLATE = [
   ["Boss's Orders", 2],
   ['Lacey', 2],
   ['Kofu', 2],
-  ['Master Ball', 2],
+  ['Master Ball', 1],
   ['Switch', 2],
   ['Energy Retrieval', 2],
   ['Energy Switch', 2],
@@ -578,9 +578,15 @@ function makeLegal60(counts, index, pool, locked) {
   }
 
   // 2. fill the engine from the template, at counts a real list would run
+  let aceTaken = Object.keys(out)
+    .some((n) => out[n] > 0 && index[n] && index[n].aceSpec);
   for (const [name, target] of FILL_TEMPLATE) {
     if (size() >= 60) break;
     if (!index[name] || locked.has(name) || !inPool.has(name)) continue;
+    if (index[name].aceSpec) {
+      if (aceTaken) continue;             // the one ACE SPEC slot is already spent
+      aceTaken = true;
+    }
     while ((out[name] || 0) < Math.min(target, maxCopies(index, name)) && size() < 60) {
       out[name] = (out[name] || 0) + 1;
     }
@@ -614,7 +620,13 @@ function isEnergy(index, name) {
 function proposeMoves(counts, index, pool, locked, maxMoves) {
   const removable = Object.keys(counts)
     .filter((n) => !locked.has(n) && counts[n] > 0);
-  const addable = pool.filter((n) => (counts[n] || 0) < maxCopies(index, n));
+  // ACE SPEC is a single shared slot across every ACE SPEC card. maxCopies caps
+  // each one at 1 on its own, which is not enough: without this the search would
+  // happily pair a Prime Catcher with a Maximum Belt and call the result legal.
+  const aceUsed = Object.keys(counts)
+    .some((n) => counts[n] > 0 && index[n] && index[n].aceSpec);
+  const addable = pool.filter((n) => (counts[n] || 0) < maxCopies(index, n))
+    .filter((n) => !(aceUsed && index[n] && index[n].aceSpec));
   const wantsEnabler = needsEnabler(counts, index);
   const targets = exactDamageTargets(counts, index);
 

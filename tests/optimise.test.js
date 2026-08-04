@@ -279,6 +279,23 @@ test('a retaliate piece too big to hit the target is not offered', () => {
     '100 retaliate can never leave the opponent on exactly 60');
 });
 
+test('the optimiser never builds a deck with two ACE SPEC cards', async () => {
+  // maxCopies caps each ACE SPEC at 1 on its own, which is not enough — the slot
+  // is shared across all of them. Master Ball, Prime Catcher, Maximum Belt and
+  // Hero's Cape are all in the candidate pool, so without a shared budget the
+  // search would pair them up and produce an unregisterable list.
+  const partial = { 'Mega Darkrai ex': 3, 'Munkidori': 3, 'Fezandipiti ex': 2 };
+  const r = await optimiseDeck(partial, INDEX, meta.decks,
+    { ...FAST, rounds: 2, locked: Object.keys(partial) });
+
+  const aces = Object.entries(r.after)
+    .filter(([n]) => INDEX[n] && INDEX[n].aceSpec);
+  const total = aces.reduce((a, [, c]) => a + c, 0);
+  assert.ok(total <= 1,
+    `built a deck with ${total} ACE SPEC cards: ${JSON.stringify(aces)}`);
+  assert.equal(validateDeck(buildSpec(r.after, INDEX)).ok, true);
+});
+
 test('the diff explains exactly what changed', async () => {
   const start = { 'Mega Darkrai ex': 4, 'Darkness Energy': 20, 'Ultra Ball': 4 };
   const r = await optimiseDeck(start, INDEX, meta.decks,

@@ -26,6 +26,9 @@ export function buildSpec(counts, index) {
       // `type` lives at the top level of the card, not inside `sim`, but the engine
       // needs it — Dark Bell only Confuses non-[D] Pokémon, including your own.
       type: card.type,
+      // Same for `aceSpec`: it is a deckbuilding restriction rather than a
+      // mechanic, but validateDeck has to see it to enforce the one-per-deck rule.
+      aceSpec: card.aceSpec === true,
       ...(card.sim || {}),
     };
   }

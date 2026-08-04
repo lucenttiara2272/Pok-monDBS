@@ -257,7 +257,8 @@
       "name": "Awakening Drum",
       "set": "TEF 141",
       "category": "item",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Draw a card for each of your Ancient Pokémon in play. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true
     },
@@ -434,7 +435,8 @@
       "name": "Master Ball",
       "set": "TEF 153",
       "category": "item",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Search your deck for a Pokémon and put it into your hand.",
       "sim": {
         "effect": "searchPokemon"
@@ -520,7 +522,8 @@
       "name": "Prime Catcher",
       "set": "TEF 157",
       "category": "item",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Switch in 1 of your opponent's Benched Pokémon to the Active Spot. If you do, switch your Active Pokémon with a Benched one.",
       "sim": {
         "effect": "gust"
@@ -542,7 +545,8 @@
       "name": "Reboot Pod",
       "set": "TEF 158",
       "category": "item",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Attach a Basic Energy card from your discard pile to each of your Future Pokémon."
     },
     {
@@ -6266,7 +6270,8 @@
       "name": "Grand Tree",
       "set": "SCR 136",
       "category": "stadium",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Once during each player's turn, that player may evolve a Basic into a Stage 1 from their deck, and then that Stage 1 into a Stage 2. Not on their first turn or on a Pokémon played this turn."
     },
     {
@@ -6827,7 +6832,8 @@
       "name": "Amulet of Hope",
       "set": "SSP 162",
       "category": "tool",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "If the Pokémon this card is attached to is Knocked Out by damage from an attack, search your deck for up to 3 cards and put them into your hand.",
       "sim": {
         "effect": "searchOnKnockout",
@@ -6882,7 +6888,8 @@
       "name": "Deluxe Bomb",
       "set": "SCR 134",
       "category": "tool",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "If the Pokémon this is attached to is Active and is damaged by an attack, put 12 damage counters on the Attacking Pokémon, then discard this card."
     },
     {
@@ -6906,7 +6913,8 @@
       "name": "Hero's Cape",
       "set": "TEF 152",
       "category": "tool",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "The Pokémon this card is attached to gets +100 HP.",
       "sim": {
         "hpBonus": 100
@@ -6933,7 +6941,8 @@
       "name": "Maximum Belt",
       "set": "TEF 154",
       "category": "tool",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Attacks by the Pokémon this is attached to do 50 more damage to your opponent's Active Pokémon ex.",
       "sim": {
         "damageBoostVsEx": 50
@@ -6991,7 +7000,8 @@
       "name": "Sparkling Crystal",
       "set": "SCR 142",
       "category": "tool",
-      "max": 4,
+      "aceSpec": true,
+      "max": 1,
       "text": "Attacks used by the Tera Pokémon this is attached to cost 1 Energy less, of any type."
     },
     {
