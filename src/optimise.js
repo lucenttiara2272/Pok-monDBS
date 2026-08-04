@@ -96,6 +96,16 @@ function candidatePool(counts, index, locked) {
       pool.add(c.name);
     }
   }
+  // Cards that switch on an attack the deck already holds. Without this, a deck
+  // that has lost its Dark Bell can never get one back: the enabler is not a
+  // generic staple, so it would never be proposed, and the deck stays stuck as a
+  // pile of attackers that cannot use their best attack.
+  if (needsEnabler(counts, index)) {
+    for (const c of Object.values(index)) {
+      if (c.sim && c.sim.appliesSpecialCondition) pool.add(c.name);
+    }
+  }
+
   // Rare Candy only earns a slot if there is a Stage 2 to hit
   if (Object.keys(counts).some((n) => index[n] && index[n].sim
       && index[n].sim.stage === 2)) {
@@ -116,8 +126,11 @@ function candidatePool(counts, index, locked) {
   // levers that move win rates most have to be at the front. Draw Supporters and
   // Pokemon count are consistently the two biggest, which is exactly what a
   // first pass over a homebrew list needs to hear.
+  const wantsEnabler = needsEnabler(counts, index);
   const rank = (n) => {
     const c = index[n];
+    // an attack the deck cannot use at all is the biggest available gain
+    if (wantsEnabler && c.sim && c.sim.appliesSpecialCondition) return -1;
     if (DRAW_SUPPORTERS.has(n)) return 0;
     if (c.category === 'pokemon' && isBasic(c.sim)) return 1;
     if (['Ultra Ball', 'Buddy-Buddy Poffin', 'Master Ball', 'Poké Pad',
@@ -128,28 +141,36 @@ function candidatePool(counts, index, locked) {
   return [...pool].sort((a, b) => rank(a) - rank(b) || a.localeCompare(b));
 }
 
-/**
- * Would this deck still be able to do the thing it is built to do?
- *
- * Hill climbing scores one card at a time, which is blind to combos. Dark Bell
- * on its own looks like a weak Item, so the search happily cut the last copy —
- * and with it Mega Darkrai's Abyss Eye, the entire win condition. The deck came
- * back at 23% instead of 43% and the search thought it had improved, because
- * every intermediate step measured slightly better than the last.
- *
- * So: if the deck holds an attack that needs an enabler, it must keep an enabler.
- */
-function comboIntact(counts, index) {
-  const has = (pred) => Object.keys(counts).some((n) => counts[n] > 0
-    && index[n] && pred(index[n]));
+const hasIn = (counts, index, pred) => Object.keys(counts)
+  .some((n) => counts[n] > 0 && index[n] && pred(index[n]));
 
-  const needsCondition = has((c) => (c.sim && c.sim.attacks || [])
+/** Does this deck hold an attack that only works with a separate enabler card? */
+function needsEnabler(counts, index) {
+  return hasIn(counts, index, (c) => (c.sim && c.sim.attacks || [])
     .some((a) => a.koIfSpecialCondition));
-  if (needsCondition) {
-    const enabler = has((c) => c.sim && c.sim.appliesSpecialCondition);
-    if (!enabler) return false;
-  }
-  return true;
+}
+
+/** Does it currently hold one? */
+function hasEnabler(counts, index) {
+  return hasIn(counts, index, (c) => c.sim && c.sim.appliesSpecialCondition);
+}
+
+/**
+ * Would this move break the deck's combo?
+ *
+ * Hill climbing scores one card at a time, which is blind to combos. Dark Bell on
+ * its own looks like a weak Item, so the search cut the last copy — and with it
+ * Mega Darkrai's Abyss Eye, the entire win condition, taking the deck from ~43%
+ * to ~24% while every intermediate step measured slightly better.
+ *
+ * Deliberately *relative*: it blocks a move that removes the last enabler, but it
+ * does not reject a deck that never had one. An absolute check looked right and
+ * was much worse — for a deck already missing Dark Bell it rejected every single
+ * candidate, so the optimiser silently did nothing at all.
+ */
+function breaksCombo(before, after, index) {
+  if (!needsEnabler(after, index)) return false;
+  return hasEnabler(before, index) && !hasEnabler(after, index);
 }
 
 function maxCopies(index, name) {
@@ -264,7 +285,7 @@ export async function optimiseDeck(startCounts, index, meta, opts = {}) {
       const candSpec = toSpec(cand, index);
       if (deckSize(candSpec) !== 60) continue;
       if (!validateDeck(candSpec).ok) continue;
-      if (!comboIntact(cand, index)) continue;   // never cut the win condition
+      if (breaksCombo(counts, cand, index)) continue;   // never cut the win condition
       const s = score(cand, index, meta, games, seed);
       spent++;
       if (best === null || s > best.s) best = { s, move: moves[i], counts: cand };

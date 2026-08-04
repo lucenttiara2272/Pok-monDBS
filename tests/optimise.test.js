@@ -133,6 +133,26 @@ test('the win condition is never optimised away', async () => {
     'Dark Bell was removed, which disables Abyss Eye — the deck\'s whole plan');
 });
 
+test('a deck missing its enabler can get one back', async () => {
+  // The real failure case: a deck that has already lost its Dark Bell. An
+  // absolute combo check rejected every candidate here, so the optimiser did
+  // nothing at all and the deck stayed stuck without its win condition.
+  const stranded = { ...PRESETS['Optimised (43%)'] };
+  delete stranded['Dark Bell'];
+  stranded['Darkness Energy'] = (stranded['Darkness Energy'] || 0) + 4;
+  assert.equal(Object.values(stranded).reduce((a, b) => a + b, 0), 60);
+
+  const r = await optimiseDeck(stranded, INDEX, meta.decks,
+    { games: 150, rounds: 3, maxMoves: 16, budget: 40, finalGames: 600 });
+
+  assert.equal(validateDeck(buildSpec(r.after, INDEX)).ok, true);
+  assert.ok(r.diff.length > 0,
+    'the optimiser must be able to move at all on a deck with no enabler');
+  assert.ok((r.after['Dark Bell'] || 0) > 0,
+    `Abyss Eye needs a Special Condition; the optimiser should restore an enabler. `
+    + `Got: ${JSON.stringify(r.diff)}`);
+});
+
 test('the diff explains exactly what changed', async () => {
   const start = { 'Mega Darkrai ex': 4, 'Darkness Energy': 20, 'Ultra Ball': 4 };
   const r = await optimiseDeck(start, INDEX, meta.decks,
