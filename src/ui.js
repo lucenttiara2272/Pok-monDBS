@@ -10,8 +10,14 @@ import {
   makeCardIndex, buildSpec, PRESETS, UI_PRESETS, applyControlOverride,
 } from './decks.js?v=dev';
 import { optimiseDeck } from './optimise.js?v=dev';
+import { parseDecklist } from './decklist.js?v=dev';
 
 const $ = (id) => document.getElementById(id);
+
+/** Card names come from pasted text, so they reach the DOM as text, not markup. */
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+}[c]));
 
 // Stamped by the deploy workflow with the commit SHA so a new release can never be
 // served from a stale browser cache. Stays 'dev' when running locally.
@@ -159,6 +165,34 @@ async function boot() {
   $('save').onclick = saveCurrentDeck;
   $('clear').onclick = () => { deck = {}; renderAll(); };
   $('copy').onclick = copyList;
+  $('paste').onclick = () => {
+    $('paste-text').value = '';
+    $('paste-report').classList.add('hidden');
+    $('pasteModal').showModal();
+  };
+  $('pasteForm').onsubmit = (e) => {
+    if (e.submitter && e.submitter.value === 'cancel') return;
+    const r = parseDecklist($('paste-text').value, INDEX);
+
+    // Anything unresolved stops the import. Loading the recognised nine tenths
+    // of a list would hand back a deck that is not the one that was pasted, and
+    // the simulator would report a win rate for it without complaint.
+    if (r.errors.length) {
+      e.preventDefault();
+      const rep = $('paste-report');
+      rep.classList.remove('hidden');
+      rep.innerHTML = `<div class="msg err"><b>Not imported.</b><br>`
+        + `${r.errors.map(esc).join('<br>')}</div>`;
+      return;
+    }
+    deck = r.counts;
+    renderAll();
+    if (r.warnings.length) {
+      const rep = $('paste-report');
+      rep.classList.remove('hidden');
+      rep.innerHTML = `<div class="msg warn">${r.warnings.map(esc).join('<br>')}</div>`;
+    }
+  };
 
   const modal = $('cardModal');
   $('add-card').onclick = () => {

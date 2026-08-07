@@ -63,6 +63,7 @@
     <div class="deck-foot">
       <button id="save" class="btn ghost">Save deck</button>
       <button id="copy" class="btn ghost">Copy list</button>
+      <button id="paste" class="btn ghost">Import list</button>
       <button id="clear" class="btn ghost">Clear</button>
     </div>
   </aside>
@@ -107,6 +108,25 @@
     the other numbers mean nothing — <code>npm test</code> enforces this.
   </p>
 </footer>
+
+<!-- ------------------------------------------------ import-list dialog -->
+<dialog id="pasteModal">
+  <form method="dialog" id="pasteForm">
+    <h2>Import a decklist</h2>
+    <p class="hint" style="margin:0 0 14px">
+      Paste a list from PTCG Live, Limitless, or this app's <b>Copy list</b>.
+      Section headers and blank lines are ignored. Anything that cannot be matched
+      is reported rather than skipped, so the deck you get is the list you pasted.
+    </p>
+    <textarea id="paste-text" rows="14" spellcheck="false"
+      placeholder="Pokémon: 9&#10;1 Fezandipiti ex ASC 142&#10;3 Munkidori TWM 95&#10;…"></textarea>
+    <div id="paste-report" class="hidden"></div>
+    <menu>
+      <button value="cancel" class="btn ghost">Cancel</button>
+      <button id="paste-go" value="default" class="btn">Import</button>
+    </menu>
+  </form>
+</dialog>
 
 <!-- ------------------------------------------------ add-card dialog -->
 <dialog id="cardModal">
