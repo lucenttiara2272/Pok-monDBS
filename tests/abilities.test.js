@@ -112,6 +112,28 @@ test('an Ability the engine cannot run is reported, not hidden', () => {
     `expected an unmodelled-Ability warning, got: ${JSON.stringify(v.warnings)}`);
 });
 
+test('a Benched Pokémon dying to spread damage still counts as a knockout', () => {
+  // "Any of your Pokémon were Knocked Out" includes the Bench. Spread damage
+  // used to award Prizes and nothing else, so Unfair Stamp and Flip the Script
+  // both stayed dead against Dragapult — the one archetype in the meta that
+  // kills your Bench, and the deck with the largest share of it.
+  const dragapult = meta.decks.find((d) => d.id === 'dragapult');
+  assert.ok(dragapult.spread > 0, 'this test needs an archetype that spreads');
+
+  const spec = buildSpec(SHELL, INDEX);
+  const rng = makeRng(95);
+  let benchKos = 0;
+  for (let i = 0; i < 300; i++) {
+    const { S } = playGame(spec, dragapult, rng);
+    // Fezandipiti draws off the flag, so an activation proves it was set.
+    if (S.inPlay().some((m) => m.name === 'Fezandipiti ex' && m.abilityTurn > 0)) {
+      benchKos++;
+    }
+  }
+  assert.ok(benchKos > 0,
+    'Flip the Script never fired against the deck that knocks our Pokémon out most');
+});
+
 test("Claw of Darkness's hand disruption costs them tempo", () => {
   // The archetype model has no hand, so the discard lands where the model can
   // express it: on their next attack, and worth double while they are rebuilding

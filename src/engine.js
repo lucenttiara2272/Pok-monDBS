@@ -1643,6 +1643,25 @@ export function playGame(spec, meta, rng) {
     return true;
   };
   opp.bench = meta.bench || null;
+
+  /**
+   * One of our Pokemon was Knocked Out by their attack.
+   *
+   * Shared by the Active and the Bench, because "any of your Pokémon" means
+   * exactly that. Spread damage killing a Benched Pokemon used to award Prizes
+   * and nothing else: it did not set koLastTurn, so Unfair Stamp and Flip the
+   * Script both sat dead through the one archetype that kills your Bench most,
+   * and Legacy Energy attached to a Benched Pokemon never reduced anything.
+   */
+  const concedeKo = (mon) => {
+    const legacy = !S.legacyUsed && mon.energy
+      .find((e) => S.spec[e] && S.spec[e].prizeReduction);
+    if (legacy) S.legacyUsed = true;
+    opp.prizesTaken += legacy
+      ? Math.max(0, mon.prizes - S.spec[legacy].prizeReduction)
+      : mon.prizes;
+    S.koLastTurn = true;
+  };
   // Mulligans cost tempo, in proportion to how many you took.
   //
   // The rule is that your opponent draws one extra card for every mulligan, so
@@ -1758,15 +1777,7 @@ export function playGame(spec, meta, rng) {
         }
 
         if (S.active.dmg >= S.active.hp) {
-          // Legacy Energy costs them a Prize for this knockout, once per game.
-          const legacy = !S.legacyUsed && S.active.energy
-            .find((e) => S.spec[e] && S.spec[e].prizeReduction);
-          const taken = legacy
-            ? Math.max(0, S.active.prizes - S.spec[legacy].prizeReduction)
-            : S.active.prizes;
-          if (legacy) S.legacyUsed = true;
-          opp.prizesTaken += taken;
-          S.koLastTurn = true;
+          concedeKo(S.active);
           if (S.active.tool === 'Amulet of Hope') {
             S.searchDeck((c) =>
               ['Darkness Energy', 'Dark Bell', 'Ultra Ball'].includes(c), 3);
@@ -1792,7 +1803,7 @@ export function playGame(spec, meta, rng) {
         }
         for (const m of [...S.bench]) {
           if (m.dmg >= m.hp) {
-            opp.prizesTaken += m.prizes;
+            concedeKo(m);
             S.bench.splice(S.bench.indexOf(m), 1);
             S.discard.push(m.name);
           }
