@@ -225,6 +225,32 @@ test('a rider the engine does model is not flagged', () => {
     'the hand discard is modelled now and should not be reported as missing');
 });
 
+test('the evolution warning matches how much setup the deck owes', () => {
+  // A Stage 1 deck owes one evolution step; a Stage 2 deck owes two and leans on
+  // acceleration to survive it. Telling the Stage 1 deck about Rare Candy — a
+  // card that skips Stage 1 entirely — was the wrong message for its situation.
+  const stage2 = validateDeck(buildSpec({
+    'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2,
+    'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4,
+    'Night Stretcher': 3, 'Switch': 2, "Lillie's Determination": 4,
+    'Lacey': 2, 'Judge': 4, 'Poké Pad': 4, 'Fire Energy': 8,
+    'Psychic Energy': 8,
+  }, INDEX)).warnings.join(' | ');
+  assert.match(stage2, /Stage 2/);
+  assert.match(stage2, /clear lower bound/);
+  assert.match(stage2, /Rare Candy/);
+
+  const stage1 = validateDeck(buildSpec({
+    'Tynamo': 4, 'Eelektrik': 4, 'Munkidori': 4, 'Fezandipiti ex': 2,
+    'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4, 'Night Stretcher': 3,
+    'Switch': 2, "Lillie's Determination": 4, 'Lacey': 2, 'Judge': 4,
+    'Poké Pad': 3, 'Lightning Energy': 20,
+  }, INDEX)).warnings.join(' | ');
+  // Eelektrik accelerates, so this deck should not get the warning at all.
+  assert.ok(!/nothing in the deck accelerates/.test(stage1),
+    'a deck running Dynamotor does accelerate and must not be told otherwise');
+});
+
 test('an evolution intermediate is not reported as dead weight', () => {
   // Dreepy and Drakloak have no attacks and no Ability, which is the same shape
   // as a genuinely useless support Pokémon — but they are the line to Dragapult.

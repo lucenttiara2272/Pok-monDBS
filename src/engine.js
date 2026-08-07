@@ -544,15 +544,22 @@ export function validateDeck(spec) {
   // ignore it, and the whole value of these messages is that they are true.
   const accelerates = Object.values(spec)
     .some((d) => d.ability && d.ability.effect === 'attachEnergyFromDiscard');
+  // Scaled by how much setup the deck actually owes. One evolution step and no
+  // acceleration costs a turn; two steps compounds, which is why Stage 2 decks
+  // lean on accelerators in the first place. Telling a Stage 1 deck about Rare
+  // Candy — a card that skips Stage 1 entirely — was simply the wrong message.
   if (evoAttackers.length && size === 60 && !accelerates) {
     const worst = Math.max(...evoAttackers.map(([, d]) => d.stage));
-    warnings.push(
-      `Main attackers are Stage ${worst} and nothing in the deck accelerates `
-      + 'Energy. The simulator searches out evolution pieces and uses Rare Candy, '
-      + 'but it hand-attaches one Energy a turn, so a deck that would normally '
-      + 'power its attacker early attacks later here. Read the win rate as a '
-      + 'lower bound. If you are running an accelerator Ability the simulator '
-      + 'does not know, the card will say so in its own warning.');
+    warnings.push(worst >= 2
+      ? `Main attackers are Stage 2 and nothing in the deck accelerates Energy. `
+        + 'The simulator searches out evolution pieces and uses Rare Candy, but it '
+        + 'hand-attaches one Energy a turn, so a line that would normally come '
+        + 'down fuelled attacks several turns later here. Read the win rate as a '
+        + 'clear lower bound.'
+      : `Main attackers are Stage 1 and nothing in the deck accelerates Energy. `
+        + 'The simulator searches out the evolution but hand-attaches one Energy a '
+        + 'turn, so the deck attacks about a turn later here than it would in your '
+        + 'hands. A mild under-read rather than a severe one.');
   }
 
   const draw = Object.entries(spec)
