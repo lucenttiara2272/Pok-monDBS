@@ -170,6 +170,35 @@ test('an Energy cost is paid with the right type', () => {
     + `(Fire ${right.weighted.toFixed(1)}% vs Water ${wrong.weighted.toFixed(1)}%)`);
 });
 
+test('search fetches the next evolution piece, not another Basic', () => {
+  // The Basic-attacker branch is skipped for a Stage 2 deck, so every search
+  // used to fall through to basicsLeadingToAttackers and return Dreepy. A deck
+  // could sit on three Dreepy tutoring a fourth while the Drakloak it needed
+  // stayed in the deck — the engine could not assemble its own line at all.
+  const counts = {
+    'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2,
+    'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4,
+    'Night Stretcher': 3, 'Switch': 2, "Lillie's Determination": 4,
+    'Lacey': 2, 'Judge': 4, 'Master Ball': 1, 'Poké Pad': 3,
+    'Fire Energy': 8, 'Psychic Energy': 8,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
+
+  const rng = makeRng(21);
+  let evolved = 0;
+  let attacked = 0;
+  for (let i = 0; i < 300; i++) {
+    const { S } = playGame(spec, meta.decks[0], rng);
+    if (S.inPlay().some((m) => m.name === 'Dragapult ex')
+        || S.discard.includes('Dragapult ex')) evolved++;
+    if (S.firstAttackTurn !== null) attacked++;
+  }
+  assert.ok(evolved > 90,
+    `a Dragapult deck should reach Dragapult in most games; only ${evolved}/300`);
+  assert.ok(attacked > 150, `only ${attacked}/300 games saw an attack`);
+});
+
 test('evolution decks are flagged as under-played rather than silently wrong', () => {
   const spec = buildSpec({
     'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2, 'Fezandipiti ex': 1,
@@ -179,6 +208,6 @@ test('evolution decks are flagged as under-played rather than silently wrong', (
   }, INDEX);
   const v = validateDeck(spec);
   assert.equal(v.ok, true, v.errors.join('; '));
-  assert.ok(v.warnings.some((w) => /Stage 2/.test(w) && /lower bound/.test(w)),
+  assert.ok(v.warnings.some((w) => /Stage 2/.test(w) && /Energy acceleration/.test(w)),
     `expected a warning that Stage 2 decks are under-played, got: ${v.warnings.join(' | ')}`);
 });

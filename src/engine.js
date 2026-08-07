@@ -522,19 +522,20 @@ export function validateDeck(spec) {
     }
   }
 
-  // The play policy was built around Basic attackers. It evolves when it draws the
-  // pieces, but it does not search out evolutions or model Abilities that
-  // accelerate Energy, so evolution decks are played worse than a human would.
+  // The play policy was built around Basic attackers. Search now tutors for the
+  // next piece of a line already in play, and Rare Candy is used, so evolution
+  // decks assemble at something like a sensible rate. What is still missing is
+  // Ability-based Energy acceleration, which is how these decks actually power
+  // their attackers a turn early.
   const evoAttackers = Object.entries(spec).filter(([, d]) =>
     d.kind === 'pokemon' && d.stage >= 1 && Array.isArray(d.attacks) && d.attacks.length);
   if (evoAttackers.length && size === 60) {
     const worst = Math.max(...evoAttackers.map(([, d]) => d.stage));
     warnings.push(
-      `Main attackers are Stage ${worst}. The simulator evolves when it draws the `
-      + 'pieces but does not tutor for evolutions or model Ability-based Energy '
-      + 'acceleration, so it plays these decks worse than you would. Read the win '
-      + 'rate as a lower bound, and compare evolution decks against each other '
-      + 'rather than against Basic-attacker decks.');
+      `Main attackers are Stage ${worst}. The simulator now searches out the next `
+      + 'piece of an evolution line and uses Rare Candy, but it does not model '
+      + 'Ability-based Energy acceleration, so these decks still attack later '
+      + 'here than they would in your hands. Read the win rate as a lower bound.');
   }
 
   const draw = Object.entries(spec)
@@ -818,17 +819,61 @@ function playDrawSupporter(S) {
  * Master Ball and friends make the same choice instead of each re-deriving it
  * slightly differently.
  */
+/** Printed power of a card's best attack, knockout effects outranking damage. */
+function attackPower(S, n) {
+  const a = (S.card(n) || {}).attacks || [];
+  return Math.max(0, ...a.map((x) => (x.damage || 0) + (x.koIfSpecialCondition ? 999 : 0)));
+}
+
+/**
+ * The evolutions that Pokemon already in play are waiting on.
+ *
+ * Without this, an evolution deck could not search out its own line. The Basic
+ * attacker step below is skipped for a Stage 2 deck — Dragapult ex is not a
+ * Basic — so every search fell through to `basicsLeadingToAttackers` and fetched
+ * Dreepy, forever. A deck could sit on three Dreepy and keep tutoring a fourth
+ * while the Drakloak it needed stayed in the deck.
+ *
+ * Rare Candy changes what the missing piece is: with one in hand the Stage 2 is
+ * the card worth fetching, not the Stage 1 it skips over.
+ */
+function evolutionTargets(S) {
+  const out = [];
+  const evolutionsOf = (name, stage) => Object.keys(S.spec).filter((n) => {
+    const d = S.card(n);
+    if (!d || d.kind !== 'pokemon') return false;
+    if (typeof stage === 'number') {
+      if (d.stage !== stage) return false;
+      const mid = S.card(d.evolvesFrom);
+      return Boolean(mid && mid.evolvesFrom === name);
+    }
+    return d.evolvesFrom === name;
+  });
+
+  for (const mon of S.inPlay()) {
+    if (mon.turnPlayed >= S.turn) continue;      // cannot evolve it this turn
+    if (S.has('Rare Candy') && isBasic(S.card(mon.name))) {
+      out.push(...evolutionsOf(mon.name, 2));
+    }
+    out.push(...evolutionsOf(mon.name));
+  }
+  return [...new Set(out)].sort((a, b) => attackPower(S, b) - attackPower(S, a));
+}
+
 function fetchBestPokemon(S, ok = () => true) {
-  const rank = (n) => {
-    const a = S.card(n).attacks || [];
-    return Math.max(0, ...a.map((x) => (x.damage || 0) + (x.koIfSpecialCondition ? 999 : 0)));
-  };
+  const rank = (n) => attackPower(S, n);
   const tryFor = (pred) => S.searchDeck((c) => ok(c) && pred(c), 1);
 
   const wanted = [...S.attackers].sort((a, b) => rank(b) - rank(a));
   for (const w of wanted) {
     if (!isBasic(S.card(w))) continue;
     const got = tryFor((c) => c === w);
+    if (got.length) return got;
+  }
+  // The next piece of a line already started beats another copy of its Basic.
+  for (const e of evolutionTargets(S)) {
+    if (S.has(e)) continue;                      // already holding it
+    const got = tryFor((c) => c === e);
     if (got.length) return got;
   }
   for (const b of basicsLeadingToAttackers(S)) {
