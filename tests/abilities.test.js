@@ -112,6 +112,44 @@ test('an Ability the engine cannot run is reported, not hidden', () => {
     `expected an unmodelled-Ability warning, got: ${JSON.stringify(v.warnings)}`);
 });
 
+test('Energy acceleration fuels an attacker off the discard pile', () => {
+  // This is how evolution decks keep pace: they spend two or three turns
+  // assembling a Stage 2 and would lose the tempo race outright if they also
+  // had to hand-attach every Energy. None of it was modelled, which is what the
+  // Stage-2 warning was apologising for.
+  const counts = {
+    'Torchic': 4, 'Combusken': 3, 'Blaziken ex': 3, 'Munkidori': 2,
+    'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4,
+    'Night Stretcher': 3, 'Switch': 2, "Lillie's Determination": 4,
+    'Lacey': 2, 'Judge': 4, 'Poké Pad': 3, 'Fire Energy': 18,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+  const spec = buildSpec(counts, INDEX);
+  assert.equal(spec['Blaziken ex'].ability.effect, 'attachEnergyFromDiscard');
+
+  const rng = makeRng(97);
+  let used = 0;
+  for (let i = 0; i < 300; i++) {
+    const { S } = playGame(spec, meta.decks[0], rng);
+    if (S.inPlay().some((m) => m.name === 'Blaziken ex' && m.abilityTurn > 0)) used++;
+  }
+  assert.ok(used > 0, 'Seething Spirit never accelerated an Energy');
+});
+
+test('acceleration finishes the closest attacker, not the neediest', () => {
+  // Topping up the Pokémon furthest from ready means swinging with none of
+  // them; finishing the closest one means swinging this turn.
+  const blaziken = INDEX['Blaziken ex'];
+  assert.equal(blaziken.sim.ability.count, 1);
+  assert.equal(blaziken.sim.ability.target, 'any');
+
+  // Eelektrik's version is Lightning-only and Bench-only, and both restrictions
+  // have to survive into the spec or it becomes a strictly better card.
+  const eel = INDEX['Eelektrik'];
+  assert.equal(eel.sim.ability.symbol, 'L');
+  assert.equal(eel.sim.ability.target, 'bench');
+});
+
 test('a Benched Pokémon dying to spread damage still counts as a knockout', () => {
   // "Any of your Pokémon were Knocked Out" includes the Bench. Spread damage
   // used to award Prizes and nothing else, so Unfair Stamp and Flip the Script

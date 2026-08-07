@@ -3748,6 +3748,12 @@
         "evolvesFrom": "Combusken",
         "weak": "W",
         "role": "attacker",
+        "ability": {
+          "name": "Seething Spirit",
+          "effect": "attachEnergyFromDiscard",
+          "count": 1,
+          "target": "any"
+        },
         "attacks": [
           {
             "name": "Smolder-sault",
@@ -8905,6 +8911,13 @@
         "evolvesFrom": "Tynamo",
         "weak": "F",
         "role": "attacker",
+        "ability": {
+          "name": "Dynamotor",
+          "effect": "attachEnergyFromDiscard",
+          "count": 1,
+          "symbol": "L",
+          "target": "bench"
+        },
         "attacks": [
           {
             "name": "Electric Ball",

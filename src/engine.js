@@ -529,13 +529,20 @@ export function validateDeck(spec) {
   // their attackers a turn early.
   const evoAttackers = Object.entries(spec).filter(([, d]) =>
     d.kind === 'pokemon' && d.stage >= 1 && Array.isArray(d.attacks) && d.attacks.length);
-  if (evoAttackers.length && size === 60) {
+  // Only claim acceleration is missing when this deck actually has none. A
+  // warning that keeps apologising after the gap is closed teaches you to
+  // ignore it, and the whole value of these messages is that they are true.
+  const accelerates = Object.values(spec)
+    .some((d) => d.ability && d.ability.effect === 'attachEnergyFromDiscard');
+  if (evoAttackers.length && size === 60 && !accelerates) {
     const worst = Math.max(...evoAttackers.map(([, d]) => d.stage));
     warnings.push(
-      `Main attackers are Stage ${worst}. The simulator now searches out the next `
-      + 'piece of an evolution line and uses Rare Candy, but it does not model '
-      + 'Ability-based Energy acceleration, so these decks still attack later '
-      + 'here than they would in your hands. Read the win rate as a lower bound.');
+      `Main attackers are Stage ${worst} and nothing in the deck accelerates `
+      + 'Energy. The simulator searches out evolution pieces and uses Rare Candy, '
+      + 'but it hand-attaches one Energy a turn, so a deck that would normally '
+      + 'power its attacker early attacks later here. Read the win rate as a '
+      + 'lower bound. If you are running an accelerator Ability the simulator '
+      + 'does not know, the card will say so in its own warning.');
   }
 
   const draw = Object.entries(spec)
@@ -1197,6 +1204,47 @@ export const ABILITY_EFFECTS = {
   drawIfKoLastTurn(S, mon, a) {
     if (!S.koLastTurn) return false;
     return S.draw(a.draw || 3) > 0;
+  },
+
+  /**
+   * Energy acceleration off the discard pile — Blaziken's Seething Spirit,
+   * Eelektrik's Dynamotor, and the two dozen cards printed to the same pattern.
+   *
+   * This is how evolution decks actually keep up. They spend two or three turns
+   * assembling a Stage 2 and would simply lose the tempo race if they also had
+   * to hand-attach every Energy, so the line comes down already fuelled. The
+   * engine modelled none of it, which is why evolution decks measured worse here
+   * than they play, and why validateDeck had to warn you to read their numbers
+   * as a lower bound.
+   *
+   * Fuels the attacker *closest* to being ready rather than the neediest one:
+   * finishing an attacker means swinging this turn, while topping up the one
+   * furthest away means swinging with none of them.
+   */
+  attachEnergyFromDiscard(S, mon, a) {
+    const isFuel = (c) => {
+      const d = S.spec[c];
+      if (!d || d.kind !== 'energy' || !d.basicEnergy) return false;
+      return !a.symbol || S.symOf(c) === a.symbol;
+    };
+    if (!S.discard.some(isFuel)) return false;
+
+    const pool = a.target === 'bench' ? S.bench : S.inPlay();
+    const target = pool
+      .filter((m) => S.attackers.has(m.name))
+      .map((m) => ({ m, sf: energyShortfall(S, m) }))
+      .filter((x) => x.sf && x.sf.gap > 0)
+      .sort((x, y) => x.sf.gap - y.sf.gap)[0];
+    if (!target) return false;
+
+    let moved = 0;
+    for (let i = 0; i < (a.count || 1); i++) {
+      const idx = S.discard.findIndex(isFuel);
+      if (idx < 0) break;
+      target.m.energy.push(S.discard.splice(idx, 1)[0]);
+      moved++;
+    }
+    return moved > 0;
   },
 };
 
