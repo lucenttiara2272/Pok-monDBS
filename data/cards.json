@@ -69,7 +69,8 @@
       "imported": true,
       "sim": {
         "basicEnergy": false,
-        "provides": "C"
+        "provides": "C",
+        "drawOnAttach": 4
       },
       "aceSpec": true
     },
@@ -164,7 +165,9 @@
       "imported": true,
       "sim": {
         "basicEnergy": false,
-        "provides": "C"
+        "provides": "*",
+        "prizeReduction": 1,
+        "oncePerGame": true
       },
       "aceSpec": true
     },
@@ -498,7 +501,11 @@
       "max": 1,
       "text": "Search your deck for up to 5 cards and discard them. Then, shuffle your deck. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "thinDeck",
+        "count": 5
+      }
     },
     {
       "id": "buddy-buddy-poffin",
@@ -663,7 +670,14 @@
       "max": 1,
       "text": "Search your deck for any number of Basic Energy cards of different types, reveal them, and put them into your hand. Then, shuffle your deck. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "searchCards",
+        "kinds": ["energy"],
+        "basicOnly": true,
+        "distinctTypes": true,
+        "count": 4
+      }
     },
     {
       "id": "energy-swatter",
@@ -749,7 +763,13 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Search your deck for up to 3 Stage 1 Pokémon, reveal them, and put them into your hand. Then, shuffle your deck. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "searchCards",
+        "kinds": ["pokemon"],
+        "stage": 1,
+        "count": 3
+      }
     },
     {
       "id": "iron-defender",
@@ -1054,7 +1074,10 @@
       "max": 1,
       "text": "Switch your Active Pokémon with 1 of your Benched Pokémon. If you do, you may move any amount of Energy from the Pokémon you moved to your Bench to the new Active Pokémon. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "scrambleSwitch"
+      }
     },
     {
       "id": "sv6-163",
@@ -1187,7 +1210,12 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. Search your deck for up to 5 Pokémon Tool cards, reveal them, and put them into your hand. Then, shuffle your deck. You may play any number of Item cards during your turn.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "searchCards",
+        "kinds": ["tool"],
+        "count": 5
+      }
     },
     {
       "id": "ultra-ball",
@@ -1209,7 +1237,12 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. You can use this card only if any of your Pokémon were Knocked Out during your opponent's last turn.    Each player shuffles their hand into their deck. Then, you draw 5 cards, and your opponent draws 2 cards. You may play any number of Item cards during your turn. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
-      "aceSpec": true
+      "aceSpec": true,
+      "sim": {
+        "effect": "shuffleHandDraw",
+        "draw": 5,
+        "requiresKoLastTurn": true
+      }
     },
     {
       "id": "wondrous-patch",
@@ -40077,6 +40110,9 @@
       "max": 1,
       "text": "You can't have more than 1 ACE SPEC card in your deck. If the Pokémon this card is attached to has full HP and would be Knocked Out by damage from an attack from your opponent's Pokémon, it is not Knocked Out, and its remaining HP becomes 10. Then, discard this card. You may attach any number of Pokémon Tools to your Pokémon during your turn. You may attach only 1 Pokémon Tool to each Pokémon, and it stays attached. Attach a Pokémon Tool to 1 of your Pokémon that doesn't already have a Pokémon Tool attached. ACE SPEC: You can't have more than 1 ACE SPEC card in your deck.",
       "imported": true,
+      "sim": {
+        "survivesFromFull": 10
+      },
       "aceSpec": true
     },
     {

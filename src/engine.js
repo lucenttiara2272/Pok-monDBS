@@ -76,13 +76,30 @@ function attackerNames(spec) {
  * `symOf` maps an attached Energy card name to the symbol it provides, so the
  * engine works for any deck rather than assuming Darkness.
  */
-function canPay(mon, cost, symOf) {
+/**
+ * `*` is a wildcard symbol: an Energy that counts as whatever is being asked for.
+ *
+ * Legacy Energy provides every type. Without this it was simply an Energy the
+ * engine could not spend — strictly worse than the Darkness Energy it replaced,
+ * because it paid for nothing and only ever saved a single Prize. The test
+ * comparing the two decks caught it as "concedes more Prizes with the card in",
+ * which is the right complaint about a card that had quietly become a blank.
+ */
+const WILD = '*';
+
+export function canPay(mon, cost, symOf) {
   const total = mon.energy.length;
+  const wilds = mon.energy.filter((e) => symOf(e) === WILD).length;
+  let spentWilds = 0;
   let need = 0;
   for (const [sym, n] of Object.entries(cost)) {
     need += n;
     if (sym === 'C') continue;
-    if (mon.energy.filter((e) => symOf(e) === sym).length < n) return false;
+    const matching = mon.energy.filter((e) => symOf(e) === sym).length;
+    if (matching >= n) continue;
+    // Wildcards cover the shortfall, but each one can only be spent once.
+    spentWilds += n - matching;
+    if (spentWilds > wilds) return false;
   }
   return total >= need;
 }
@@ -103,10 +120,17 @@ function energyShortfall(S, mon) {
     const cost = atk.cost || {};
     const total = Object.values(cost).reduce((a, b) => a + b, 0);
     const missing = [];
+    let spareWilds = mon.energy.filter((e) => S.symOf(e) === WILD).length;
     for (const [sym, n] of Object.entries(cost)) {
       if (sym === 'C') continue;
       const have = mon.energy.filter((e) => S.symOf(e) === sym).length;
-      for (let i = have; i < n; i++) missing.push(sym);
+      for (let i = have; i < n; i++) {
+        // A wildcard already attached covers this requirement, so it is not
+        // missing. Counting it as missing would have the deck keep fetching
+        // Darkness Energy for a cost it can already pay.
+        if (spareWilds > 0) { spareWilds--; continue; }
+        missing.push(sym);
+      }
     }
     const shortAny = Math.max(0, total - mon.energy.length - missing.length);
     const gap = missing.length + shortAny;
@@ -303,7 +327,8 @@ export const PLAYED_TRAINERS = new Set([
   // Items driven by the ITEM_EFFECTS registry
   'Buddy-Buddy Poffin', 'Master Ball', 'Poké Ball', 'Poké Pad', 'Super Potion',
   'Scoop Up Cyclone', 'Precious Trolley', 'Poké Vital A', 'Max Rod',
-  'Miracle Headset',
+  'Miracle Headset', 'Hyper Aroma', 'Treasure Tracker', 'Energy Search Pro',
+  'Brilliant Blender', 'Scramble Switch', 'Unfair Stamp',
   // Reached for by capability rather than by name: Dangerous Laser applies a
   // Special Condition, so chooseAttack finds it the same way it finds Dark Bell.
   // Unlike Dark Bell it is not type-restricted, so it turns on Abyss Eye against
@@ -313,7 +338,7 @@ export const PLAYED_TRAINERS = new Set([
   'Prime Catcher', "Boss's Orders", "Lisia's Appeal",
   // Tools
   'Air Balloon', 'Punk Helmet', 'Powerglass', 'Amulet of Hope',
-  "Hero's Cape", 'Maximum Belt', 'Deluxe Bomb',
+  "Hero's Cape", 'Maximum Belt', 'Deluxe Bomb', 'Survival Brace',
   // Supporters with bespoke handling, beyond the draw list
   "AZ's Tranquility", "Janine's Secret Art", "Black Belt's Training",
   ...DRAW_SUPPORTERS,
@@ -532,6 +557,10 @@ class Side {
     this.exactDamageKos = 0;
     this.gustKos = 0;
     this.itemsPlayed = [];
+    // Unfair Stamp can only be played after they have taken a knockout.
+    this.koLastTurn = false;
+    // Legacy Energy's prize reduction applies once per game, not once per copy.
+    this.legacyUsed = false;
   }
 
   card(name) { return this.spec[name]; }
@@ -602,12 +631,22 @@ class Side {
     if (!mon) return names;
     const want = energyShortfall(this, mon);
     if (!want || !want.missing.length) return names;
-    return names.sort((a, b) =>
-      (want.missing.includes(this.symOf(b)) ? 1 : 0)
-      - (want.missing.includes(this.symOf(a)) ? 1 : 0));
+    // A wildcard satisfies whatever is missing, so it sorts alongside the exact
+    // match rather than last — which is where Legacy Energy sat when its `*`
+    // symbol matched nothing, meaning the engine almost never attached it.
+    const fits = (c) => {
+      const sym = this.symOf(c);
+      return sym === WILD || want.missing.includes(sym);
+    };
+    return names.sort((a, b) => (fits(b) ? 1 : 0) - (fits(a) ? 1 : 0));
   }
 
-  darkCount(m) { return m.energy.filter((e) => this.symOf(e) === DARK).length; }
+  darkCount(m) {
+    return m.energy.filter((e) => {
+      const sym = this.symOf(e);
+      return sym === DARK || sym === WILD;
+    }).length;
+  }
   totalEnergy(m) { return m.energy.length; }
   benchHasDamage() { return this.bench.some((m) => m.dmg > 0); }
 
@@ -811,6 +850,97 @@ export const ITEM_EFFECTS = {
     for (const e of A.energy) S.hand.push(e);
     if (A.tool) S.hand.push(A.tool);
     S.active = S.bench.shift();
+    return true;
+  },
+
+  /**
+   * Hyper Aroma, Treasure Tracker, Energy Search Pro, Secret Box: one search
+   * shape parameterised by what it is allowed to find.
+   *
+   * `kinds` restricts the category, `stage` the evolution stage, `basicOnly` to
+   * Basic Energy and `distinctTypes` to one of each symbol — which is why Energy
+   * Search Pro fetches four cards in a rainbow deck and exactly one in yours.
+   */
+  searchCards(S, d) {
+    const kinds = new Set(d.kinds || []);
+    const taken = new Set();
+    const ok = (c) => {
+      const k = S.spec[c];
+      if (!k || !kinds.has(k.kind)) return false;
+      if (typeof d.stage === 'number' && k.stage !== d.stage) return false;
+      if (d.basicOnly && !k.basicEnergy) return false;
+      if (d.distinctTypes) {
+        const sym = S.symOf(c);
+        if (taken.has(sym)) return false;
+        taken.add(sym);
+      }
+      return true;
+    };
+    return S.searchDeck(ok, d.count || 1).length > 0;
+  },
+
+  /**
+   * Brilliant Blender: thin the deck by binning cards you do not want to draw.
+   *
+   * Discards the least useful thing available rather than anything at all — a
+   * thinner that throws away Energy the attacker needs is worse than not playing
+   * it, and the point of thinning is to raise the quality of future draws.
+   */
+  thinDeck(S, d) {
+    const junkFirst = (c) => {
+      const k = S.spec[c];
+      if (!k) return 0;
+      if (k.kind === 'pokemon') return 3;
+      if (k.kind === 'energy') return 2;
+      return 1;
+    };
+    const binnable = [...S.deck].sort((a, b) => junkFirst(a) - junkFirst(b));
+    const n = Math.min(d.count || 1, Math.max(0, S.deck.length - 10));
+    if (n <= 0) return false;
+    for (const c of binnable.slice(0, n)) {
+      S.deck.splice(S.deck.indexOf(c), 1);
+      S.discard.push(c);
+    }
+    return true;
+  },
+
+  /**
+   * Scramble Switch: promote a Benched Pokemon and drag the Energy across.
+   *
+   * Only worth a card when the Active is in trouble and there is a body that
+   * would rather be attacking — otherwise plain Switch does the same job for a
+   * card you are allowed four of.
+   */
+  scrambleSwitch(S, d, opp) {
+    const A = S.active;
+    if (!A || !S.bench.length) return false;
+    const incoming = (opp && opp.dmg) || 0;
+    if (A.hp - A.dmg > incoming) return false;
+    const idx = S.bench.findIndex((m) => S.attackers.has(m.name));
+    if (idx < 0) return false;
+
+    const promoted = S.bench.splice(idx, 1)[0];
+    promoted.energy.push(...A.energy);
+    A.energy = [];
+    S.bench.push(A);
+    S.active = promoted;
+    return true;
+  },
+
+  /**
+   * Unfair Stamp: a full refill, but only after they have taken a knockout.
+   *
+   * The opponent's half — they shuffle and draw 2 — has nowhere to land, since
+   * the archetype model has no hand. So this is modelled as the better half of
+   * the card only, and reads slightly stronger here than in a real game.
+   */
+  shuffleHandDraw(S, d) {
+    if (d.requiresKoLastTurn && !S.koLastTurn) return false;
+    if (S.hand.length >= (d.draw || 5)) return false;
+    S.deck.push(...S.hand);
+    S.hand = [];
+    shuffle(S.rng, S.deck);
+    S.draw(d.draw || 5);
     return true;
   },
 
@@ -1149,6 +1279,9 @@ function userTurn(S, opp, turn) {
       S.hand.splice(S.hand.indexOf(pick), 1);
       target.energy.push(pick);
       S.energyAttached = true;
+      // Enriching Energy draws 4 when it is attached from hand.
+      const drawOnAttach = (S.spec[pick] || {}).drawOnAttach;
+      if (drawOnAttach) S.draw(drawOnAttach);
     }
   }
 
@@ -1261,7 +1394,11 @@ function rebuildDelay(rng, meta) {
 export function playGame(spec, meta, rng) {
   const S = new Side(spec, rng);
   S.opening();
-  if (!S.active) return { win: false, reason: 'no_basic_disaster', turns: 0, S };
+  // oppPrizes on every exit, including this one. Omitting it here made the field
+  // undefined on a fraction of games, so anything summing it got NaN.
+  if (!S.active) {
+    return { win: false, reason: 'no_basic_disaster', turns: 0, S, oppPrizes: 6 };
+  }
 
   // The opponent's Active is no longer always the archetype's attacker: a gust
   // card can drag a Benched Pokemon up, and while it is there the thing we are
@@ -1368,6 +1505,9 @@ export function playGame(spec, meta, rng) {
     /* ---- your turn ---- */
     if (userFirst || turn > 1) {
       const r = userTurn(S, opp, turn);
+      // Unfair Stamp asks whether they knocked something out during *their last
+      // turn*, so the flag has to expire the moment we have had our turn with it.
+      S.koLastTurn = false;
       if (r.deckout) { lossReason = 'deck_out'; break; }
       if (r.ko) {
         S.takePrizes(opp.prizes);
@@ -1438,9 +1578,30 @@ export function playGame(spec, meta, rng) {
       }
 
       if (S.active) {
+        const wasUntouched = S.active.dmg === 0;
         S.active.dmg += dmg;
+
+        // Survival Brace saves a Pokemon that was at full HP, once, leaving it
+        // on 10. It does nothing on anything already chipped, which is what
+        // makes it a shield against a one-shot rather than a general heal.
+        const brace = S.active.tool && S.spec[S.active.tool]
+          && S.spec[S.active.tool].survivesFromFull;
+        if (brace && wasUntouched && S.active.dmg >= S.active.hp) {
+          S.active.dmg = S.active.hp - brace;
+          S.discard.push(S.active.tool);
+          S.active.tool = null;
+        }
+
         if (S.active.dmg >= S.active.hp) {
-          opp.prizesTaken += S.active.prizes;
+          // Legacy Energy costs them a Prize for this knockout, once per game.
+          const legacy = !S.legacyUsed && S.active.energy
+            .find((e) => S.spec[e] && S.spec[e].prizeReduction);
+          const taken = legacy
+            ? Math.max(0, S.active.prizes - S.spec[legacy].prizeReduction)
+            : S.active.prizes;
+          if (legacy) S.legacyUsed = true;
+          opp.prizesTaken += taken;
+          S.koLastTurn = true;
           if (S.active.tool === 'Amulet of Hope') {
             S.searchDeck((c) =>
               ['Darkness Energy', 'Dark Bell', 'Ultra Ball'].includes(c), 3);

@@ -16,6 +16,7 @@ import { dirname, join } from 'node:path';
 
 import {
   playGame, makeRng, runGauntlet, validateDeck, ITEM_EFFECTS, PLAYED_TRAINERS,
+  canPay as canPayFor,
 } from '../src/engine.js';
 import { makeCardIndex, buildSpec, PRESETS } from '../src/decks.js';
 import { candidatePool } from '../src/optimise.js';
@@ -343,6 +344,84 @@ test('Deluxe Bomb retaliates once and is then discarded', () => {
   const pool = candidatePoolFrom({ 'Mega Absol ex': 4, 'Munkidori': 4 });
   assert.ok(!pool.includes('Deluxe Bomb'),
     '120 retaliate can never leave an opponent sitting on exactly 60');
+});
+
+test('Legacy Energy costs them a Prize, once per game', () => {
+  // Worth most in exactly this deck: the Megas give up three Prizes each, so
+  // taking one back is a third of a knockout rather than half of a small one.
+  const build = (energy) => {
+    const counts = {
+      'Mega Darkrai ex': 4, 'Munkidori': 4, 'Fezandipiti ex': 4,
+      'Dark Bell': 4, 'Darkness Energy': 16,
+      'Ultra Ball': 4, "Lillie's Determination": 4, 'Judge': 4,
+      'Night Stretcher': 3, 'Energy Search': 3, 'Switch': 2, 'Lacey': 2,
+      'Kofu': 2, 'Energy Retrieval': 2, 'Energy Switch': 2,
+      ...energy,
+    };
+    assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+    return buildSpec(counts, INDEX);
+  };
+  const spec = build({ 'Legacy Energy': 1, 'Darkness Energy': 15 });
+
+  // Assert the mechanism, not an average. One copy in sixty cards fires in a
+  // minority of games and saves one Prize out of six, so the effect on a mean
+  // is smaller than the noise around it — the first version of this test
+  // compared two 400-game averages and could not have been reliable either way.
+  const rng = makeRng(71);
+  let fired = 0;
+  let games = 0;
+  for (const deck of meta.decks) {
+    for (let i = 0; i < 120; i++) {
+      const { S } = playGame(spec, deck, rng);
+      games++;
+      if (S.legacyUsed) fired++;
+    }
+  }
+  assert.ok(fired > 0,
+    `Legacy Energy never reduced a Prize across ${games} games`);
+
+  // And it is once per game, not once per knockout — the flag latches.
+  assert.equal(INDEX['Legacy Energy'].sim.oncePerGame, true);
+  assert.equal(INDEX['Legacy Energy'].sim.prizeReduction, 1);
+});
+
+test('a wildcard Energy pays a coloured cost', () => {
+  // Legacy Energy provides every type. Given as `provides: "*"` with nothing in
+  // the engine reading it, it paid for nothing, counted toward no requirement
+  // and sorted last in hand — strictly worse than the Darkness Energy it
+  // replaced, in a deck that needs three Darkness for Abyss Eye.
+  const mon = { energy: ['Legacy Energy', 'Legacy Energy', 'Legacy Energy'] };
+  const symOf = (c) => (INDEX[c] && INDEX[c].sim && INDEX[c].sim.provides) || 'C';
+  assert.equal(symOf('Legacy Energy'), '*');
+  assert.equal(canPayFor(mon, { D: 3 }, symOf), true,
+    'three wildcards should cover a three-Darkness cost');
+  assert.equal(canPayFor({ energy: ['Legacy Energy'] }, { D: 2 }, symOf), false,
+    'one wildcard cannot cover two Darkness');
+});
+
+test('Survival Brace only saves a Pokémon that was at full HP', () => {
+  const brace = INDEX['Survival Brace'];
+  assert.equal(brace.sim.survivesFromFull, 10,
+    'the card leaves the Pokémon on 10 HP, it does not fully heal it');
+  assert.ok(PLAYED_TRAINERS.has('Survival Brace'));
+});
+
+test('Unfair Stamp waits for them to take a knockout', () => {
+  // It reads "only if any of your Pokémon were Knocked Out during your
+  // opponent's last turn" — a refill that is free to play whenever would be a
+  // much stronger card than the one printed.
+  const stamp = INDEX['Unfair Stamp'];
+  assert.equal(stamp.sim.requiresKoLastTurn, true);
+  assert.equal(stamp.sim.draw, 5);
+});
+
+test('Energy Search Pro finds one card in a mono-type deck', () => {
+  // "Basic Energy cards of different types" is worth four cards in a rainbow
+  // deck and exactly one in a Darkness deck. Modelling it as a flat count would
+  // have made it look like a far better card than it is here.
+  const pro = INDEX['Energy Search Pro'];
+  assert.equal(pro.sim.distinctTypes, true);
+  assert.equal(pro.sim.basicOnly, true);
 });
 
 test('ACE SPEC cards are flagged and capped at one copy', () => {
