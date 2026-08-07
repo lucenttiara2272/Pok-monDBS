@@ -80,8 +80,24 @@ export const PRESETS = {
 /** Presets worth offering as a starting point in the deck builder. */
 export const UI_PRESETS = ['Optimised (43%)'];
 
-/** The control probe overrides Mega Darkrai to 2 prizes; apply after buildSpec. */
+/**
+ * Control-probe overrides, applied after buildSpec.
+ *
+ * Mega Darkrai drops to 2 Prizes, and every Ability is stripped.
+ *
+ * The probe exists to test the *opponent model* — if an ordinary shell does not
+ * land near 50%, the archetype agents are mis-tuned and no other number in the
+ * project means anything. Card synergies are a confound for that question, and
+ * this deck happens to run five Munkidori and four Fezandipiti ex: the moment
+ * Abilities were implemented it stopped being ordinary and jumped nine points,
+ * to the very edge of the calibration window.
+ *
+ * Stripping the Abilities rather than rewriting the deck keeps its size, Pokémon
+ * count, mulligan rate and Energy ratios exactly as calibrated, and changes only
+ * the thing that made it stop being a fair reference.
+ */
 export function applyControlOverride(spec) {
+  for (const d of Object.values(spec)) delete d.ability;
   if (spec['Mega Darkrai ex']) spec['Mega Darkrai ex'].prizes = 2;
   return spec;
 }

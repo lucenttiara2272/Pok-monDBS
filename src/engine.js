@@ -430,6 +430,26 @@ export function validateDeck(spec) {
       + 'modelled, so they will not attack. Treat the win rate as a lower bound.');
   }
 
+  // A Pokemon whose whole job is an Ability the engine cannot run is as blank as
+  // an unplayable Trainer, and until now nothing said so. The attack-based check
+  // below misses them entirely: they have no attacks to be suspicious of, so
+  // they were reported as ordinary support and quietly contributed a body.
+  const dumbSupport = Object.entries(spec).filter(([, d]) => {
+    if (d.kind !== 'pokemon') return false;
+    const hasAttack = Array.isArray(d.attacks) && d.attacks.length;
+    if (hasAttack) return false;
+    return !d.ability || !ABILITY_EFFECTS[d.ability.effect];
+  });
+  if (dumbSupport.length && size === 60) {
+    const slots = dumbSupport.reduce((a, [, d]) => a + d.n, 0);
+    warnings.push(
+      `${dumbSupport.map(([n, d]) => `${d.n}× ${n}`).join(', ')} `
+      + `${slots > 1 ? 'have' : 'has'} no attacks and no Ability the simulator `
+      + 'runs, so they contribute a body and a lower mulligan rate and nothing '
+      + 'else. If you are running them for the Ability, the win rate does not '
+      + 'include it.');
+  }
+
   // Trainers the policy never reaches for are drawn as blanks. This is the single
   // most misleading thing the simulator can do, because the deck looks full and
   // the win rate looks precise while a chunk of the list is doing nothing.
@@ -580,6 +600,9 @@ class Side {
       name, dmg: 0, hp: d.hp, prizes: d.prizes, energy: [],
       tool: null, confused: false, poisoned: false,
       turnPlayed: this.turn,
+      // Once-per-turn Ability guard. On the Pokemon, not the Side, because two
+      // copies of the same card in play each get their own activation.
+      abilityTurn: -1,
     };
   }
 
@@ -1024,6 +1047,75 @@ function maybeGust(S, opp, mon, ourDamage) {
   return false;
 }
 
+/**
+ * Pokemon Abilities, keyed by `sim.ability.effect` in data/cards.json.
+ *
+ * Signature: (S, mon, a, opp) => boolean, where `mon` is the Pokemon in play that
+ * owns the Ability and `a` is its own parameter block.
+ *
+ * Abilities were not modelled at all until now — not partially, not crudely,
+ * not at all. The importer flattened them into the card's display text and
+ * nothing read it back, so a support Pokemon whose entire job is its Ability sat
+ * on the Bench as a body and a mulligan reduction. That is a bigger silent
+ * overstatement than any single unmodelled Trainer, because a modern deck keeps
+ * much of its power there, and `validateDeck` said nothing about it.
+ *
+ * Nearly all of these are "once during your turn", so the caller tracks usage
+ * per Pokemon per turn rather than each handler doing its own bookkeeping.
+ */
+export const ABILITY_EFFECTS = {
+  /**
+   * Munkidori's Adrena-Brain: shift damage counters onto the opponent.
+   *
+   * Free chip damage every turn, which is why the card is played. It is also a
+   * second route to Mega Absol's Terminal Period: three counters is 30 damage,
+   * so two activations put an untouched attacker on exactly 60 without needing
+   * the Punk Helmet and Spiky Energy line at all.
+   */
+  moveDamageToOpponent(S, mon, a, opp) {
+    if (!opp) return false;
+    if (a.requiresSymbol
+        && !mon.energy.some((e) => S.symOf(e) === a.requiresSymbol
+          || S.symOf(e) === WILD)) {
+      return false;
+    }
+    const source = S.inPlay().filter((m) => m.dmg > 0).sort((x, y) => y.dmg - x.dmg)[0];
+    if (!source) return false;
+    const moved = Math.min(a.counters * 10, source.dmg, opp.hpLeft - 1);
+    if (moved <= 0) return false;
+
+    source.dmg -= moved;
+    opp.hpLeft -= moved;
+    opp.dmgOnActive = opp.activeHp - opp.hpLeft;
+    return true;
+  },
+
+  /** Fezandipiti ex's Flip the Script: a refill, but only after they scored. */
+  drawIfKoLastTurn(S, mon, a) {
+    if (!S.koLastTurn) return false;
+    return S.draw(a.draw || 3) > 0;
+  },
+};
+
+/**
+ * Fire every Ability that would do something this turn.
+ *
+ * `abilityTurn` on each Pokemon is the once-per-turn guard. It lives on the
+ * Pokemon rather than the Side because two copies of the same card in play each
+ * get their own activation.
+ */
+function useAbilities(S, opp, turn) {
+  for (const mon of S.inPlay()) {
+    const card = S.card(mon.name);
+    const a = card && card.ability;
+    if (!a) continue;
+    const fn = ABILITY_EFFECTS[a.effect];
+    if (!fn) continue;
+    if (mon.abilityTurn === turn) continue;
+    if (fn(S, mon, a, opp)) mon.abilityTurn = turn;
+  }
+}
+
 /** Items whose timing is decided by bespoke policy, not the generic pass. */
 const POLICY_MANAGED = new Set([
   'Ultra Ball', 'Night Stretcher', 'Switch', 'Rare Candy',
@@ -1161,6 +1253,9 @@ function userTurn(S, opp, turn) {
   // Registry Items first: they fetch bodies and Pokemon into hand, so running
   // them before the dig means the dig sees what they found instead of spending
   // an Ultra Ball on something Poffin would have benched for free.
+  // Abilities before the Items that dig for cards: Flip the Script's three cards
+  // are worth having in hand before we decide whether to spend an Ultra Ball.
+  useAbilities(S, opp, turn);
   playRegistryItems(S, opp);
   benchAll();
 

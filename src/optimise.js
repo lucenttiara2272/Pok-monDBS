@@ -530,8 +530,17 @@ const ENABLER_TARGET = 4;
 
 /** The best enabler the pool offers, or null. Pool order is already ranked. */
 function bestEnabler(index, pool, locked) {
-  return pool.find((n) => !locked.has(n) && index[n]
-    && index[n].sim && index[n].sim.appliesSpecialCondition) || null;
+  const candidates = pool.filter((n) => !locked.has(n) && index[n]
+    && index[n].sim && index[n].sim.appliesSpecialCondition);
+  // Prefer an enabler you are allowed four of.
+  //
+  // Dangerous Laser applies a Special Condition just as Dark Bell does, and it
+  // sorted first on a plain alphabetical tie-break — so the seeder handed the
+  // deck a single ACE SPEC copy and called the combo enabled. One copy in sixty
+  // cards is exactly the unreliability this function exists to avoid, and being
+  // an ACE SPEC it can never be topped up.
+  return candidates
+    .sort((a, b) => maxCopies(index, b) - maxCopies(index, a))[0] || null;
 }
 
 function makeLegal60(counts, index, pool, locked) {

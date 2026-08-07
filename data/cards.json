@@ -10698,7 +10698,7 @@
       "subtype": "Basic · ex",
       "type": "D",
       "max": 4,
-      "text": "Ability: Adrena-Brain — once during your turn, if any of your Pokémon were Knocked Out during your opponent's last turn, you may draw 3 cards.",
+      "text": "Ability: Flip the Script — once during your turn, if any of your Pokémon were Knocked Out during your opponent's last turn, you may draw 3 cards.",
       "sim": {
         "basic": true,
         "hp": 210,
@@ -10706,7 +10706,12 @@
         "weak": "G",
         "retreat": 1,
         "role": "support",
-        "stage": 0
+        "stage": 0,
+        "ability": {
+          "name": "Flip the Script",
+          "effect": "drawIfKoLastTurn",
+          "draw": 3
+        }
       }
     },
     {
@@ -23255,7 +23260,7 @@
       "subtype": "Basic",
       "type": "D",
       "max": 4,
-      "text": "Ability: Adrena-Brain — once during your turn, if you have a Darkness Energy attached to this Pokémon, you may move up to 3 damage counters from 1 of your Pokémon to another of your Pokémon.",
+      "text": "Ability: Adrena-Brain — once during your turn, if you have a Darkness Energy attached to this Pokémon, you may move up to 3 damage counters from 1 of your Pokémon to 1 of your opponent's Pokémon.",
       "sim": {
         "basic": true,
         "hp": 110,
@@ -23263,7 +23268,13 @@
         "weak": "G",
         "retreat": 1,
         "role": "support",
-        "stage": 0
+        "stage": 0,
+        "ability": {
+          "name": "Adrena-Brain",
+          "effect": "moveDamageToOpponent",
+          "counters": 3,
+          "requiresSymbol": "D"
+        }
       }
     },
     {

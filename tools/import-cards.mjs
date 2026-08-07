@@ -153,6 +153,18 @@ function toCard(c) {
     } else {
       out.sim.role = 'support';
     }
+
+    // Carry Abilities through as structure, not just prose.
+    //
+    // buildText folds them into the display string and nothing read it back, so
+    // every imported Pokemon arrived with its Ability invisible to the engine.
+    // `effect` is left unset on purpose: the name and text are enough for the
+    // deck builder to flag the card as unmodelled, and inventing a handler name
+    // here would claim behaviour that does not exist.
+    const ability = (c.abilities || [])[0];
+    if (ability) {
+      out.sim.ability = { name: ability.name, text: ability.text || '' };
+    }
   } else if (category === 'energy') {
     const basic = (c.subtypes || []).includes('Basic');
     out.max = basic ? null : 4;

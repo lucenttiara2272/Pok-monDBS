@@ -25,7 +25,20 @@ const meta = JSON.parse(readFileSync(join(here, '../data/meta.json'), 'utf8'));
 const INDEX = makeCardIndex(cards);
 const METendl = meta.decks;
 
-/** Python reference results (python/ptcg_sim.py, 6000 games/matchup). */
+/**
+ * Python reference results (python/ptcg_sim.py, 6000 games/matchup).
+ *
+ * A note on what these can and cannot still prove. The JS engine has since
+ * implemented cards the Python reference treats as blanks — gust, the Trainer
+ * effect registry, and now Pokémon Abilities — so the two are no longer the same
+ * model. Where a preset leans on those cards, agreement is not expected and its
+ * absence is not evidence of a bug.
+ *
+ * The control probe is the exception and the reason these numbers still earn
+ * their place: applyControlOverride strips Abilities from it, so it exercises
+ * the opponent model alone. That is the part both implementations share, and the
+ * part that has to stay honest.
+ */
 const PY = {
   control: 52.8,
   asSent: 28.6,
