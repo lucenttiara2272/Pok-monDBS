@@ -208,6 +208,8 @@ test('evolution decks are flagged as under-played rather than silently wrong', (
   }, INDEX);
   const v = validateDeck(spec);
   assert.equal(v.ok, true, v.errors.join('; '));
-  assert.ok(v.warnings.some((w) => /Stage 2/.test(w) && /Energy acceleration/.test(w)),
+  // Matched on the stable parts of the message. Pinning an exact phrase means
+  // every rewording breaks the test for no reason, which is how this one broke.
+  assert.ok(v.warnings.some((w) => /Stage 2/.test(w) && /lower bound/.test(w)),
     `expected a warning that Stage 2 decks are under-played, got: ${v.warnings.join(' | ')}`);
 });

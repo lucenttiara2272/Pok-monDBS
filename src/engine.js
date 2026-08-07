@@ -472,8 +472,18 @@ export function validateDeck(spec) {
   // an unplayable Trainer, and until now nothing said so. The attack-based check
   // below misses them entirely: they have no attacks to be suspicious of, so
   // they were reported as ordinary support and quietly contributed a body.
-  const dumbSupport = Object.entries(spec).filter(([, d]) => {
+  // A Pokemon something else in the deck evolves from is doing its job by
+  // existing — Dreepy has no attacks and no Ability because it is a step on the
+  // way to Dragapult, not because it is filler. Flagging evolution intermediates
+  // as dead weight is exactly the kind of false alarm that gets a warning
+  // ignored, and these messages are only worth anything while they are true.
+  const isEvolvedFrom = new Set(Object.values(spec)
+    .filter((d) => d.kind === 'pokemon' && d.evolvesFrom)
+    .map((d) => d.evolvesFrom));
+
+  const dumbSupport = Object.entries(spec).filter(([name, d]) => {
     if (d.kind !== 'pokemon') return false;
+    if (isEvolvedFrom.has(name)) return false;
     const hasAttack = Array.isArray(d.attacks) && d.attacks.length;
     if (hasAttack) return false;
     return !d.ability || !ABILITY_EFFECTS[d.ability.effect];

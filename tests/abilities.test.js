@@ -225,6 +225,23 @@ test('a rider the engine does model is not flagged', () => {
     'the hand discard is modelled now and should not be reported as missing');
 });
 
+test('an evolution intermediate is not reported as dead weight', () => {
+  // Dreepy and Drakloak have no attacks and no Ability, which is the same shape
+  // as a genuinely useless support Pokémon — but they are the line to Dragapult.
+  const counts = {
+    'Dreepy': 4, 'Drakloak': 4, 'Dragapult ex': 3, 'Munkidori': 2,
+    'Rare Candy': 4, 'Ultra Ball': 4, 'Buddy-Buddy Poffin': 4,
+    'Night Stretcher': 3, 'Switch': 2, "Lillie's Determination": 4,
+    'Lacey': 2, 'Judge': 4, 'Poké Pad': 4, 'Fire Energy': 8,
+    'Psychic Energy': 8,
+  };
+  assert.equal(Object.values(counts).reduce((a, b) => a + b, 0), 60);
+
+  const v = validateDeck(buildSpec(counts, INDEX));
+  assert.ok(!v.warnings.some((w) => /Dreepy|Drakloak/.test(w) && /no attacks/.test(w)),
+    `evolution pieces flagged as doing nothing: ${JSON.stringify(v.warnings)}`);
+});
+
 test('a modelled Ability is not reported as a blank', () => {
   const v = validateDeck(buildSpec(SHELL, INDEX));
   assert.ok(!v.warnings.some((w) => /Munkidori/.test(w) && /Ability/.test(w)),
