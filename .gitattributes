@@ -1,0 +1,17 @@
+# Normalise line endings.
+#
+# Everything in this repo is text, and it is edited from Windows, Linux and
+# whatever CI runs on. Without this, Git stores whatever each machine happens to
+# write: a file saved with CRLF then shows as entirely rewritten the next time
+# someone on another platform touches it, and a one-line change arrives as a
+# 400-line diff nobody can review.
+#
+# `text=auto eol=lf` stores LF in the repository and leaves working copies to
+# each platform's own convention, which is what the "LF will be replaced by
+# CRLF" notice on Windows is describing. That notice is expected and harmless.
+* text=auto eol=lf
+
+# Binary, so Git must not touch the bytes.
+*.png binary
+*.jpg binary
+*.pdf binary
