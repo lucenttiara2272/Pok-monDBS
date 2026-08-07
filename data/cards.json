@@ -20481,7 +20481,9 @@
               "D": 2,
               "C": 1
             },
-            "damage": 200
+            "damage": 200,
+            "text": "Your opponent reveals their hand and you discard a card you find there.",
+            "discardFromHand": 1
           }
         ],
         "stage": 0

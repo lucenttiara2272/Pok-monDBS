@@ -146,6 +146,11 @@ function toCard(c) {
         name: a.name,
         cost: symbolise(a.cost),
         damage: damageOf(a.damage),
+        // Kept so the builder can tell a plain damage attack from one carrying a
+        // rider the simulator does not model. Without it, an attack with damage
+        // plus unmodelled effect text is indistinguishable from a fully
+        // implemented one, and reads as complete when it is not.
+        ...(a.text ? { text: a.text } : {}),
       }));
     if (attacks.length) {
       out.sim.role = 'attacker';

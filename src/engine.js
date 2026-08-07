@@ -347,6 +347,19 @@ export const PLAYED_TRAINERS = new Set([
 const TRAINER_KINDS = new Set(['item', 'tool', 'supporter']);
 
 /**
+ * Attack fields the engine actually acts on.
+ *
+ * An attack carrying printed effect text but none of these is modelled as its
+ * damage number and nothing more. Adding a new attack mechanic means adding its
+ * field here too, or the deck builder will keep reporting the card as partially
+ * implemented after it has been finished.
+ */
+const MODELLED_ATTACK_FLAGS = [
+  'koIfSpecialCondition', 'koIfExactDamage', 'copiesBenchedAttack',
+  'bonusIfOwnBenchDamaged', 'flipUntilTailsBonus', 'discardFromHand',
+];
+
+/**
  * Dark Bell and anything like it is reached for by capability, not by name, so
  * it counts as played without being listed above.
  */
@@ -428,6 +441,31 @@ export function validateDeck(spec) {
       `${inert.map(([n]) => n).join(', ')} ${inert.length > 1 ? 'have' : 'has'} no `
       + 'damage the simulator understands — their attacks are effect text that is not '
       + 'modelled, so they will not attack. Treat the win rate as a lower bound.');
+  }
+
+  // Attacks that deal damage *and* do something else the simulator ignores.
+  //
+  // The inert check below only fires when every attack is unmodelled effect
+  // text, so an attack with a damage number attached sails through as fully
+  // implemented. Mega Absol's Claw of Darkness reads "200" and also strips a
+  // card from their hand; the 200 was modelled, the rider was not, and nothing
+  // anywhere said so. Every attack in the database with a rider on top of damage
+  // sat in that same blind spot.
+  const partial = [];
+  for (const [name, d] of Object.entries(spec)) {
+    if (d.kind !== 'pokemon' || !Array.isArray(d.attacks)) continue;
+    for (const a of d.attacks) {
+      if (!a.text) continue;
+      const modelled = MODELLED_ATTACK_FLAGS.some((f) => a[f] !== undefined);
+      if (!modelled) partial.push(`${name}'s ${a.name}`);
+    }
+  }
+  if (partial.length && size === 60) {
+    warnings.push(
+      `${partial.join(', ')} ${partial.length > 1 ? 'deal' : 'deals'} damage but `
+      + 'also have printed effects the simulator does not model. The damage is '
+      + 'counted; the rest is not, so those attacks are worth more in a real '
+      + 'game than the win rate credits.');
   }
 
   // A Pokemon whose whole job is an Ability the engine cannot run is as blank as
@@ -526,6 +564,25 @@ function logC(n, k) {
  */
 export const MULLIGAN_TEMPO = 0.35;
 
+/**
+ * Chance that stripping a card from their hand costs them their next attack.
+ *
+ * The archetype model has no hand, so a discard cannot be applied literally.
+ * What it can be applied to is the vocabulary the model already speaks: setup
+ * speed, whiff rate and rebuild delay are all statements about how quickly they
+ * get going, and taking a card off them is a statement about the same thing.
+ *
+ * Doubled while they are rebuilding. That is not a fudge for effect — it is the
+ * whole reason the effect matters. A card taken from a set-up opponent with a
+ * full board is usually a spare; a card taken while they are scrambling back
+ * from a knockout is often the one they needed, and denying it is what keeps
+ * them out of the game.
+ *
+ * A judgement call like MULLIGAN_TEMPO, and held honest the same way: the
+ * calibration probe has to keep landing near 50%.
+ */
+export const HAND_DISCARD_WHIFF = 0.15;
+
 export function mulliganRate(spec) {
   const size = deckSize(spec);
   const basics = Object.values(spec)
@@ -576,6 +633,7 @@ class Side {
     // Abyss Eye. `absolKos` was declared beside them and never once incremented.
     this.exactDamageKos = 0;
     this.gustKos = 0;
+    this.handDisruptions = 0;
     this.itemsPlayed = [];
     // Unfair Stamp can only be played after they have taken a knockout.
     this.koLastTurn = false;
@@ -1464,6 +1522,17 @@ function userTurn(S, opp, turn) {
       if (picked.via === 'exactDamage') S.exactDamageKos++;
       else S.abyssEyeKos++;
     }
+
+    // Hand disruption, priced as tempo. Claw of Darkness strips a card; the
+    // archetype has no hand to strip, so the cost lands where the model can
+    // express it — on their next attack. Worth double while they are rebuilding,
+    // because that is when the card you take is the one they were counting on.
+    const atk = (S.card(A.name).attacks || []).find((x) => x.name === picked.name);
+    if (atk && atk.discardFromHand) {
+      const rebuilding = opp.offlineUntil > turn;
+      opp.extraWhiff = HAND_DISCARD_WHIFF * atk.discardFromHand * (rebuilding ? 2 : 1);
+      S.handDisruptions++;
+    }
   }
 
   if ((result.dmg > 0 || result.ko) && S.firstAttackTurn === null) {
@@ -1636,7 +1705,8 @@ export function playGame(spec, meta, rng) {
         S.discard.push(S.active.energy.pop());
       }
 
-      const whiffed = rng() < (meta.whiff ?? 0.15);
+      const whiffed = rng() < ((meta.whiff ?? 0.15) + (opp.extraWhiff || 0));
+      opp.extraWhiff = 0;      // disruption buys one turn, not a standing debuff
       let dmg = whiffed ? 0 : meta.dmg;
       if (meta.grass && S.active && S.attackers.has(S.active.name)) dmg *= 2;
 
